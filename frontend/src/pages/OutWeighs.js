@@ -1,7 +1,9 @@
 const OutWeighs = () =>{
+    // date code:
+    
     return(
         <div className="main-content" >
-            hello;
+            {new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})}
         </div>
     )
 }
