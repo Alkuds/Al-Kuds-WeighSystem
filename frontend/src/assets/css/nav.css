@@ -1,0 +1,32 @@
+.nav{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    width: 15%;
+    font-family: "Cairo", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    padding-right: 30px;
+    gap: 10px;
+}
+
+.nav a{
+    color: white;
+    text-decoration: none;
+    opacity: 0.5;
+    transition: 0.5s;
+}
+
+.active{
+    opacity: 1 !important;
+}
+
+.nav a:hover{
+    opacity: 1;
+}
+
+.nav img{
+    width: 60%;
+    margin-bottom: 100px;
+}
