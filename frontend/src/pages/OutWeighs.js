@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import iron from '../Database/IronStorage.json';
 import truck from '../assets/images/truck.png';
 const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
     const [ironArr, setIronArr] = useState([1]);
-    console.log(iron);
     useEffect(() => {
 
     }, [ironArr])

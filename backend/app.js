@@ -11,10 +11,12 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 app.use(express.urlencoded({extended:false}));
-app.use(bodyParser.urlencoded({extended:true}));
+// app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use((req,res,next) => {
     console.log(req.path , req.method)
+    console.log(req.body)
+    
     next();
 })
 app.use('/ticket' , require("./routes/ticket"));

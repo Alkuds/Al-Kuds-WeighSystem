@@ -1,0 +1,50 @@
+[
+    {
+        "type": "in",
+        "name": "Mohamed Moataz",
+        "address": "ibn sindar",
+        "driverName": "Besela",
+        "carNumber": "ج م ع",
+        "Date": "",
+        "receipt": [
+            {
+                "weight": 20,
+                "ironName": "Hadeed1",
+                "raduis": 8,
+                "weightBefore": 10,
+                "weightAfter": 30
+            },
+            {
+                "weight": 30,
+                "ironName": "Hadeed2",
+                "raduis": 10,
+                "weightBefore": 10,
+                "weightAfter": 40
+            }
+        ]
+    },
+    {
+        "type": "in",
+        "name": "MYAF",
+        "address": "ibn sindar",
+        "driverName": "Besela",
+        "carNumber": "ج م ع",
+        "Date": "",
+        "receipt": [
+            {
+                "weight": 20,
+                "ironName": "Hadeed1",
+                "raduis": 8,
+                "weightBefore": 10,
+                "weightAfter": 30
+            },
+            {
+                "weight": 30,
+                "ironName": "Hadeed2",
+                "raduis": 10,
+                "weightBefore": 10,
+                "weightAfter": 40
+            }
+        ]
+    }
+]
