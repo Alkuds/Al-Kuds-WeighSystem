@@ -8,12 +8,8 @@ const addIron = (req,res) =>{
     }
     let ironDb = getDatabaseByName('IronStorage');
     ironDb.push(newObj);
-    console.log(name,weight,radius);
-    const update = updateDatabaseByName('IronStorage',JSON.stringify(ironDb))
-    if(update)
-        res.json({"msg":"success"})
-    else
-        res.json({"msg":"failed"})
+    updateDatabaseByName('IronStorage',JSON.stringify(ironDb))
+    res.json({"msg":"success"})
 }
 
 const addIronWeight = (req,res) =>{

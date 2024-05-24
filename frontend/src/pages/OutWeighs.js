@@ -20,10 +20,6 @@ const OutWeighs = () => {
                             <input name="address" type="text" />
                         </div>
                         <div className="data-input">
-                            <label htmlFor="phone"> رقم التليفون </label>
-                            <input name="phone" type="text" />
-                        </div>
-                        <div className="data-input">
                             <label htmlFor="clientname"> اسم العميل </label>
                             <select>
                                 <option>Ahmed</option>
