@@ -4,8 +4,10 @@
     align-items: center;
     justify-content: center;
     background: black;
+    min-height: 100vh;
 }
 .container{
+    min-height: 100vh;
     border-radius: 50px;
     padding: 30px;
     background: black;

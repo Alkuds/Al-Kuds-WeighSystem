@@ -8,7 +8,7 @@ const OutWeighs = () => {
 
     }, [ironArr])
     return (
-        <div className="main-content" >
+        <>
             <div className="client-details">
                 <div className="client-data">
                     <h2>
@@ -119,7 +119,7 @@ const OutWeighs = () => {
                     ))
                 }
             </div>
-        </div>
+        </>
     )
 }
 

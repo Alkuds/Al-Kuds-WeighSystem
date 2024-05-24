@@ -6,7 +6,11 @@ export default function RootLayout() {
     return (
         <div className='background'>
             <div className='container'>
+                <div className='main-content'>
+                    
                 <Outlet />
+                </div>
+                
                 <div className='nav'>
                     <img src={kuds} />
                     <NavLink to={"/"}> خارج </NavLink>

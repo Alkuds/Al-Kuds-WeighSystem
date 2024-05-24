@@ -2,6 +2,7 @@ import { Navigate, createBrowserRouter, RouterProvider, useParams } from 'react-
 import './App.css';
 import HomeLayout from './layouts/HomeLayout'
 import OutWeighs from './pages/OutWeighs';
+import InWeights from './pages/InWeights';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -11,7 +12,19 @@ const router = createBrowserRouter([
         index: true,
         element: <OutWeighs />,
       },
-    ]
+    ] , 
+    
+  } , 
+  {
+    path: "/in",
+    element: <HomeLayout />,
+    children: [
+      {
+        index: true,
+        element: <InWeights />,
+      },
+    ] , 
+    
   }
 
 ])
