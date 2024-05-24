@@ -4,9 +4,108 @@ const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
     const [ironArr, setIronArr] = useState([1]);
+    const [selectedClientName, setSelectedClientName] = useState()
+    const [selectedClientAddress, setSelectedClientAddress] = useState()
+    const [selectedDriverName, setSelectedDriverName] = useState()
+    const [selectedDriverMobile, setSelectedDriverMobile] = useState()
+    const [selectedCarNumber, setSelectedCarNumber] = useState()
+    const [selectedLorryNumber, setSelectedLorryNumber] = useState()
+    const [selectedIron, setSelectedIron] = useState()
+    const [selectedRadius, setSelectedRadius] = useState()
+    const [carInfo, setCarInfo] = useState([])
+    const [clientsInfo, setClientsInfo] = useState([])
+    const [ironInfo, setIronInfo] = useState([])
+    const [driverInfo, setDriverInfo] = useState([])
     useEffect(() => {
+        const getCarInfo = async () => {
+            const response = await fetch('http://localhost:7000/car/getCarInfo',
+                {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
 
-    }, [ironArr])
+
+            )
+            const json = await response.json()
+            setCarInfo(json)
+        }
+        const getDriverInfo = async () => {
+            const response = await fetch('http://localhost:7000/driver/getDriversInfo',
+                {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+
+
+            )
+            const json = await response.json()
+            setDriverInfo(json)
+        }
+        const getClientsInfo = async () => {
+            const response = await fetch('http://localhost:7000/clients/getClientsInfo',
+                {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+
+
+            )
+            const json = await response.json()
+            console.log(json)
+            setClientsInfo(json);
+        }
+        const getIronStorage = async () => {
+            const response = await fetch('http://localhost:7000/irons/getIronStorage',
+                {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+
+
+            )
+            const json = await response.json()
+            setIronInfo(json);
+        }
+        getCarInfo()
+        getDriverInfo()
+        getClientsInfo()
+        getIronStorage()
+    }, [ironArr, selectedCarNumber, selectedClientAddress, selectedClientName, selectedDriverMobile, selectedDriverName, selectedIron, selectedLorryNumber, selectedRadius])
+
+    const handleAddress = (name) => {
+        console.log(clientsInfo)
+        for (const i of clientsInfo) {
+            console.log(i)
+            if (i.name == name) {
+                setSelectedClientAddress(i.address);
+            }
+        }
+    }
+
+    const handleDriverNumber = (name) => {
+        for (const i of driverInfo) {
+            if (i.name == name) {
+                setSelectedDriverMobile(i.mobile);
+            }
+        }
+    }
+
+    const handleLorry = (number) => {
+        for (const i of carInfo) {
+            if (i.number == number) {
+                setSelectedLorryNumber(i.lorryNumber);
+            }
+        }
+    }
+
     return (
         <>
             <div className="client-details">
@@ -17,14 +116,17 @@ const OutWeighs = () => {
                     <div className="client-holder">
                         <div className="data-input">
                             <label htmlFor="address"> العنوان </label>
-                            <input name="address" type="text" />
+                            <input name="address" type="text" value={selectedClientAddress} readOnly />
                         </div>
                         <div className="data-input">
                             <label htmlFor="clientname"> اسم العميل </label>
-                            <select>
-                                <option>Ahmed</option>
-                                <option>Mostafa</option>
-                                <option>Mahmoud</option>
+                            <select onChange={e => handleAddress(e.target.value)}>
+                                <option> اختر عميل</option>
+                                {
+                                    clientsInfo.map((i, idx) => (
+                                        <option key={idx}> {i.name} </option>
+                                    ))
+                                }
                             </select>
                         </div>
                     </div>
@@ -36,36 +138,46 @@ const OutWeighs = () => {
                     <div className="driver-holder">
                         <div className="driver-data-holder">
                             <div className="data-input">
-                                <input name="driverNum" type="text" />
+                                <input name="driverNum" type="text" value={selectedDriverMobile} readOnly />
                                 <label htmlFor="driverNum"> رقم تليفون السائق </label>
                             </div>
                             <div className="data-input">
-                                <input name="driverName" type="text" />
+                                <select onChange={e => handleDriverNumber(e.target.value)}>
+                                    <option> اختر سائق</option>
+                                    {
+                                        driverInfo.map((i, idx) => (
+                                            <option key={idx}> {i.name} </option>
+                                        ))
+                                    }
+                                </select>
                                 <label htmlFor="driverName"> اسم السائق </label>
                             </div>
                         </div>
                         <div className="car-data-holder">
                             <div className="data-input">
-                                <input name="carNum" type="text" />
+                                <input name="carNum" type="text" value={selectedLorryNumber} readOnly />
                                 <label htmlFor="carNum"> رقم العربيه </label>
                             </div>
                             <div className="data-input">
-                                <select>
-                                    <option>Ma2tora 1</option>
-                                    <option>Ma2tora 2</option>
-                                    <option>Ma2tora 3</option>
+                                <select onChange={e => handleLorry(e.target.value)}>
+                                    <option> اختر عربه</option>
+                                    {
+                                        carInfo.map((i, idx) => (
+                                            <option key={idx}> {i.number} </option>
+                                        ))
+                                    }
                                 </select>
                                 <label htmlFor="lorryNum"> رقم المقطوره </label>
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
             <button className="iron-btn add-btn" onClick={e => { setIronArr([...ironArr, 1]) }}> اضافه وزنه </button>
             <div className="iron-input">
                 {
                     ironArr.map((i, key) => (
-                        <div className="section-content">
+                        <div key={key} className="section-content">
                             <div className="weigh-data-holder" style={{ "width": "100%" }}>
                                 <div className="weigh-data-input">
                                     <select>
@@ -76,10 +188,13 @@ const OutWeighs = () => {
                                     <label htmlFor="clientname"> القطر</label>
                                 </div>
                                 <div className="weigh-data-input">
-                                    <select>
-                                        <option>Hadeed1</option>
-                                        <option>Hadeed2</option>
-                                        <option>Hadeed3</option>
+                                    <select onChange={e => setSelectedIron(e.target.value)}>
+                                        <option> اختر نوع</option>
+                                        {
+                                            ironInfo.map((i, idx) => (
+                                                <option key={idx}> {i.name} </option>
+                                            ))
+                                        }
                                     </select>
                                     <label htmlFor="clientname"> نوع الحديد </label>
                                 </div>

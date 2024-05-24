@@ -21,7 +21,8 @@ const subtractIronWeight = (req,res) =>{
 }
 
 const getIronStorage = (req,res)=>{
-
+    let db = getDatabaseByName('IronStorage');
+    res.json(db);
 }
 
 const changeIronWeight = (req,res)=>{
