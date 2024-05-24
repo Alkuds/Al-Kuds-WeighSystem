@@ -1,7 +1,9 @@
 const express = require('express');
-const { getCarInfo } = require('../controllers/car');
+const { getCarInfo ,updateCarInfo , postCarInfo } = require('../controllers/car');
 const router = express.Router();
 
-router.get('/hello', getCarInfo);
+router.get('/getCarInfo', getCarInfo);
+router.post('/postCarInfo', postCarInfo);
+router.post('/updateCarInfo', updateCarInfo);
 
 module.exports = router;
