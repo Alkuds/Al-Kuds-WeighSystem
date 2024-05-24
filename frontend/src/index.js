@@ -4,6 +4,7 @@ import './index.css';
 import './assets/css/layout.css';
 import './assets/css/nav.css';
 import './assets/css/common.css';
+import './assets/css/outweights.css';
 import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

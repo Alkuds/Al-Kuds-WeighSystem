@@ -11,10 +11,10 @@ export default function RootLayout() {
                     <img src={kuds} />
                     <NavLink to={"/"}> خارج </NavLink>
                     <NavLink to={"in"}> داخل</NavLink>
-                    <NavLink to={"impexp"}>استيراد | تصدير</NavLink>
+                    <NavLink to={"impexp"}>جرد</NavLink>
                     <NavLink to={"day"}>يوميه</NavLink>
                     <NavLink to={"storage"}>مخزن</NavLink>
-                    <NavLink to={"settings"}>اعدادات</NavLink>
+                    <NavLink to={"settings"}>اعدادات</NavLink> 
                 </div>
             </div>
         </div>

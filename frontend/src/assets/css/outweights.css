@@ -1,0 +1,140 @@
+.iron-input{
+    height: 210px;
+    overflow-y: auto;
+    text-align: right;
+}
+.section-content{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+    flex-wrap: wrap;
+}
+.first-weigh ,.second-weigh{
+    margin: 20px 0;
+    width: 49%;
+    text-align: right;
+}
+.client-details{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.client-data, .client-holder, .driver-data{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+.client-data{
+    width: 100%;
+
+}
+.driver-data{
+    width: 100%;
+}
+.client-holder{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+.driver-holder{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.driver-holder label{
+    width: 35%;
+}
+.client-data .data-input{
+    flex-direction: column;
+}
+.data-input{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+    margin: 5px 0;
+    width: 100%;
+}
+ input,select{
+    width: 300px;
+    border-radius: 15px;
+    padding: 5px;
+    border:0;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.20);
+
+}
+
+.car-data-holder, .driver-data-holder{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+label{
+    margin-bottom: 10px;
+}
+.weigh-data-holder{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+.vertical-spacer{
+    height: 2px;
+    opacity: 0.5;
+    width: 80%;
+    background-color: black;
+    border-radius: 50px;
+    margin: 5px auto;
+}
+.weigh-data-input{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+.weigh-data-input label{
+    width: 17%;
+}
+
+.first-weigh, .second-weigh{
+    display: flex;
+    flex-direction: column;
+}
+
+.iron-btn{
+    margin: 0 auto;
+    margin-top: 15px;
+    width: 60%;
+    outline: none;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.20);
+    transition: 0.5s;
+    cursor: pointer;
+    display: block;
+}
+
+.iron-btn:hover{
+    background-color: greenyellow;
+}
+.add-btn{
+    background-color: black;
+    color: white;
+    margin: 30px auto;
+}
