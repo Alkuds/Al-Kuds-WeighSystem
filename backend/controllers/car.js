@@ -1,7 +1,8 @@
+const { getDatabaseByName } = require("./databaseController")
+
 const getCarInfo = (req, res) => {
-    res.json({
-        "vitolo": "viito"
-    })
+    let db = getDatabaseByName('car');
+    res.json(db);
  }
 const postCarInfo = (req, res) => {
     res.json({

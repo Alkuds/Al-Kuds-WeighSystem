@@ -4,9 +4,9 @@ const router = express.Router();
 
 
 
-router.get("/getDriversInfor" , getDriversInfor);
+router.get("/getDriversInfo" , getDriversInfo);
 router.post("/postDriversInfo" , postDriversInfo);
 router.post("/updateDriversInfo" , updateDriversInfo);
 
 
-module.exports = router;
+module.exports = router; 
