@@ -10,8 +10,12 @@ const OutWeighs = () => {
     return (
         <>
             <div className="client-details">
+                <div className="operate-type">
+
+                    <h1 >خارج</h1>
+                </div>
                 <div className="client-data">
-                    <h2>
+                    <h2 style={{ textAlign: "center" }}>
                         بيانات العميل
                     </h2>
                     <div className="client-holder">
@@ -59,14 +63,14 @@ const OutWeighs = () => {
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
             <button className="iron-btn add-btn" onClick={e => { setIronArr([...ironArr, 1]) }}> اضافه وزنه </button>
             <div className="iron-input">
                 {
                     ironArr.map((i, key) => (
                         <div className="section-content">
-                            <div className="weigh-data-holder" style={{ "width": "100%" }}>
+                            {key!==0 &&<div className="weigh-data-holder" style={{ "width": "100%" }}>
                                 <div className="weigh-data-input">
                                     <select>
                                         <option>8</option>
@@ -83,27 +87,12 @@ const OutWeighs = () => {
                                     </select>
                                     <label htmlFor="clientname"> نوع الحديد </label>
                                 </div>
-                            </div>
-                            {key == 0 && <div className="second-weigh">
-                                <div className="weigh-data-input">
-                                    <input name="address" type="text" />
-                                    <label htmlFor="weight"> وزنه رقم &nbsp;{key + 2} </label>
-                                </div>
-                                <div className="weigh-data-input">
-                                    <input name="date" type="text" />
-                                    <label htmlFor="date"> التاريخ </label>
-                                </div>
-                                <div className="weigh-data-input">
-                                    <input name="time" type="text" />
-                                    <label htmlFor="time"> التوقت </label>
-                                </div>
-                                <button className="iron-btn"> تحميل الوزن </button>
                             </div>}
                             <div className="first-weigh">
                                 <div className="weigh-data-input">
                                     <input name="address" type="text" />
-                                    {key === 0 ?
-                                        <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label> : <label htmlFor="weight"> وزنه رقم{key + 2} </label>}
+                                  
+                                        <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label> 
                                 </div>
                                 <div className="weigh-data-input">
                                     <input name="date" type="text" />

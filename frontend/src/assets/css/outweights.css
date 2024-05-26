@@ -67,11 +67,25 @@
 }
  input,select{
     width: 300px;
-    border-radius: 15px;
-    padding: 5px;
-    border:0;
+    border-radius: 7px;
+    padding: 13px;
+    border:none;
     box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.20);
+    margin: 10px;
+outline: none;
+}
 
+input:hover{
+    border: 2px solid greenyellow;
+}
+input:focus{
+    border: 2px solid greenyellow;
+}
+select:hover{
+    border: 2px solid greenyellow;
+}
+select:focus{
+    border: 2px solid greenyellow;
 }
 
 .car-data-holder, .driver-data-holder{
