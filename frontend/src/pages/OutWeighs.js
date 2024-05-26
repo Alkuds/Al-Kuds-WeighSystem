@@ -193,28 +193,28 @@ const OutWeighs = () => {
         console.log(ironWeightArr.length, ironWeightArr)
         console.log(ironRadiusArr)
         console.log(ironTypeArr)
-        // if (selectedCarNumber == null || selectedClientAddress == null || selectedClientName == null
-        //     || selectedDriverMobile == null || selectedDriverName == null || selectedIron == null || selectedLorryNumber == null
-        //     || selectedRadius == null
-        // ) {
-        //     window.alert("برجاء ادخال البيانات كامله")
-        //     console.log("heeree")
-        //     return
-        // }
-        // for (let i of ironWeightArr) {
-        //     if (i === 0) {
-        //         window.alert("برجاء ادخال البيانات كامله")
-        //         console.log("heeree 1")
-        //         return
-        //     }
-        // }
-        // for (let i in ironRadiusArr) {
-        //     if (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0) {
-        //         window.alert("برجاء ادخال البيانات كامله")
-        //         console.log("heeree 3")
-        //         return
-        //     }
-        // }
+        if (selectedCarNumber == null || selectedClientAddress == null || selectedClientName == null
+            || selectedDriverMobile == null || selectedDriverName == null || selectedIron == null || selectedLorryNumber == null
+            || selectedRadius == null
+        ) {
+            window.alert("برجاء ادخال البيانات كامله")
+            console.log("heeree")
+            return
+        }
+        for (let i of ironWeightArr) {
+            if (i === 0) {
+                window.alert("برجاء ادخال البيانات كامله")
+                console.log("heeree 1")
+                return
+            }
+        }
+        for (let i in ironRadiusArr) {
+            if (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0) {
+                window.alert("برجاء ادخال البيانات كامله")
+                console.log("heeree 3")
+                return
+            }
+        }
 
     }
 

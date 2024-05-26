@@ -150,6 +150,7 @@ label{
 .remove{
     background-color: red;
     color: white;
+    margin: 30px auto;
 }
 .remove:hover{
     color: black;
