@@ -4,9 +4,9 @@ const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
     const [ironArr, setIronArr] = useState([1]);
-    const [ironWeightArr, setIronWeightArr] = useState([0, 0])
-    const [ironTime, setIronTime] = useState([0, 0])
-    const [ironDate, setIronDate] = useState([0, 0])
+    const [ironWeightArr, setIronWeightArr] = useState([0])
+    const [ironTime, setIronTime] = useState([0])
+    const [ironDate, setIronDate] = useState([0])
     const [ironTypeArr, setIronTypeArr] = useState([0])
     const [ironRadiusArr, setIronRadiusArr] = useState([0])
     const [selectedClientName, setSelectedClientName] = useState(null)
@@ -139,13 +139,13 @@ const OutWeighs = () => {
         if (response.ok) {
             console.log(json.weight, idx)
             let dummyArr = ironWeightArr
-            dummyArr[idx - 1] = json.weight
+            dummyArr[idx ] = json.weight
             setIronWeightArr(dummyArr);
             let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
             let dateArr = d.split(',');
             let dateDummyArr = ironDate, timeDummyArr = ironTime
-            dateDummyArr[idx - 1] = dateArr[0]
-            timeDummyArr[idx - 1] = dateArr[1]
+            dateDummyArr[idx ] = dateArr[0]
+            timeDummyArr[idx ] = dateArr[1]
             setIronDate(dateDummyArr)
             setIronTime(timeDummyArr)
             setIsLoading(false)
@@ -209,10 +209,10 @@ const OutWeighs = () => {
             }
         }
         for (let i in ironRadiusArr) {
-            if (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0) {
+            if (i>0 && (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0)) {
                 window.alert("برجاء ادخال البيانات كامله")
                 console.log("heeree 3")
-                return
+                return 
             }
         }
 
@@ -321,20 +321,20 @@ const OutWeighs = () => {
                             }
                             <div className="first-weigh">
                                 <div className="weigh-data-input">
-                                    <input name="weight" type="text" value={key === 0 ? ironWeightArr[key] : ironWeightArr[key + 1]} readOnly />
+                                    <input name="weight" type="text" value={ ironWeightArr[key] } readOnly />
 
                                     <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label>
                                 </div>
                                 <div className="weigh-data-input">
-                                    <input name="date" type="text" value={key === 0 ? ironDate[key] : ironDate[key + 1]} readOnly />
+                                    <input name="date" type="text" value={ ironDate[key]} readOnly />
                                     <label htmlFor="date"> التاريخ </label>
                                 </div>
                                 <div className="weigh-data-input">
-                                    <input name="time" type="text" value={key === 0 ? ironTime[key] : ironTime[key + 1]} readOnly />
+                                    <input name="time" type="text" value={ ironTime[key]} readOnly />
                                     <label htmlFor="time"> التوقت </label>
                                 </div>
 
-                                <button onClick={e => { key === 0 ? handleScaleWeight(key + 1) : handleScaleWeight(key + 2) }} className="iron-btn"> تحميل الوزن </button>
+                                <button onClick={e => { handleScaleWeight(key) }} className="iron-btn"> تحميل الوزن </button>
                             </div>
                             {key !== 0 && <div style={{ 'width': '100%' }}>
                                 <button onClick={handleRemoveAdditionalWeigh} className="iron-btn remove"> ازاله </button>
