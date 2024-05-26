@@ -137,3 +137,20 @@ label{
     color: white;
     margin: 30px auto;
 }
+
+.loadingDiv{
+    text-align: center;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 35px;
+}
+
+.remove{
+    background-color: red;
+    color: white;
+}
+.remove:hover{
+    color: black;
+}

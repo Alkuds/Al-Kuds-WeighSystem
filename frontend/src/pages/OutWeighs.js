@@ -4,17 +4,23 @@ const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
     const [ironArr, setIronArr] = useState([1]);
-    const [selectedClientName, setSelectedClientName] = useState()
-    const [selectedClientAddress, setSelectedClientAddress] = useState()
-    const [selectedDriverName, setSelectedDriverName] = useState()
-    const [selectedDriverMobile, setSelectedDriverMobile] = useState()
-    const [selectedCarNumber, setSelectedCarNumber] = useState()
-    const [selectedLorryNumber, setSelectedLorryNumber] = useState()
-    const [selectedIron, setSelectedIron] = useState()
-    const [selectedRadius, setSelectedRadius] = useState()
+    const [ironWeightArr, setIronWeightArr] = useState([0, 0])
+    const [ironTime, setIronTime] = useState([0, 0])
+    const [ironDate, setIronDate] = useState([0, 0])
+    const [ironTypeArr, setIronTypeArr] = useState([0])
+    const [ironRadiusArr, setIronRadiusArr] = useState([0])
+    const [selectedClientName, setSelectedClientName] = useState(null)
+    const [selectedClientAddress, setSelectedClientAddress] = useState(null)
+    const [selectedDriverName, setSelectedDriverName] = useState(null)
+    const [selectedDriverMobile, setSelectedDriverMobile] = useState(null)
+    const [selectedCarNumber, setSelectedCarNumber] = useState(null)
+    const [selectedLorryNumber, setSelectedLorryNumber] = useState(null)
+    const [selectedIron, setSelectedIron] = useState(null)
+    const [selectedRadius, setSelectedRadius] = useState(null)
     const [carInfo, setCarInfo] = useState([])
     const [clientsInfo, setClientsInfo] = useState([])
     const [ironInfo, setIronInfo] = useState([])
+    const [isLoading, setIsLoading] = useState(false);
     const [driverInfo, setDriverInfo] = useState([])
     useEffect(() => {
         const getCarInfo = async () => {
@@ -57,7 +63,6 @@ const OutWeighs = () => {
 
             )
             const json = await response.json()
-            console.log(json)
             setClientsInfo(json);
         }
         const getIronStorage = async () => {
@@ -78,33 +83,133 @@ const OutWeighs = () => {
         getDriverInfo()
         getClientsInfo()
         getIronStorage()
-    }, [ironArr, selectedCarNumber, selectedClientAddress, selectedClientName, selectedDriverMobile, selectedDriverName, selectedIron, selectedLorryNumber, selectedRadius])
+
+        // const unloadCallBack = (e) => {
+        //     e.preventDefault();
+        //     e.returnValue = "هل تري تحميل الصفحه من جديد؟"
+        //     return "";
+        // }
+        // window.addEventListener("beforeunload", unloadCallBack)
+        // return () => window.removeEventListener("beforeunload", unloadCallBack)
+    }, [ironRadiusArr, ironTypeArr,ironWeightArr, ironArr, selectedCarNumber, selectedClientAddress, selectedClientName, selectedDriverMobile, selectedDriverName, selectedIron, selectedLorryNumber, selectedRadius])
 
     const handleAddress = (name) => {
         console.log(clientsInfo)
+        setSelectedClientName(name);
         for (const i of clientsInfo) {
             console.log(i)
             if (i.name == name) {
                 setSelectedClientAddress(i.address);
+                break;
             }
         }
     }
 
     const handleDriverNumber = (name) => {
+        setSelectedDriverName(name);
         for (const i of driverInfo) {
             if (i.name == name) {
                 setSelectedDriverMobile(i.mobile);
+                break;
             }
         }
     }
 
     const handleLorry = (number) => {
+        setSelectedCarNumber(number)
         for (const i of carInfo) {
             if (i.number == number) {
                 setSelectedLorryNumber(i.lorryNumber);
+                break;
             }
         }
     }
+
+    const handleScaleWeight = async (idx) => {
+        setIsLoading(true);
+        const response = await fetch('http://localhost:7000/irons/getScaleWeight',
+            {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        const json = await response.json()
+        if (response.ok) {
+            console.log(json.weight, idx)
+            let dummyArr = ironWeightArr
+            dummyArr[idx - 1] = json.weight
+            setIronWeightArr(dummyArr);
+            let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
+            let dateArr = d.split(',');
+            let dateDummyArr = ironDate, timeDummyArr = ironTime
+            dateDummyArr[idx - 1] = dateArr[0]
+            timeDummyArr[idx - 1] = dateArr[1]
+            setIronDate(dateDummyArr)
+            setIronTime(timeDummyArr)
+            setIsLoading(false)
+        }
+    }
+
+    const handleIronAdd = () => {
+        setIronArr([...ironArr, 1])
+        setIronWeightArr([...ironWeightArr, 0]);
+        setIronRadiusArr([...ironRadiusArr, 0])
+        setIronTypeArr([...ironTypeArr, 0])
+    }
+
+    const handleRaduisChange = (idx, radius) => {
+        setSelectedRadius(radius)
+        let dummyArr = ironRadiusArr
+        dummyArr[idx] = radius
+        setIronRadiusArr(dummyArr);
+    }
+
+    const handleIronTypeChange = (idx, type) => {
+        setSelectedIron(type)
+        let dummyArr = ironTypeArr
+        dummyArr[idx] = type
+        setIronTypeArr(dummyArr);
+    }
+
+    const handleRemoveAdditionalWeigh = () => {
+        console.log(ironWeightArr.length,ironWeightArr)
+        setIronArr([...ironArr.splice(-1)])
+        setIronRadiusArr([...ironRadiusArr.splice(-1)])
+        setIronTypeArr([...ironTypeArr.splice(-1)])
+        setIronWeightArr([...ironWeightArr.splice(-1)])
+    }
+
+    const handlePrint = () => {
+        console.log(ironWeightArr.length, ironWeightArr)
+        console.log(ironRadiusArr)
+        console.log(ironTypeArr)
+        if (selectedCarNumber == null || selectedClientAddress == null || selectedClientName == null
+            || selectedDriverMobile == null || selectedDriverName == null || selectedIron == null || selectedLorryNumber == null
+            || selectedRadius == null
+        ) {
+            window.alert("برجاء ادخال البيانات كامله")
+            console.log("heeree")
+            return
+        }
+        for (let i of ironWeightArr) {
+            if (i === 0) {
+                window.alert("برجاء ادخال البيانات كامله")
+                console.log("heeree 1")
+                return
+            }
+        }
+        for (let i in ironRadiusArr) {
+            if (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0) {
+                window.alert("برجاء ادخال البيانات كامله")
+                console.log("heeree 3")
+                return
+            }
+        }
+
+    }
+
 
     return (
         <>
@@ -173,22 +278,24 @@ const OutWeighs = () => {
                     </div>
                 </div>
             </div>
-            <button className="iron-btn add-btn" onClick={e => { setIronArr([...ironArr, 1]) }}> اضافه وزنه </button>
+            <button className="iron-btn add-btn" onClick={handleIronAdd}> اضافه وزنه </button>
             <div className="iron-input">
                 {
-                    ironArr.map((i, key) => (
+                    isLoading ? <div className="loadingDiv" > ...تحميل الوزن </div> : ironArr.map((i, key) => (
                         <div key={key} className="section-content">
                             <div className="weigh-data-holder" style={{ "width": "100%" }}>
                                 <div className="weigh-data-input">
-                                    <select>
+                                    <select value={ironRadiusArr[key]} onChange={e => handleRaduisChange(key, e.target.value)} >
+                                        <option>اختر قطر</option>
                                         <option>8</option>
                                         <option>6</option>
                                         <option>10</option>
                                     </select>
                                     <label htmlFor="clientname"> القطر</label>
                                 </div>
+
                                 <div className="weigh-data-input">
-                                    <select onChange={e => setSelectedIron(e.target.value)}>
+                                    <select value={ironTypeArr[key]} onChange={e => handleIronTypeChange(key, e.target.value)} >
                                         <option> اختر نوع</option>
                                         {
                                             ironInfo.map((i, idx) => (
@@ -199,40 +306,47 @@ const OutWeighs = () => {
                                     <label htmlFor="clientname"> نوع الحديد </label>
                                 </div>
                             </div>
-                            {key == 0 && <div className="second-weigh">
-                                <div className="weigh-data-input">
-                                    <input name="address" type="text" />
-                                    <label htmlFor="weight"> وزنه رقم &nbsp;{key + 2} </label>
+                            {key == 0 &&
+                                <div className="second-weigh">
+                                    <div className="weigh-data-input">
+                                        <input name="weight" type="text" value={ironWeightArr[1]} readOnly />
+                                        <label htmlFor="weight"> وزنه رقم &nbsp;{key + 2} </label>
+                                    </div>
+                                    <div className="weigh-data-input">
+                                        <input name="date" type="text" value={ironDate[1]} readOnly />
+                                        <label htmlFor="date"> التاريخ </label>
+                                    </div>
+                                    <div className="weigh-data-input">
+                                        <input name="time" type="text" value={ironTime[1]} readOnly />
+                                        <label htmlFor="time"> التوقت </label>
+                                    </div>
+                                    <button onClick={e => handleScaleWeight(key + 2)} className="iron-btn"> تحميل الوزن </button>
                                 </div>
-                                <div className="weigh-data-input">
-                                    <input name="date" type="text" />
-                                    <label htmlFor="date"> التاريخ </label>
-                                </div>
-                                <div className="weigh-data-input">
-                                    <input name="time" type="text" />
-                                    <label htmlFor="time"> التوقت </label>
-                                </div>
-                                <button className="iron-btn"> تحميل الوزن </button>
-                            </div>}
+                            }
                             <div className="first-weigh">
                                 <div className="weigh-data-input">
-                                    <input name="address" type="text" />
+                                    <input name="weight" type="text" value={key === 0 ? ironWeightArr[key] : ironWeightArr[key + 1]} readOnly />
                                     {key === 0 ?
                                         <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label> : <label htmlFor="weight"> وزنه رقم{key + 2} </label>}
                                 </div>
                                 <div className="weigh-data-input">
-                                    <input name="date" type="text" />
+                                    <input name="date" type="text" value={key === 0 ? ironDate[key] : ironDate[key + 1]} readOnly />
                                     <label htmlFor="date"> التاريخ </label>
                                 </div>
                                 <div className="weigh-data-input">
-                                    <input name="time" type="text" />
+                                    <input name="time" type="text" value={key === 0 ? ironTime[key] : ironTime[key + 1]} readOnly />
                                     <label htmlFor="time"> التوقت </label>
                                 </div>
-                                <button className="iron-btn"> تحميل الوزن </button>
+
+                                <button onClick={e => { key === 0 ? handleScaleWeight(key + 1) : handleScaleWeight(key + 2) }} className="iron-btn"> تحميل الوزن </button>
                             </div>
+                            {key !== 0 && <div style={{ 'width': '100%' }}>
+                                <button onClick={handleRemoveAdditionalWeigh} className="iron-btn remove"> ازاله </button>
+                            </div>}
                         </div>
                     ))
                 }
+                <button onClick={handlePrint} className="iron-btn"> طباعه</button>
             </div>
         </>
     )

@@ -25,6 +25,10 @@ const getIronStorage = (req,res)=>{
     res.json(db);
 }
 
+const getScaleWeight = (req,res)=>{
+    res.json({"weight":1000005})
+}
+
 const changeIronWeight = (req,res)=>{
 
 }
@@ -34,5 +38,6 @@ module.exports = {
     addIron,
     addIronWeight,
     subtractIronWeight,
-    changeIronWeight
+    changeIronWeight,
+    getScaleWeight
 }
