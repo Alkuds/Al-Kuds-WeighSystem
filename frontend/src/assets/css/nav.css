@@ -1,3 +1,7 @@
+@font-face {
+    font-family: cairo;
+    src: url('../fonts/static/Cairo-Bold.ttf');
+}
 .nav{
     display: flex;
     flex-direction: column;
