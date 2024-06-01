@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import truck from '../assets/images/truck.png';
-const InWeighs = () => {
+import Swal from 'sweetalert2'
+const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
     const [ironArr, setIronArr] = useState([1]);
@@ -22,6 +23,7 @@ const InWeighs = () => {
     const [ironInfo, setIronInfo] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [driverInfo, setDriverInfo] = useState([])
+    const [driverName, setDriverName] = useState();
     useEffect(() => {
         const getCarInfo = async () => {
             const response = await fetch('http://localhost:7000/car/getCarInfo',
@@ -110,6 +112,7 @@ const InWeighs = () => {
         for (const i of driverInfo) {
             if (i.name == name) {
                 setSelectedDriverMobile(i.mobile);
+                setDriverName(i.name);
                 break;
             }
         }
@@ -138,14 +141,22 @@ const InWeighs = () => {
         const json = await response.json()
         if (response.ok) {
             console.log(json.weight, idx)
-            let dummyArr = ironWeightArr
-            dummyArr[idx ] = json.weight
-            setIronWeightArr(dummyArr);
+            if (idx == 0) {
+                let dummyArr = ironWeightArr
+                dummyArr[idx] = 100000
+
+                setIronWeightArr(dummyArr);
+            } else {
+                let dummyArr = ironWeightArr
+                dummyArr[idx] = json.weight
+
+                setIronWeightArr(dummyArr);
+            }
             let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
             let dateArr = d.split(',');
             let dateDummyArr = ironDate, timeDummyArr = ironTime
-            dateDummyArr[idx ] = dateArr[0]
-            timeDummyArr[idx ] = dateArr[1]
+            dateDummyArr[idx] = dateArr[0]
+            timeDummyArr[idx] = dateArr[1]
             setIronDate(dateDummyArr)
             setIronTime(timeDummyArr)
             setIsLoading(false)
@@ -190,9 +201,9 @@ const InWeighs = () => {
     }
 
     const handlePrint = () => {
-        console.log(ironWeightArr.length, ironWeightArr)
         console.log(ironRadiusArr)
         console.log(ironTypeArr)
+
         if (selectedCarNumber == null || selectedClientAddress == null || selectedClientName == null
             || selectedDriverMobile == null || selectedDriverName == null || selectedIron == null || selectedLorryNumber == null
             || selectedRadius == null
@@ -209,13 +220,59 @@ const InWeighs = () => {
             }
         }
         for (let i in ironRadiusArr) {
-            if (i>0 && (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0)) {
+            if (i > 0 && (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0)) {
                 window.alert("برجاء ادخال البيانات كامله")
                 console.log("heeree 3")
                 return
             }
         }
+        handleProduceTicket();
 
+
+    }
+    const handleProduceTicket = async () => {
+        let type = "in"
+        let clientName = selectedClientName;
+        let clientAddress = selectedClientAddress;
+        let driverName = selectedDriverName;
+        let carNumber = selectedCarNumber;
+        let lorryNumber = selectedLorryNumber;
+        let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
+        let dateArr = d.split(',');
+        let date = dateArr[0];
+        let weightBefore = ironWeightArr[0];
+        let reciept = [];
+        console.log(ironWeightArr);
+        for (let i = 1; i < ironArr.length; i++) {
+            console.log("looooping");
+            let ironName = ironTypeArr[i];
+            let radius = ironRadiusArr[i];
+            let weightAfter = ironWeightArr[i];
+            let weight = weightAfter;
+            for (let j = i - 1; j >= 0; j--) {
+                weight -= ironWeightArr[j];
+            }
+            let singleReciept = { ironName, radius, weightAfter, weight };
+            reciept.push(singleReciept);
+
+        }
+        let ticket = { type, clientName, clientAddress, driverName, carNumber, lorryNumber, date, weightBefore, reciept }
+        const response = await fetch("http://localhost:7000/ticket/addTicket", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(ticket),
+
+        })
+        if (response.ok) {
+            Swal.fire({
+                title: "Done ",
+                text: "printed succefully",
+                icon: "success",
+                confirmButtonText: "OK",
+            })
+        }
     }
 
 
@@ -224,7 +281,7 @@ const InWeighs = () => {
             <div className="client-details">
                 <div className="operate-type">
 
-                    <h1>داخل</h1>
+                    <h1 >داخل</h1>
                 </div>
                 <div className="client-data">
                     <h2 style={{ textAlign: "center" }}>
@@ -321,16 +378,16 @@ const InWeighs = () => {
                             }
                             <div className="first-weigh">
                                 <div className="weigh-data-input">
-                                    <input name="weight" type="text" value={ ironWeightArr[key] } readOnly />
+                                    <input name="weight" type="text" value={ironWeightArr[key]} readOnly />
 
                                     <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label>
                                 </div>
                                 <div className="weigh-data-input">
-                                    <input name="date" type="text" value={ ironDate[key]} readOnly />
+                                    <input name="date" type="text" value={ironDate[key]} readOnly />
                                     <label htmlFor="date"> التاريخ </label>
                                 </div>
                                 <div className="weigh-data-input">
-                                    <input name="time" type="text" value={ ironTime[key]} readOnly />
+                                    <input name="time" type="text" value={ironTime[key]} readOnly />
                                     <label htmlFor="time"> التوقت </label>
                                 </div>
 
@@ -348,4 +405,4 @@ const InWeighs = () => {
     )
 }
 
-export default InWeighs;
+export default OutWeighs;
