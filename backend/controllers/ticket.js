@@ -15,12 +15,20 @@ const addTicket = (req, res) => {
         iron.map((dataBaseIronel) => {
             if (requestBody.type == "in") {
                 if (dataBaseIronel.name == el.ironName) {
-                    dataBaseIronel.weight += el.weight;
+                    dataBaseIronel.props.map((prop) => {
+                        if (prop.radius == el.radius) {
+                            prop.weight += el.weight;
+                        }
+                    })
                 }
             }
             if (requestBody.type == "out") {
                 if (dataBaseIronel.name == el.ironName) {
-                    dataBaseIronel.weight -= el.weight;
+                    dataBaseIronel.props.map((prop) => {
+                        if (prop.radius == el.radius) {
+                            prop.weight -= el.weight;
+                        }
+                    })
                 }
             }
         })
