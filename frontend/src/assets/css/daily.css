@@ -1,0 +1,46 @@
+.daily-table-holder{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.daily-table-holder table{
+    min-height: 100vh;
+    border-collapse: collapse;
+    border: 2px solid rgb(140,140,140);
+    font-family: cairo;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-align: right;
+}
+
+.daily-table-holder thead,tfoot{
+    background-color: rgb(228,240,245);
+}
+
+.daily-table-holder td,th{
+    border: 1px solid rgb(160,160,160);
+    padding: 8px 10px;
+}
+
+.daily-table-holder td:last-of-type{
+    text-align: center;
+}
+
+.daily-table-holder tfoot, th{
+    text-align: right;
+}
+
+.daily-table-holder tfoot,td{
+    font-weight: bold;
+}
+
+.daily-table-holder tr{
+    height: 10px;
+}
+
+@media print{
+    .daily-table-holder table{
+        min-height: auto;
+    }
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import truck from '../assets/images/truck.png';
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 import kuds from '../assets/images/kuds.png';
 import kudsPrint from '../assets/images/kuds-print.png'
 import qr from '../assets/images/qr.png'
@@ -329,12 +329,12 @@ const OutWeighs = () => {
 
         })
         if (response.ok) {
-            Swal.fire({
-                title: "Done ",
-                text: "printed succefully",
-                icon: "success",
-                confirmButtonText: "OK",
-            })
+            // Swal.fire({
+            //     title: "Done ",
+            //     text: "printed succefully",
+            //     icon: "success",
+            //     confirmButtonText: "OK",
+            // })
         }
     }
     //48 منطقه كمائن الجير خلف طريق العين السخنه
