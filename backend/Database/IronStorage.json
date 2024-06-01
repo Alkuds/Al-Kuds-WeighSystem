@@ -1,32 +1,104 @@
 [
     {
         "name": "Hadeed1",
-        "weight": 207115,
-        "raduis": 8
+        "props": [
+            {
+                "weight": 68705,
+                "radius": 6
+            },
+            {
+                "weight": -100000,
+                "radius": 8
+            },
+            {
+                "weight": -268705,
+                "radius": 10
+            }
+        ]
     },
     {
         "name": "Hadeed7",
-        "weight": 1500,
-        "raduis": 8
+        "props": [
+            {
+                "weight": 206135,
+                "radius": 6
+            },
+            {
+                "weight": -99980,
+                "radius": 8
+            },
+            {
+                "weight": 20,
+                "radius": 10
+            }
+        ]
     },
     {
         "name": "Hadeed2",
-        "weight": -98956,
-        "raduis": 10
+        "props": [
+            {
+                "weight": 207115,
+                "radius": 6
+            },
+            {
+                "weight": 207115,
+                "radius": 8
+            },
+            {
+                "weight": 207115,
+                "radius": 10
+            }
+        ]
     },
     {
         "name": "Hadeed3",
-        "weight": 100240,
-        "raduis": 12
+        "props": [
+            {
+                "weight": 207115,
+                "radius": 6
+            },
+            {
+                "weight": 207115,
+                "radius": 8
+            },
+            {
+                "weight": 207115,
+                "radius": 10
+            }
+        ]
     },
     {
         "name": "Hadeed4",
-        "weight": -67616,
-        "raduis": 14
+        "props": [
+            {
+                "weight": 207115,
+                "radius": 6
+            },
+            {
+                "weight": 207115,
+                "radius": 8
+            },
+            {
+                "weight": 207115,
+                "radius": 10
+            }
+        ]
     },
     {
         "name": "haded90",
-        "weight": -222853,
-        "radius": 8
+        "props": [
+            {
+                "weight": 207115,
+                "radius": 6
+            },
+            {
+                "weight": 207115,
+                "radius": 8
+            },
+            {
+                "weight": 207115,
+                "radius": 10
+            }
+        ]
     }
 ]
