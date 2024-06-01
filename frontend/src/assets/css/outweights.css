@@ -1,8 +1,14 @@
-.iron-input{
+@font-face {
+    font-family: cairo;
+    src: url('../fonts/static/Cairo-Bold.ttf');
+}
+
+.iron-input {
     overflow-y: auto;
     text-align: right;
 }
-.section-content{
+
+.section-content {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -10,12 +16,15 @@
     text-align: right;
     flex-wrap: wrap;
 }
-.first-weigh ,.second-weigh{
+
+.first-weigh,
+.second-weigh {
     margin: 20px 0;
     width: 49%;
     text-align: right;
 }
-.client-details{
+
+.client-details {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -23,39 +32,49 @@
     justify-content: center;
     flex-wrap: wrap;
 }
-.client-data, .client-holder, .driver-data{
+
+.client-data,
+.client-holder,
+.driver-data {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
 }
-.client-data{
+
+.client-data {
     width: 100%;
 
 }
-.driver-data{
+
+.driver-data {
     width: 100%;
 }
-.client-holder{
+
+.client-holder {
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: stretch;
 }
-.driver-holder{
+
+.driver-holder {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
 }
-.driver-holder label{
+
+.driver-holder label {
     width: 35%;
 }
-.client-data .data-input{
+
+.client-data .data-input {
     flex-direction: column;
 }
-.data-input{
+
+.data-input {
     flex-grow: 1;
     display: flex;
     flex-direction: row;
@@ -65,45 +84,53 @@
     margin: 5px 0;
     width: 100%;
 }
- input,select{
+
+input,
+select {
     width: 300px;
     border-radius: 7px;
     padding: 13px;
-    border:none;
+    border: none;
     box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.20);
     margin: 10px;
-outline: none;
+    outline: none;
 }
 
-input:hover{
-    border: 2px solid greenyellow;
-}
-input:focus{
-    border: 2px solid greenyellow;
-}
-select:hover{
-    border: 2px solid greenyellow;
-}
-select:focus{
+input:hover {
     border: 2px solid greenyellow;
 }
 
-.car-data-holder, .driver-data-holder{
+input:focus {
+    border: 2px solid greenyellow;
+}
+
+select:hover {
+    border: 2px solid greenyellow;
+}
+
+select:focus {
+    border: 2px solid greenyellow;
+}
+
+.car-data-holder,
+.driver-data-holder {
     display: flex;
     width: 100%;
     flex-direction: row;
     align-items: stretch;
 }
 
-label{
+label {
     margin-bottom: 10px;
 }
-.weigh-data-holder{
+
+.weigh-data-holder {
     display: flex;
     flex-direction: row;
     align-items: stretch;
 }
-.vertical-spacer{
+
+.vertical-spacer {
     height: 2px;
     opacity: 0.5;
     width: 80%;
@@ -111,7 +138,8 @@ label{
     border-radius: 50px;
     margin: 5px auto;
 }
-.weigh-data-input{
+
+.weigh-data-input {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -120,16 +148,17 @@ label{
     flex-grow: 1;
 }
 
-.weigh-data-input label{
+.weigh-data-input label {
     width: 17%;
 }
 
-.first-weigh, .second-weigh{
+.first-weigh,
+.second-weigh {
     display: flex;
     flex-direction: column;
 }
 
-.iron-btn{
+.iron-btn {
     margin: 0 auto;
     margin-top: 15px;
     width: 60%;
@@ -143,16 +172,17 @@ label{
     display: block;
 }
 
-.iron-btn:hover{
+.iron-btn:hover {
     background-color: greenyellow;
 }
-.add-btn{
+
+.add-btn {
     background-color: black;
     color: white;
     margin: 30px auto;
 }
 
-.loadingDiv{
+.loadingDiv {
     text-align: center;
     height: 180px;
     display: flex;
@@ -161,11 +191,161 @@ label{
     font-size: 35px;
 }
 
-.remove{
+.remove {
     background-color: red;
     color: white;
     margin: 30px auto;
 }
-.remove:hover{
+
+.remove:hover {
     color: black;
+}
+
+.horizontal-line {
+    height: 1px;
+    margin: 5px 0;
+    opacity: 0.3;
+    background-color: black;
+    border-radius: 50px;
+    width: 80%;
+}
+
+.print-content{
+    display: none;
+}
+
+@media print {
+    .client-details {
+        display: none;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .background {
+        background: white;
+    }
+
+    .container {
+        min-height: 100vh;
+        width: 100%;
+        background: white;
+    }
+
+    .main-content {
+        width: 100%;
+        min-height: 100vh;
+        background: white;
+    }
+
+    .iron-btn, .iron-input{
+        display: none;
+    }
+
+
+    .print-content {
+        min-height: 100vh;
+        font-size: 10px;
+        font-family: "Cairo", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background-image: url("../images/kuds-watermark.png");
+        background-color: rgba(255, 255, 255, 0.9);
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+        color: black;
+    }
+    
+    
+    
+    .print-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .print-header h1 {
+        margin: 0;
+    
+        font-size: 40px;
+    }
+    
+    .header-img-holder {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    
+    .print-content p {
+        margin: 2px 0;
+    }
+    
+    .client-print-data {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        text-align: right;
+        font-size: 15px;
+    }
+    
+    .static-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: right;
+        margin: 10px 0;
+    }
+    
+    .static-data-holder {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 150px;
+    }
+    
+    /* .static-info p{
+    width: 80%;
+    } */
+    /* 
+    .static-info p span:nth-child(2){
+    display: inline-block;
+    width: 20%;
+    }
+    
+    .static-info p span:nth-child(1){
+    display: inline-block;
+    width: 70%;
+    } */
+    
+    .generated-iron-block {
+        width: 100%;
+    }
+    
+    
+    
+    .total-weight {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .type-date-holder{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }

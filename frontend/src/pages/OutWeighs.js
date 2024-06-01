@@ -1,6 +1,68 @@
 import { useEffect, useState } from "react";
 import truck from '../assets/images/truck.png';
 import Swal from 'sweetalert2'
+import kuds from '../assets/images/kuds.png';
+import kudsPrint from '../assets/images/kuds-print.png'
+import qr from '../assets/images/qr.png'
+const Receipt = ({ ironArr, ironRadiusArr, ironTypeArr, ironWeightArr }) => {
+    let j = 1;
+    console.log(ironWeightArr)
+    let arr = [], totalWeight = ironWeightArr[ironWeightArr.length - 1] - ironWeightArr[0];
+    for (let idx = 0; idx < ironArr.length - 1; idx++) {
+
+        arr.push(
+            <div className="generated-iron-block">
+                <div className="client-print-data">
+                    <p>
+                        <span>
+                            قطر:
+                        </span>
+                        &nbsp;
+                        <span>
+                            {ironRadiusArr[j]}
+                        </span>
+                    </p>
+                </div>
+                <div className="client-print-data">
+                    <div>
+                        <p>
+                            <span>وزنه {idx + 2} :</span>
+                            <span> {ironWeightArr[idx + 1]} </span>
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            <span>  وزنه {idx + 1} :</span>
+                            &nbsp;
+                            <span> {ironWeightArr[idx]} </span>
+                        </p>
+                    </div>
+                </div>
+                <p className="total-weight">
+                    <span> صافي الوزنه:</span>
+                    <span> {ironWeightArr[idx + 1] - ironWeightArr[idx]} </span>
+                </p>
+            </div>
+        )
+        j++;
+    }
+
+    return (
+        arr.map((i, idx) => (
+            <>
+                {i}
+                <div className="horizontal-line"></div>
+                {idx === arr.length - 1 &&
+                    <p style={{ 'width': '66%', 'textAlign': 'left', 'fontSize': '15px' }}>
+                        <span>الوزن الصافي:</span>
+                        <span> {totalWeight} </span>
+                    </p>
+                }
+            </>
+        ))
+    )
+}
+
 const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
@@ -226,6 +288,7 @@ const OutWeighs = () => {
                 return
             }
         }
+        window.print()
         handleProduceTicket();
 
 
@@ -274,11 +337,91 @@ const OutWeighs = () => {
             })
         }
     }
-
+    //48 منطقه كمائن الجير خلف طريق العين السخنه
 
     return (
         <>
-            <div className="client-details">
+            <div className="print-content">
+                <div className="print-header">
+                    <div className="header-img-holder" >
+                        <img style={{ 'width': '40%' }} src={kudsPrint} />
+                        <span>01002112431</span>
+                        <span> 48 منطقه كمائن الجير خلف طريق العين السخنه </span>
+                    </div>
+                    <div className="type-date-holder">
+                        <h1> اذن استلام بضاعه </h1>
+                        <span> {new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })} </span>
+                    </div>
+                    <div>
+                        <img style={{ 'width': "50%" }} src={qr} />
+                    </div>
+                </div>
+                <div className="static-info">
+                    <div className="static-data-holder">
+
+                        <p>
+                            <span> {selectedClientName} </span>
+                            &nbsp;
+                            <span>: اسم العميل</span>
+                        </p>
+                        <p>
+                            <span>
+                                {selectedClientAddress}
+                            </span>
+                            &nbsp;
+                            <span>
+                                : عنوان العميل
+                            </span>
+                        </p>
+                    </div>
+                    <div className="static-data-holder">
+
+                        <p>
+                            <span>
+                                {selectedDriverName}
+                            </span>
+                            &nbsp;
+                            <span>
+                                : اسم السائق
+                            </span>
+                        </p>
+                        <p>
+                            <span> {selectedCarNumber} </span>
+                            &nbsp;
+                            <span>: رقم العربيه</span>
+                        </p>
+                        <p>
+                            <span> {selectedLorryNumber} </span>
+                            &nbsp;
+                            <span>: رقم المقطوره</span>
+                        </p>
+                    </div>
+                    <div className="static-data-holder">
+
+                        <p>
+                            __________________/المستلم
+                        </p>
+                        <p>
+                            __________________/ت.المستلم
+                        </p>
+                    </div>
+                </div>
+                <Receipt ironArr={ironArr} ironTypeArr={ironTypeArr} ironRadiusArr={ironRadiusArr} ironWeightArr={ironWeightArr} />
+                <p>
+                    انا الموقع ادناه استلمت البضاعه المبينه بعاليه بحاله جيده بصفه امانه لحين توريد ثمنها بإصال مستقل.
+                </p>
+                <p>
+                    اقرار استلام عميل
+                </p>
+                <p style={{ 'width': '100%' }}>
+                    ______________________/الاسم
+                </p>
+                <p style={{ 'width': '100%' }}>
+                    _____________________/التوقع
+                </p>
+
+            </div>
+            <div  className="client-details">
                 <div className="operate-type">
 
                     <h1 >خارج</h1>
@@ -347,8 +490,8 @@ const OutWeighs = () => {
                     </div>
                 </div>
             </div>
-            <button className="iron-btn add-btn" onClick={handleIronAdd}> اضافه وزنه </button>
-            <div className="iron-input">
+            <button  className="iron-btn add-btn" onClick={handleIronAdd}> اضافه وزنه </button>
+            <div  className="iron-input">
                 {
                     ironArr.map((i, key) => (
                         <div className="section-content">
@@ -401,6 +544,7 @@ const OutWeighs = () => {
                 }
                 <button onClick={handlePrint} className="iron-btn"> طباعه</button>
             </div>
+
         </>
     )
 }
