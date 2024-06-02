@@ -205,7 +205,7 @@ const OutWeighs = () => {
             console.log(json.weight, idx)
             if (idx == 0) {
                 let dummyArr = ironWeightArr
-                dummyArr[idx] = 100000
+                dummyArr[idx] = json.weight
 
                 setIronWeightArr(dummyArr);
             } else {
@@ -312,9 +312,10 @@ const OutWeighs = () => {
             let radius = ironRadiusArr[i];
             let weightAfter = ironWeightArr[i];
             let weight = weightAfter;
-            for (let j = i - 1; j >= 0; j--) {
-                weight -= ironWeightArr[j];
-            }
+            // for (let j = i - 1; j >= 0; j--) {
+            //     weight -= ironWeightArr[j];
+            // }
+            weight = ironWeightArr[i] - ironWeightArr[i-1];
             let singleReciept = { ironName, radius, weightAfter, weight };
             reciept.push(singleReciept);
 

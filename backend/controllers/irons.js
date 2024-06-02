@@ -26,7 +26,7 @@ const getIronStorage = (req,res)=>{
 }
 
 const getScaleWeight = (req,res)=>{
-    res.json({"weight":168705})
+    res.json({"weight":14000})
 }
 
 const changeIronWeight = (req,res)=>{
