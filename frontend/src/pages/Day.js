@@ -147,8 +147,8 @@ const Day = () => {
                 ton:parseInt(j.weight/1000),
                 kg: parseInt(kgSplit[1].padEnd(3,'0')),
                 raduis: j.radius,
-                field5: ".",
-                money:1233
+                field5: " ",
+                money:" "
               }
               inArr.push(obj)
             }

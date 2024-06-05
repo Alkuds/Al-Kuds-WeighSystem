@@ -357,9 +357,17 @@ const OutWeighs = () => {
                                 <div className="weigh-data-input">
                                     <select value={ironRadiusArr[key]} onChange={e => handleRaduisChange(key, e.target.value)} >
                                         <option>اختر قطر</option>
-                                        <option>8</option>
+                                        <option>4</option>
                                         <option>6</option>
+                                        <option>8</option>
                                         <option>10</option>
+                                        <option>12</option>
+                                        <option>14</option>
+                                        <option>16</option>
+                                        <option>18</option>
+                                        <option>20</option>
+                                        <option>22</option>
+                                        <option>25</option>
                                     </select>
                                     <label htmlFor="clientname"> القطر</label>
                                 </div>
