@@ -3,13 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
-// const corsOptions = {
-//     origin : '*' , 
-//     credential : true,
-//     'access-control-allow-credentials': true,
-//     optionSuccessStatus : 200 
-// }
-// app.use(cors(corsOptions));
 app.use(bodyParser.json()); // for JSON data
 app.use(bodyParser.urlencoded({ extended: true })); // for URL-encoded data
 
