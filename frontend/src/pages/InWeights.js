@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import truck from '../assets/images/truck.png';
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 const OutWeighs = () => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
@@ -266,12 +266,12 @@ const OutWeighs = () => {
 
         })
         if (response.ok) {
-            Swal.fire({
-                title: "Done ",
-                text: "printed succefully",
-                icon: "success",
-                confirmButtonText: "OK",
-            })
+            // Swal.fire({
+            //     title: "Done ",
+            //     text: "printed succefully",
+            //     icon: "success",
+            //     confirmButtonText: "OK",
+            // })
         }
     }
 
