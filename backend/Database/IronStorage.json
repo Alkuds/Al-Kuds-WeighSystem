@@ -3,16 +3,19 @@
         "name": "Hadeed1",
         "props": [
             {
-                "weight": 68705,
-                "radius": 6
+                "weight": -137410,
+                "radius": 6,
+                "date": "6/2/2024"
             },
             {
-                "weight": -100000,
-                "radius": 8
+                "weight": -168705,
+                "radius": 8,
+                "date": "6/2/2024"
             },
             {
                 "weight": -268705,
-                "radius": 10
+                "radius": 10,
+                "date": "5/2/2024"
             }
         ]
     },
@@ -21,15 +24,18 @@
         "props": [
             {
                 "weight": 206135,
-                "radius": 6
+                "radius": 6,
+                "date": "5/2/2024"
             },
             {
                 "weight": -99980,
-                "radius": 8
+                "radius": 8,
+                "date": "5/2/2024"
             },
             {
-                "weight": 20,
-                "radius": 10
+                "weight": 68725,
+                "radius": 10,
+                "date": "6/2/2024"
             }
         ]
     },
@@ -38,15 +44,18 @@
         "props": [
             {
                 "weight": 207115,
-                "radius": 6
+                "radius": 6,
+                "date": "6/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 8
+                "radius": 8,
+                "date": "5/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 10
+                "radius": 10,
+                "date": "5/2/2024"
             }
         ]
     },
@@ -55,15 +64,18 @@
         "props": [
             {
                 "weight": 207115,
-                "radius": 6
+                "radius": 6,
+                "date": "5/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 8
+                "radius": 8,
+                "date": "5/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 10
+                "radius": 10,
+                "date": "5/2/2024"
             }
         ]
     },
@@ -72,15 +84,18 @@
         "props": [
             {
                 "weight": 207115,
-                "radius": 6
+                "radius": 6,
+                "date": "5/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 8
+                "radius": 8,
+                "date": "5/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 10
+                "radius": 10,
+                "date": "5/2/2024"
             }
         ]
     },
@@ -88,16 +103,19 @@
         "name": "haded90",
         "props": [
             {
-                "weight": 207115,
-                "radius": 6
+                "weight": 138410,
+                "radius": 6,
+                "date": "6/2/2024"
             },
             {
                 "weight": 207115,
-                "radius": 8
+                "radius": 8,
+                "date": "5/2/2024"
             },
             {
-                "weight": 207115,
-                "radius": 10
+                "weight": 138410,
+                "radius": 10,
+                "date": "6/2/2024"
             }
         ]
     }

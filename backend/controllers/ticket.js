@@ -11,6 +11,7 @@ const addTicket = (req, res) => {
     data.push(requestBody);
     updateDatabaseByName('Tickets', JSON.stringify(data));
     let iron = getDatabaseByName('IronStorage');
+    let todayDate = requestBody.date;
     requestBody.reciept.map((el) => {
         iron.map((dataBaseIronel) => {
             if (requestBody.type == "in") {
@@ -18,6 +19,7 @@ const addTicket = (req, res) => {
                     dataBaseIronel.props.map((prop) => {
                         if (prop.radius == el.radius) {
                             prop.weight += el.weight;
+                            prop.date = todayDate;
                         }
                     })
                 }
@@ -27,6 +29,8 @@ const addTicket = (req, res) => {
                     dataBaseIronel.props.map((prop) => {
                         if (prop.radius == el.radius) {
                             prop.weight -= el.weight;
+                            prop.date = todayDate;
+
                         }
                     })
                 }
