@@ -1,14 +1,25 @@
-const { getDatabaseByName } = require("./databaseController");
+const { getDatabaseByName, updateDatabaseByName } = require("./databaseController");
 
 const getClientsInfo = (req , res) => {
     let db = getDatabaseByName('Clients');
     res.json(db);
 
 }
-const postClientsInfo = (req , res) => {
-    res.json( {
-        clients : "info"
-    })
+const addClients = (req , res) => {
+    const { name,address } = req.body
+
+    let db = getDatabaseByName('Clients');
+    console.log(db)
+    db.push(
+        {
+            name,
+            address,
+            tickets:[]
+        }
+    )
+
+    updateDatabaseByName("Clients",JSON.stringify(db));
+    res.json({"msg":"success"})
 
 }
 const updateClientsInfo = (req , res) => {
@@ -18,5 +29,5 @@ const updateClientsInfo = (req , res) => {
 
 }
 module.exports = {
-    getClientsInfo , postClientsInfo , updateClientsInfo
+    getClientsInfo , addClients , updateClientsInfo
 }

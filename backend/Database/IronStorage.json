@@ -170,7 +170,7 @@
                 "radius": 12
             },
             {
-                "weight": 100000,
+                "weight": 8010,
                 "radius": 14
             },
             {
@@ -284,7 +284,7 @@
                 "radius": 20
             },
             {
-                "weight": 100000,
+                "weight": 9000,
                 "radius": 22
             },
             {

@@ -30,7 +30,43 @@ const getScaleWeight = (req,res)=>{
 }
 
 const changeIronWeight = (req,res)=>{
+    const { radius, name, weight} = req.body 
+    let db = getDatabaseByName('IronStorage');
+    let isFound = false;
+    for(let i in db){
+        if(name === db[i]['name']){
+        for(let j in db[i].props){
+            //console.log(radius,db[i]['props'][j].radius)
+            if(radius == db[i]['props'][j].radius){
+                db[i]["props"][j].weight = parseInt(weight)
+                console.log(db[i]["props"][j].weight)
+                console.log(db[i]["props"])
+                isFound = true;
+                updateDatabaseByName('IronStorage',JSON.stringify(db))
+                res.json({"msg":"done","newWeight":weight})
+                break;
+            }
+        }
+      }
 
+      if(isFound)
+        break;
+    }
+
+    
+}
+
+const handleChangePassword = (req,res) =>{
+    let {password} = req.body;
+
+    let db = getDatabaseByName('Passwords');
+
+    if(db[0]["ironChangePassword"] === password){
+        res.json({"msg":"success"})
+    }
+    else{
+        res.json({"msg":"failed"})
+    }
 }
 
 module.exports = {
@@ -39,5 +75,6 @@ module.exports = {
     addIronWeight,
     subtractIronWeight,
     changeIronWeight,
-    getScaleWeight
+    getScaleWeight,
+    handleChangePassword
 }
