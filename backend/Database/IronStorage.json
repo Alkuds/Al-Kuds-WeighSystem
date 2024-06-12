@@ -7,8 +7,14 @@
                 "radius": 4
             },
             {
+<<<<<<< Updated upstream
                 "weight": 9000,
                 "radius": 6
+=======
+                "weight": -237410,
+                "radius": 8,
+                "date": "6/7/2024"
+>>>>>>> Stashed changes
             },
             {
                 "weight": 9000,
