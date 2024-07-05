@@ -13,20 +13,21 @@
 .impexp-table {
     width: 95%;
     margin: auto;
+    border-collapse: collapse;
 
 }
 
 .impexp-table thead {
     border-radius: 15px;
-    background-color: #f5f7f9;
+    /* background-color: #f5f7f9; */
     color: #60657e;
 
 }
 
 .impexp-table thead tr  th{
-    padding: 15px;
+    padding: 2px;
 
 }
 .impexp-table tbody tr td{
-    padding: 15px;
+    padding: 2px;
 }

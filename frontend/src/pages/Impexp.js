@@ -4,7 +4,7 @@ import inventory from '../assets/images/inventory_icon.PNG';
 import '../assets/css/impexp.css'
 const Impexp = () => {
   const [dailyData, setDailyData] = useState([]);
-
+  const [totalWeight,setTotalWeight] = useState(0);
   useEffect(() => {
     const getDailyData = async () => {
       const response = await fetch('http://localhost:7000/irons/getIronStorage',
@@ -23,23 +23,23 @@ const Impexp = () => {
       // console.log(dateArr[0] );
       // console.log(ironStorage[0].props[0].date == dateArr[0]);
 
-      let dummyDailyData = [];
+      let dummyDailyData = [], total=0;
       ironStorage.map((iron) => {
         iron.props.map((prop) => {
-          if (prop.date == dateArr[0]) {
+            total+= parseInt(prop.weight);
             let rowitem = {
               name: iron.name,
               weight: prop.weight,
               radius: prop.radius
             }
             dummyDailyData.push(rowitem);
-          }
+          
 
         })
       })
       console.log(dummyDailyData);
       setDailyData([...dummyDailyData]);
-
+      setTotalWeight(total)
 
     }
 
@@ -65,18 +65,27 @@ const Impexp = () => {
           {
             dailyData.map((el) => (
               <>
-                <tr>
+                <tr style={{'border':(el.radius === 6 || el.radius === 8 )?'1px solid black':'none'}}>
                   <td>{el.weight}</td>
-                  <td>{el.radius}</td>
+                  <td >{el.radius}</td>
                   <td>{el.name}</td>
                 </tr>
-
               </>
             ))
           }
         </tbody>
+        <tfoot>
+          <tr>
+            <td>
+              {totalWeight}
+            </td>
+            <th>
+              اجمالي صافي الوزن
+            </th>
+          </tr>
+        </tfoot>
       </table>
-
+        
     </div>
   )
 }

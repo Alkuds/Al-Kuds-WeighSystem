@@ -24,9 +24,10 @@ const getIronStorage = (req,res)=>{
     let db = getDatabaseByName('IronStorage');
     res.json(db);
 }
-
+let x = 1000;
 const getScaleWeight = (req,res)=>{
-    res.json({"weight":14000})
+    res.json({"weight":x})
+    x+=1350;
 }
 
 const changeIronWeight = (req,res)=>{

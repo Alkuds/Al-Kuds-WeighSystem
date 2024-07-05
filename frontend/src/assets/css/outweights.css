@@ -254,6 +254,7 @@ label {
         justify-content: flex-start;
         background-image: url("../images/kuds-watermark.png");
         background-color: rgba(255, 255, 255, 0.9);
+        background-size: cover;
         background-size: contain;
         background-position: center center;
         background-repeat: no-repeat;

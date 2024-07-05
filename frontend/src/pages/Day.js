@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-const InTableRow = ({ kg, ton, name, raduis }) => {
+const InTableRow = ({ kg, ton, name, raduis,ironName }) => {
   return (
     <tr>
       <td> {name} </td>
+      <th> {ironName} </th>
       <td> {raduis} </td>
       <td> {ton} </td>
       <td> {kg} </td>
@@ -11,12 +12,13 @@ const InTableRow = ({ kg, ton, name, raduis }) => {
   )
 }
 
-const OutTableRow = ({ kg, ton, name, raduis, field5, money }) => {
+const OutTableRow = ({ kg, ton, name, raduis, field5, money, ironName }) => {
   return (
     <tr>
       <td> {money} </td>
       <td> {field5} </td>
       <td> {name} </td>
+      <th> {ironName} </th>
       <td> {raduis} </td>
       <td> {ton} </td>
       <td> {kg} </td>
@@ -117,9 +119,11 @@ const Day = () => {
 
   const [inArrWeightArr, setInArrWeightArr] = useState([])
   const [outArrWeightArr, setOutArrWeightArr] = useState([])
-
+  const [totalOut, setTotalOut] = useState(0)
+  const [totalIn, setTotalIn] = useState(0)
   useEffect(() => {
     const getTicketsInfo = async () => {
+      
       const response = await fetch('http://localhost:7000/ticket/getTickets',
         {
           method: "GET",
@@ -129,24 +133,36 @@ const Day = () => {
         }
       )
       const json = await response.json()
+  let tOut =0,tIn=0;
       if (response.ok) {
         let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
         let dateArr = d.split(',');
         let inArr= [],outArr = []
         console.log(json)
         for(let i of json){
-          if(i.date === dateArr[0] && i.type === "out"){
+          if(i.date === dateArr[0] && i.type === "in"){
            
             for(let j of i.reciept){
               
-              let kgDummy = (j.weight+200)/1000
+              let kgDummy = (j.weight)/1000
               let kgStr = kgDummy.toString()
-              let kgSplit = kgStr.split(".")
+              let kgSplit;
+              let kgValue;
+              tIn+= parseInt(j.weight);
+              console.log("here",kgStr,kgStr.indexOf("."))
+              if(kgStr.indexOf(".")!==-1){
+                kgSplit = kgStr.split(".")
+                console.log(kgStr)
+                kgValue = parseInt(kgSplit[1].padEnd(3,'0')) 
+              }
+              else
+                kgValue = 0;
               let obj = {
                 name:i.clientName,
                 ton:parseInt(j.weight/1000),
-                kg: parseInt(kgSplit[1].padEnd(3,'0')),
+                kg: kgValue,
                 raduis: j.radius,
+                ironName:j.ironName,
                 field5: " ",
                 money:" "
               }
@@ -155,19 +171,29 @@ const Day = () => {
 
           }
           setOutArrWeightArr([...inArr])
+          setTotalIn(tIn);
         }
         for(let i of json){
-          if(i.date === dateArr[0] && i.type === "in"){
+          if(i.date === dateArr[0] && i.type === "out"){
            
             for(let j of i.reciept){
               
-              let kgDummy = (j.weight+200)/1000
+              let kgDummy = (j.weight)/1000
               let kgStr = kgDummy.toString()
               let kgSplit = kgStr.split(".")
+              let kgValue;
+              tOut+= parseInt(j.weight);
+              if(kgStr.indexOf('.')!==-1){
+                kgValue = parseInt(kgSplit[1].padEnd(3,'0'));
+              }
+              else{
+                kgValue = 0;
+              }
               let obj = {
                 name:i.clientName,
+                ironName:j.ironName,
                 ton:parseInt(j.weight/1000),
-                kg: parseInt(kgSplit[1].padEnd(3,'0')),
+                kg: kgValue,
                 raduis: j.radius,
               }
               outArr.push(obj)
@@ -175,6 +201,7 @@ const Day = () => {
 
           }
           setInArrWeightArr([...outArr])
+          setTotalOut(tOut)
         }
         
       }
@@ -190,6 +217,7 @@ const Day = () => {
             <th> نقديه </th>
             <th> +- </th>
             <th> وارد بضاعه </th>
+            <th> نوع </th>
             <th> مللي </th>
             <th> طن </th>
             <th> كيلو </th>
@@ -198,14 +226,14 @@ const Day = () => {
         <tbody>
           {
             outArrWeightArr.map((i, idx) => (
-              <OutTableRow key={idx} field5={i.field5} money={i.money} name={i.name} kg={i.kg} ton={i.ton} raduis={i.raduis} />
+              <OutTableRow key={idx} field5={i.field5} ironName={i.ironName} money={i.money} name={i.name} kg={i.kg} ton={i.ton} raduis={i.raduis} />
             ))
           }
         </tbody>
         <tfoot>
           <tr>
             <td>
-              5456645
+              {totalIn}
             </td>
             <th>
               اجمالي صافي الوزن
@@ -217,6 +245,7 @@ const Day = () => {
         <thead>
           <tr>
             <th> العميل </th>
+            <th> نوع </th>
             <th> مللي </th>
             <th> طن </th>
             <th> كيلو </th>
@@ -225,14 +254,14 @@ const Day = () => {
         <tbody>
           {
             inArrWeightArr.map((i, idx) => (
-              <InTableRow key={idx} name={i.name} kg={i.kg} ton={i.ton} raduis={i.raduis} />
+              <InTableRow key={idx} name={i.name} ironName={i.ironName} kg={i.kg} ton={i.ton} raduis={i.raduis} />
             ))
           }
         </tbody>
         <tfoot>
           <tr>
             <td>
-              5456645
+              {totalOut}
             </td>
             <th>
               اجمالي صافي الوزن
