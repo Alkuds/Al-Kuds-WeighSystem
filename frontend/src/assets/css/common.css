@@ -14,3 +14,8 @@
     justify-content: center;
     align-items: center;    
 }
+
+.ticket-details{
+    text-align: center;
+    width: 100%;
+}

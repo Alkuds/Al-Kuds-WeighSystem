@@ -6,6 +6,8 @@ const Settings = () => {
   const [driverNumber, setDriverNumber] = useState("")
   const [clientName, setClientName] = useState("")
   const [clientAddress, setClientAddress] = useState("")
+  const [factoryName, setFactoryName] = useState("")
+  const [factoryAddress, setFactoryAddress] = useState("")
 
   const handleClientAdd = async() =>{
     let obj = {
@@ -13,6 +15,28 @@ const Settings = () => {
       "address":clientAddress
     }
     const response = await fetch('http://localhost:7000/clients/addClient',
+      {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+
+
+    )
+    const json = await response.json()
+    console.log(json)
+    if(json["msg"] === "success")
+      window.alert("تم الاضافه")
+  }
+
+  const handleFactoryAdd = async() =>{
+    let obj = {
+      "name": factoryName,
+      "address":factoryAddress
+    }
+    const response = await fetch('http://localhost:7000/factory/addFactory',
       {
         method: "POST",
         body: JSON.stringify(obj),
@@ -75,6 +99,17 @@ const Settings = () => {
           <label htmlFor="address"> عنوان العميل </label>
         </div>
         <button onClick={handleClientAdd} className="iron-btn"> اضافه عميل جديد</button>
+      </div>
+      <div>
+        <div className="data-input">
+          <input name="name" type="text" value={factoryName} onChange={e => setFactoryName(e.target.value)} />
+          <label htmlFor="name"> اسم المورد </label>
+        </div>
+        <div className="data-input">
+          <input name="address" type="text" value={factoryAddress} onChange={e => setFactoryAddress(e.target.value)} />
+          <label htmlFor="address"> عنوان المورد </label>
+        </div>
+        <button onClick={handleFactoryAdd} className="iron-btn"> اضافه مورد جديد</button>
       </div>
     </div>
   )

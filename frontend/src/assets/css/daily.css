@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 .daily-table-holder table{
     min-height: 100vh;
@@ -14,13 +14,36 @@
     text-align: right;
 }
 
+.right-table{
+    margin-right: 80px;
+}
+
+.left-table{
+    min-height: 50px;
+    width: 60px;
+}
+
+.out-table{
+    width: auto;
+    flex-grow: 3;
+}
+
+.out-table >tbody > tr{
+    height: 25px;
+}
+
+.out-table > tbody > tr>td{
+    border: 1px solid black;
+
+}
+
 .daily-table-holder thead,tfoot{
     background-color: rgb(228,240,245);
 }
 
 .daily-table-holder td,th{
     border: 1px solid rgb(160,160,160);
-    padding: 8px 10px;
+    padding: 0px 3px;
 }
 
 .daily-table-holder td:last-of-type{

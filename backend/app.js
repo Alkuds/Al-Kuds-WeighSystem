@@ -6,7 +6,7 @@ const path = require("path");
 const app = express();
 
 app.use(bodyParser.json()); // for JSON data
-app.use(bodyParser.urlencoded({ extended: true })); // for URL-encoded data
+app.use(bodyParser.urlencoded({ extended: false })); // for URL-encoded data
 
 // const serialPort2 = new SerialPort({ path: 'COM1', baudRate: 9600});
 
@@ -23,8 +23,10 @@ app.use((req,res,next) => {
 app.use('/ticket' , require("./routes/ticket"));
 app.use('/car' , require("./routes/car"));
 app.use('/clients' , require("./routes/clients"));
+app.use('/factory' , require("./routes/factory"));
 app.use('/driver' , require("./routes/driver"));
 app.use('/irons' , require("./routes/irons"));
+app.use('/ticketId' , require("./routes/ticketId"));
 
 if (true) {
 	app.use(express.static(path.join(__dirname, '../frontend/build')))

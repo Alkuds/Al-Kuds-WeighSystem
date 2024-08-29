@@ -24,10 +24,54 @@ const getIronStorage = (req,res)=>{
     let db = getDatabaseByName('IronStorage');
     res.json(db);
 }
-let x = 1000;
+let x = 10000;
 const getScaleWeight = (req,res)=>{
     res.json({"weight":x})
-    x+=1350;
+    x-=1350;
+
+    // driver name
+
+
+
+
+
+
+    // let requestBody = req.body;
+    // let data = getDatabaseByName('Tickets');
+    // data.push(requestBody);
+    // updateDatabaseByName('Tickets', JSON.stringify(data));
+    // let iron = getDatabaseByName('IronStorage');
+    // let todayDate = requestBody.date;
+    // requestBody.reciept.map((el) => {
+    //     iron.map((dataBaseIronel) => {
+    //         if (requestBody.type == "in") {
+    //             if (dataBaseIronel.name == el.ironName) {
+    //                 dataBaseIronel.props.map((prop) => {
+    //                     if (prop.radius == el.radius) {
+    //                         prop.weight += el.weight;
+    //                         prop.date = todayDate;
+    //                     }
+    //                 })
+    //             }
+    //         }
+    //         if (requestBody.type == "out") {
+    //             if (dataBaseIronel.name == el.ironName) {
+    //                 dataBaseIronel.props.map((prop) => {
+    //                     if (prop.radius == el.radius) {
+    //                         prop.weight -= el.weight;
+    //                         prop.date = todayDate;
+
+    //                     }
+    //                 })
+    //             }
+    //         }
+    //     })
+
+    // })
+    // updateDatabaseByName('IronStorage', JSON.stringify(iron));
+
+
+
 }
 
 const changeIronWeight = (req,res)=>{

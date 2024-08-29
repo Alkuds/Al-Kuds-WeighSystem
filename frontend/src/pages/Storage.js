@@ -6,6 +6,7 @@ const Storage = () => {
   const [selectedRadius, setSelectedRadius] = useState()
   const [password, setPassword] = useState()
   const [selectedWeight, setSelectedWeight] = useState(0)
+  const [type,setType] = useState(null)
   useEffect(() => {
     const getIronStorage = async () => {
       const response = await fetch('http://localhost:7000/irons/getIronStorage',
@@ -80,6 +81,48 @@ const Storage = () => {
       const json = await response.json()
       setSelectedWeight(json["newWeight"])
       setPassword("")
+
+      let clientName = "القدس";
+      let clientAddress = " ";
+      let driverName =" ";
+      let driverNo = " ";
+      let carNumber = " ";
+      let lorryNumber = " ";
+      let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
+      let dateArr = d.split(',');
+      let date = dateArr[0];
+      let time = dateArr[1];
+      let weightBefore = " ";
+      let reciept = [];      
+      let singleReciept = { ironName:obj.name+"(القدس)", radius:obj.radius, weightAfter:obj.weight, weight:obj.weight, date, time };
+      reciept.push(0)
+      reciept.push(singleReciept);
+
+      let ticket = {
+          "id": "null",
+          "state": "Alkuds-Storage",
+          type:type==="وارد"? "in":"out",
+          clientName,
+          clientAddress,
+          driverName,
+          driverNo,
+          carNumber,
+          lorryNumber,
+          date,
+          weightBefore,
+          reciept
+      }
+      const autoTicketSave = await fetch("http://localhost:7000/ticket/addTicket/null",
+          {
+              method: "POST",
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ticket})
+          }
+      )
+      const autoSaveResponse = await autoTicketSave.json();
+      console.log(autoSaveResponse)
     }
     else{
       window.alert("الرقم السري خطأ")
@@ -119,8 +162,17 @@ const Storage = () => {
           <option>20</option>
           <option>22</option>
           <option>25</option>
+          <option>32</option>
         </select>
         <label name="radius" htmlFor="radius"> القطر </label>
+      </div>
+      <div className='data-input'>
+        <select onChange={e => setType(e.target.value)}>
+          <option>اختر النوع</option>
+          <option>وارد</option>
+          <option>خارج</option>
+        </select>
+        <label name="radius" htmlFor="radius"> نوع التذكره </label>
       </div>
       <div className="data-input">
         <input name="weight" type="number" value={selectedWeight} onChange={e => setSelectedWeight(e.target.value)} />

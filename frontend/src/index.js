@@ -8,11 +8,14 @@ import './assets/css/outweights.css';
 import './assets/css/daily.css';
 import './assets/css/storage.css';
 import App from './App';
+import { UnfinishedTicketsContextProvider } from './context/UnfinishedTicketsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <UnfinishedTicketsContextProvider>
+      <App />
+    </UnfinishedTicketsContextProvider>
   </React.StrictMode>
 );
 

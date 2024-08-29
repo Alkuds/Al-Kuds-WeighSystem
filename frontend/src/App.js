@@ -7,6 +7,7 @@ import Impexp from './pages/Impexp';
 import Day from './pages/Day';
 import Storage from './pages/Storage';
 import Settings from './pages/Settings';
+import MainPage from './pages/MainPage';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -14,11 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <OutWeighs />,
-      },
-      {
-      path: "in",
-        element: <InWeights />,
+        element: <MainPage />
       },
       {
         path: "impexp",

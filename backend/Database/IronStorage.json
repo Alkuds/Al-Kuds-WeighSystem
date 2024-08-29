@@ -1,1 +1,923 @@
-[{"name":"عز","props":[{"weight":10700,"radius":4,"date":"7/5/2024"},{"weight":7650,"radius":6,"date":"7/5/2024"},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"مصريين","props":[{"weight":10700,"radius":4,"date":"7/5/2024"},{"weight":7650,"radius":6,"date":"7/5/2024"},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"عتال","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"حديدنا","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":8010,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"بشاي","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"مركبي","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":9000,"radius":22},{"weight":100000,"radius":25}]},{"name":"المدينة","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"العلا","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"جيوشي","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"عنتر","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]},{"name":"مصر ستيل","props":[{"weight":9000,"radius":4},{"weight":9000,"radius":6},{"weight":9000,"radius":8},{"weight":100000,"radius":10},{"weight":100000,"radius":12},{"weight":100000,"radius":14},{"weight":100000,"radius":16},{"weight":100000,"radius":18},{"weight":100000,"radius":20},{"weight":100000,"radius":22},{"weight":100000,"radius":25}]}]
+[
+    {
+        "name": "السويس للصلب",
+        "props": [
+            {
+                "weight": 1000,
+                "radius": 6,
+                "date": "7/7/2024"
+            },
+            {
+                "weight": 2850,
+                "radius": 8
+            },
+            {
+                "weight": 3545,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 2815,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "الجارحي",
+        "props": [
+            {
+                "weight": 1500,
+                "radius": 6,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 2850,
+                "radius": 8,
+                "date": "8/4/2024"
+            },
+            {
+                "weight": 5000,
+                "radius": 10,
+                "date": "7/7/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": -2700,
+                "radius": 16,
+                "date": "8/3/2024"
+            },
+            {
+                "weight": -1350,
+                "radius": 18,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "عز",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 59701,
+                "radius": 10,
+                "date": "7/7/2024"
+            },
+            {
+                "weight": 44485,
+                "radius": 12,
+                "date": "8/3/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 33520,
+                "radius": 16,
+                "date": "8/6/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "مصريين",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": -1350,
+                "radius": 10,
+                "date": "7/7/2024"
+            },
+            {
+                "weight": 7145,
+                "radius": 12,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": -5400,
+                "radius": 16,
+                "date": "8/3/2024"
+            },
+            {
+                "weight": 4425,
+                "radius": 18
+            },
+            {
+                "weight": -2700,
+                "radius": 20,
+                "date": "8/6/2024"
+            },
+            {
+                "weight": 3940,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "بشاي",
+        "props": [
+            {
+                "weight": -1350,
+                "radius": 6,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": -1350,
+                "radius": 8,
+                "date": "7/7/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 1350,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 2700,
+                "radius": 16,
+                "date": "8/3/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 490,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "مركبي",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": -1350,
+                "radius": 8,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 40230,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 37150,
+                "radius": 20
+            },
+            {
+                "weight": 5385,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "المدينة",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 5970,
+                "radius": 10,
+                "date": "8/6/2024"
+            },
+            {
+                "weight": 22500,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": -1350,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "العلا",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 4
+            },
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": -1350,
+                "radius": 16,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "جيوشي",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 11810,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 71770,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "عنتر",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 4
+            },
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "مصر ستيل",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 4
+            },
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "العربيه",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 1350,
+                "radius": 8,
+                "date": "8/6/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 17855,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": -2700,
+                "radius": 25,
+                "date": "8/6/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "بيانكو",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": -1350,
+                "radius": 16,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "عشري",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 2700,
+                "radius": 10,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": -4050,
+                "radius": 16,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "عياد",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 2350,
+                "radius": 22,
+                "date": "8/3/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "اركو ستيل",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 2350,
+                "radius": 16,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "اكتوبر ستيل",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": -1350,
+                "radius": 10,
+                "date": "8/2/2024"
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    },
+    {
+        "name": "الكومي",
+        "props": [
+            {
+                "weight": 0,
+                "radius": 6
+            },
+            {
+                "weight": 0,
+                "radius": 8
+            },
+            {
+                "weight": 0,
+                "radius": 10
+            },
+            {
+                "weight": 0,
+                "radius": 12
+            },
+            {
+                "weight": 0,
+                "radius": 14
+            },
+            {
+                "weight": 0,
+                "radius": 16
+            },
+            {
+                "weight": 0,
+                "radius": 18
+            },
+            {
+                "weight": 0,
+                "radius": 20
+            },
+            {
+                "weight": 0,
+                "radius": 22
+            },
+            {
+                "weight": 0,
+                "radius": 25
+            },
+            {
+                "weight": 0,
+                "radius": 32
+            }
+        ]
+    }
+]
