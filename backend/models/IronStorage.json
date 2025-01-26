@@ -3,7 +3,7 @@
         "name": "السويس للصلب",
         "props": [
             {
-                "weight": 1000,
+                "weight": 6400,
                 "radius": 6,
                 "date": "7/7/2024"
             },
@@ -63,7 +63,7 @@
                 "date": "8/4/2024"
             },
             {
-                "weight": 5000,
+                "weight": 10400,
                 "radius": 10,
                 "date": "7/7/2024"
             },
@@ -72,7 +72,7 @@
                 "radius": 12
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 14
             },
             {
@@ -111,7 +111,7 @@
                 "radius": 6
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 8
             },
             {
@@ -125,7 +125,7 @@
                 "date": "8/3/2024"
             },
             {
-                "weight": 0,
+                "weight": -1234,
                 "radius": 14
             },
             {
@@ -138,7 +138,7 @@
                 "radius": 18
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 20
             },
             {
@@ -172,7 +172,7 @@
                 "date": "7/7/2024"
             },
             {
-                "weight": 7145,
+                "weight": 5795,
                 "radius": 12,
                 "date": "8/2/2024"
             },
@@ -181,12 +181,12 @@
                 "radius": 14
             },
             {
-                "weight": -5400,
+                "weight": -6750,
                 "radius": 16,
                 "date": "8/3/2024"
             },
             {
-                "weight": 4425,
+                "weight": 3075,
                 "radius": 18
             },
             {
@@ -230,7 +230,7 @@
                 "radius": 12
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 14
             },
             {
@@ -247,7 +247,7 @@
                 "radius": 20
             },
             {
-                "weight": 490,
+                "weight": -480,
                 "radius": 22
             },
             {
@@ -343,7 +343,7 @@
                 "radius": 18
             },
             {
-                "weight": 0,
+                "weight": -4050,
                 "radius": 20
             },
             {
@@ -372,7 +372,7 @@
                 "radius": 6
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 8
             },
             {
@@ -590,7 +590,7 @@
                 "radius": 12
             },
             {
-                "weight": 0,
+                "weight": -1266,
                 "radius": 14
             },
             {
@@ -644,12 +644,12 @@
                 "radius": 14
             },
             {
-                "weight": -1350,
+                "weight": -2255,
                 "radius": 16,
                 "date": "8/2/2024"
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 18
             },
             {
@@ -687,7 +687,7 @@
                 "date": "8/2/2024"
             },
             {
-                "weight": 0,
+                "weight": -2700,
                 "radius": 12
             },
             {
@@ -729,7 +729,7 @@
                 "radius": 6
             },
             {
-                "weight": 0,
+                "weight": -1280,
                 "radius": 8
             },
             {
@@ -775,7 +775,7 @@
         "name": "اركو ستيل",
         "props": [
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 6
             },
             {
@@ -808,7 +808,7 @@
                 "radius": 20
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 22
             },
             {
@@ -816,7 +816,7 @@
                 "radius": 25
             },
             {
-                "weight": 0,
+                "weight": -1350,
                 "radius": 32
             }
         ]
@@ -850,7 +850,7 @@
                 "radius": 16
             },
             {
-                "weight": 0,
+                "weight": -2700,
                 "radius": 18
             },
             {

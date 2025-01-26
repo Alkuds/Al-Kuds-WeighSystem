@@ -40,9 +40,9 @@ const Receipt = ({ ironArr, ironRadiusArr, ironTypeArr, ironWeightArr }) => {
                         </p>
                     </div>
                 </div>
-                <p className="total-weight">
-                    <span> صافي الوزنه:</span>
-                    <span> {ironWeightArr[idx + 1] - ironWeightArr[idx]} </span>
+                <p className="total-weight client-print-data">
+                صافي الوزنه:{ironWeightArr[idx + 1] - ironWeightArr[idx]}
+                    
                 </p>
             </div>
         )
@@ -68,10 +68,10 @@ const Receipt = ({ ironArr, ironRadiusArr, ironTypeArr, ironWeightArr }) => {
 const OutWeighs = ({ type, oldTicketId, userId }) => {
     // date code:
     //new Date().toLocaleString('en-EG', {timeZone: 'Africa/Cairo'})
-    const {unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
+    const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
     // let unfinishedTickets = useLoaderData()
     let dummIronLoopArr = [], dummIronNameArr = [], dummIronWeightArr = [], dummIronRadiusArr = [], dummTimeArr = [], dummDateArr = [];
-    if(oldTicketId != null){
+    if (oldTicketId != null && type === "old") {
         for (let i = 0; i < unfinishedTickets[oldTicketId].reciept.length; i++) {
             dummDateArr.push(unfinishedTickets[oldTicketId].reciept[i].date)
             dummIronNameArr.push(unfinishedTickets[oldTicketId].reciept[i].ironName)
@@ -81,21 +81,23 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             dummIronLoopArr.push(1);
         }
     }
-    const [id,setId] = useState(oldTicketId != null? userId: null);
-    const [ironArr, setIronArr] = useState(oldTicketId != null? dummIronLoopArr: []);
-    const [ironWeightArr, setIronWeightArr] = useState(oldTicketId != null? dummIronWeightArr: [])
-    const [ironTime, setIronTime] = useState(oldTicketId != null? dummTimeArr:[])
-    const [ironDate, setIronDate] = useState(oldTicketId != null? dummDateArr:[])
-    const [ironTypeArr, setIronTypeArr] = useState(oldTicketId != null? dummIronNameArr :[])
-    const [ironRadiusArr, setIronRadiusArr] = useState(oldTicketId != null?  dummIronRadiusArr:[])
-    const [selectedClientName, setSelectedClientName] = useState(oldTicketId != null? unfinishedTickets[oldTicketId].clientName:null)
-    const [selectedClientAddress, setSelectedClientAddress] = useState(oldTicketId != null?unfinishedTickets[oldTicketId].clientAddress:null)
-    const [selectedDriverName, setSelectedDriverName] = useState(oldTicketId != null?unfinishedTickets[oldTicketId].driverName:null)
-    const [selectedDriverMobile, setSelectedDriverMobile] = useState(oldTicketId != null?unfinishedTickets[oldTicketId].driverNo:null)
-    const [selectedCarNumber, setSelectedCarNumber] = useState(oldTicketId != null?unfinishedTickets[oldTicketId].carNumber:null)
-    const [selectedLorryNumber, setSelectedLorryNumber] = useState(oldTicketId != null?unfinishedTickets[oldTicketId].lorryNumber:null)
-    const [selectedIron, setSelectedIron] = useState(oldTicketId != null? dummIronNameArr[0]:null)
-    const [selectedRadius, setSelectedRadius] = useState(oldTicketId != null?dummIronRadiusArr[0]:null)
+    console.log(type, unfinishedTickets[oldTicketId], dummIronNameArr, dummIronRadiusArr, dummIronWeightArr, oldTicketId)
+    const [id, setId] = useState(oldTicketId != null ? userId : null);
+    const [ironArr, setIronArr] = useState(oldTicketId != null ? dummIronLoopArr : []);
+    const [ironWeightArr, setIronWeightArr] = useState(oldTicketId != null ? [...dummIronWeightArr] : [])
+    const [ironTime, setIronTime] = useState(oldTicketId != null ? dummTimeArr : [])
+    const [ironDate, setIronDate] = useState(oldTicketId != null ? dummDateArr : [])
+    const [ironTypeArr, setIronTypeArr] = useState(oldTicketId != null ? dummIronNameArr : [])
+    const [ironRadiusArr, setIronRadiusArr] = useState(oldTicketId != null ? dummIronRadiusArr : [])
+    console.log(ironTime, ironDate, ironRadiusArr, ironWeightArr)
+    const [selectedClientName, setSelectedClientName] = useState(oldTicketId != null ? unfinishedTickets[oldTicketId].clientName : null)
+    const [selectedClientAddress, setSelectedClientAddress] = useState(oldTicketId != null ? unfinishedTickets[oldTicketId].clientAddress : null)
+    const [selectedDriverName, setSelectedDriverName] = useState(oldTicketId != null ? unfinishedTickets[oldTicketId].driverName : null)
+    const [selectedDriverMobile, setSelectedDriverMobile] = useState(oldTicketId != null ? unfinishedTickets[oldTicketId].driverNo : null)
+    const [selectedCarNumber, setSelectedCarNumber] = useState(oldTicketId != null ? unfinishedTickets[oldTicketId].carNumber : null)
+    const [selectedLorryNumber, setSelectedLorryNumber] = useState(oldTicketId != null ? unfinishedTickets[oldTicketId].lorryNumber : null)
+    const [selectedIron, setSelectedIron] = useState(oldTicketId != null ? dummIronNameArr[0] : null)
+    const [selectedRadius, setSelectedRadius] = useState(oldTicketId != null ? dummIronRadiusArr[0] : null)
     const [carInfo, setCarInfo] = useState([])
     const [clientsInfo, setClientsInfo] = useState([])
     const [ironInfo, setIronInfo] = useState([])
@@ -104,17 +106,38 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
     const [driverName, setDriverName] = useState();
     const [driverNo, setDriverNo] = useState("")
     const [tickets, setTickets] = useState()
-    const [dateArr, setDateArr] = useState(oldTicketId != null? dummDateArr:[])
-    const [timeArr, setTimeArr] = useState(oldTicketId != null?dummTimeArr:[])
+    const [dateArr, setDateArr] = useState(oldTicketId != null ? dummDateArr : [])
+    const [timeArr, setTimeArr] = useState(oldTicketId != null ? dummTimeArr : [])
     const isFirstRender = useRef(true);
     const [modal, setModal] = useState(false)
-    
-    
-    const handleView = (idx) =>{
+
+
+    const handleView = (idx) => {
+        if (modal == true)
+            window.location.reload();
         setModal(!modal);
+        if (type === 'new') {
+            setId(null);
+            setIronArr([]);
+            setIronWeightArr([])
+            setIronTime([])
+            setIronDate([])
+            setIronTypeArr([])
+            setIronRadiusArr([])
+            setSelectedClientName(null)
+            setSelectedClientAddress(null)
+            setSelectedDriverName(null)
+            setSelectedDriverMobile(null)
+            setSelectedCarNumber(null)
+            setSelectedLorryNumber(null)
+            setSelectedIron(null)
+            setSelectedRadius(null)
+            setDateArr([])
+            setTimeArr([])
+        }
     }
 
-    
+
     useEffect(() => {
         const getCarInfo = async () => {
             const response = await fetch('http://localhost:7000/car/getCarInfo',
@@ -172,32 +195,26 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             const json = await response.json()
             setIronInfo(json);
         }
-        
-        
+
+
 
         getCarInfo()
         getDriverInfo()
         getClientsInfo()
         getIronStorage()
-        
-        window.addEventListener('keydown', (e) => {
-            if (e.keyCode == 80 && (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
-                e.preventDefault()
-                if (e.stopImmediatePropagation)
-                    e.stopImmediatePropagation()
-                else
-                    e.stopPropagation()
-            }
-        }, true)
 
-        const unloadCallBack = (e) => {
-            e.preventDefault();
-            e.returnValue = "هل تري تحميل الصفحه من جديد؟"
-            return "";
-        }
-        window.addEventListener("beforeunload", unloadCallBack)
-        return () => window.removeEventListener("beforeunload", alert)
-    }, [id, ironRadiusArr, ironTypeArr, ironWeightArr, ironArr, selectedCarNumber, selectedClientAddress, selectedClientName, selectedDriverMobile, selectedDriverName, selectedIron, selectedLorryNumber, selectedRadius])
+        // window.addEventListener('keydown', (e) => {
+        //     if (e.keyCode == 80 && (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
+        //         e.preventDefault()
+        //         if (e.stopImmediatePropagation)
+        //             e.stopImmediatePropagation()
+        //         else
+        //             e.stopPropagation()
+        //     }
+        // }, true)
+
+
+    }, [unfinishedTickets, dispatch, id, ironRadiusArr, ironTypeArr, ironWeightArr, ironArr, selectedCarNumber, selectedClientAddress, selectedClientName, selectedDriverMobile, selectedDriverName, selectedIron, selectedLorryNumber, selectedRadius])
 
 
     const handleAddress = (name) => {
@@ -233,7 +250,12 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
         }
     }
 
-    const handleScaleWeight = async (idx) => {
+    const handleScaleWeight = async (idx, x, y) => {
+        console.log(x, y)
+        if (idx !== 0 && (x === null || x === "" || y === null || y === "" || x === 0 || y === 0)) {
+            window.alert("ارجو اختيار نوع الحديد و القطر قبل تحميل الوزن")
+            return
+        }
         setIsLoading(true);
         const response = await fetch('http://localhost:7000/irons/getScaleWeight',
             {
@@ -313,19 +335,19 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
         }
         console.log(ticket)
         console.log(id)
-        const autoTicketSave = await fetch("http://localhost:7000/ticket/addTicket/"+id,
+        const autoTicketSave = await fetch("http://localhost:7000/ticket/addTicket/" + id,
             {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ticket})
+                body: JSON.stringify({ ticket })
             }
         )
         const autoSaveResponse = await autoTicketSave.json();
         setId(autoSaveResponse.id)
         console.log(autoSaveResponse);
-        dispatch({ type : 'SET_TICKETS', payload : autoSaveResponse.db})
+        dispatch({ type: 'SET_TICKETS', payload: autoSaveResponse.db })
     }
 
     const handleIronAdd = () => {
@@ -375,14 +397,15 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             console.log("heeree")
             return
         }
-        for (let i of ironWeightArr) {
-            if (i === 0) {
+        for (let i = 0; i < ironWeightArr.length; i++) {
+            console.log(i)
+            if (i > 0 && ironWeightArr[i] === 0) {
                 window.alert("برجاء ادخال البيانات كامله")
                 console.log("heeree 1")
                 return
             }
         }
-        for (let i in ironRadiusArr) {
+        for (let i = 0; i < ironRadiusArr.length; i++) {
             if (i > 0 && (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0)) {
                 window.alert("برجاء ادخال البيانات كامله")
                 console.log("heeree 3")
@@ -392,7 +415,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
         if (window.confirm("هل تريد طباعه التيكيت") === true) {
             let ans = await handleTicketStateEnd();
             window.print()
-            window.onafterprint = () =>{
+            window.onafterprint = () => {
                 setModal(!modal);
                 setId(null);
                 setIronArr([]);
@@ -411,7 +434,8 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
                 setSelectedRadius(null)
                 setDateArr([])
                 setTimeArr([])
-                dispatch({ type : 'SET_TICKETS', payload : ans})
+                dispatch({ type: 'SET_TICKETS', payload: ans })
+                document.location.reload()
             }
 
         }
@@ -433,263 +457,284 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
         }
     }
 
+    const handleDelete = async () => {
+
+        const response = await fetch("http://localhost:7000/ticket/ticketDelete/" + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        const resp = await response.json()
+
+        if (response.ok) {
+            document.location.reload()
+        }
+
+
+    }
 
 
     //48 منطقه كمائن الجير خلف طريق العين السخنه
 
     return (
         < >
-            
+
             <div className="outWeightHolder">
-                <button style={{"fontSize":"25px"}} className="displayHidden add-btn iron-btn" onClick={handleView}>
-                    {type === 'old'?"افتح التذكره":"انشاء تذكره خروج"}
+                <button style={{ "fontSize": "25px" }} className="displayHidden add-btn iron-btn" onClick={handleView}>
+                    {type === 'old' ? "افتح التذكره" : "انشاء تذكره خروج"}
                 </button>
-             {modal && <div className="modal">
-                <span className="displayHidden" onClick={handleView} style={{"fontSize":"30px","cursor":"pointer"}}>
-                    &times;
-                </span>
-                <div style={{
-                    'backgroundImage': `url(${require("../assets/images/kuds-watermark.png")})`
-                }} className="print-content">
-                    <div className="print-header">
-                        <div className="header-img-holder" >
-                            <img style={{ 'width': '70%' }} src={kudsPrint} />
-                            <span>01002112431</span>
-                            <p style={{ 'display': 'flex', 'flexDirection': 'row', "justifyContent": 'flex-start' }}>
-                                <span>  منطقه كمائن الجير خلف طريق العين السخنه </span>
-                                <span> 48 </span>
-                            </p>
+                {modal &&
+                    <div className="modal">
+                        <span className="displayHidden" onClick={handleView} style={{ "fontSize": "30px", "cursor": "pointer" }}>
+                            &times;
+                        </span>
+                        {type === "old" && <button onClick={handleDelete} className="iron-btn"> ازاله</button>}
 
-                        </div>
-                        <div className="type-date-holder">
-                            <h1> اذن استلام بضاعه </h1>
-                            <span> خارج </span>
-                            <span> {new Date().toLocaleString()} </span>
-                        </div>
-                        <div>
-                            <img style={{ 'width': "30%" }} src={qr} />
-                        </div>
-                    </div>
-                    <div style={{
-                        'display': 'flex',
-                        'flexDirection': 'column',
-                        'alignItems': 'flex-end',
-                        'justifyContent': 'flex-end',
-                        'textAlign': 'left',
-                        'width': '100%',
-                        'margin': '10px 0'
-                    }} className="static-info">
-                        <div className="static-data-holder">
+                        <div style={{
+                            'backgroundImage': `url(${require("../assets/images/kuds-watermark.png")})`
+                        }} className="print-content">
+                            <div className="print-header">
+                                <div className="header-img-holder" >
+                                    <img style={{ 'width': '70%' }} src={kudsPrint} />
+                                    <span>01002112431</span>
+                                    <p style={{ 'display': 'flex', 'flexDirection': 'row', "justifyContent": 'flex-start' }}>
+                                        <span>  منطقه كمائن الجير خلف طريق العين السخنه </span>
+                                        <span> 48 </span>
+                                    </p>
 
-
-                            <p>
-                                <span>
-                                    {selectedClientAddress}
-                                </span>
-                                &nbsp;
-                                <span>
-                                    : عنوان العميل
-                                </span>
-                            </p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <p>
-                                <span> {selectedClientName} </span>
-                                &nbsp;
-                                <span>: اسم العميل</span>
-                            </p>
-                        </div>
-                        <div className="static-data-holder">
-                            <p>
-                                <span> {selectedCarNumber} </span>
-                                &nbsp;
-                                <span>: رقم العربيه</span>
-                            </p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <p>
-                                <span> {selectedLorryNumber} </span>
-                                &nbsp;
-                                <span>: رقم المقطوره</span>
-                            </p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <p>
-                                <span> {selectedDriverMobile} </span>
-                                &nbsp;
-                                <span>: رقم السائق</span>
-                            </p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                            <p>
-                                <span>
-                                    {selectedDriverName}
-                                </span>
-                                &nbsp;
-                                <span>
-                                    : اسم السائق
-                                </span>
-                            </p>
-                        </div>
-                        <div className="static-data-holder">
-                            <p>
-                                __________________/ت.المستلم
-                            </p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                            <p>
-                                __________________/المستلم
-                            </p>
-                        </div>
-                    </div>
-                    <Receipt ironArr={ironArr} ironTypeArr={ironTypeArr} ironRadiusArr={ironRadiusArr} ironWeightArr={ironWeightArr} />
-                    <p>
-                        انا الموقع ادناه استلمت البضاعه المبينه بعاليه بحاله جيده بصفه امانه لحين توريد ثمنها بإصال مستقل.
-                    </p>
-                    <p>
-                        اقرار استلام عميل
-                    </p>
-                    <p style={{ 'width': '100%' }}>
-                        ______________________/الاسم
-                    </p>
-                    <p style={{ 'width': '100%' }}>
-                        _____________________/التوقع
-                    </p>
-
-                </div>
-                <div className="client-details">
-                    <div className="operate-type">
-
-                        <h1 >خارج</h1>
-                    </div>
-                    <div className="client-data">
-                        <h2 style={{ textAlign: "center" }}>
-                            بيانات العميل
-                        </h2>
-                        <div className="client-holder">
-                            <div className="data-input">
-                                <label htmlFor="address"> العنوان </label>
-                                <input name="address" type="text" value={selectedClientAddress} readOnly />
+                                </div>
+                                <div className="type-date-holder">
+                                    <h1> اذن استلام بضاعه </h1>
+                                    <span> خارج </span>
+                                    <span> {new Date().toLocaleString()} </span>
+                                </div>
+                                <div>
+                                    <img style={{ 'width': "30%" }} src={qr} />
+                                </div>
                             </div>
-                            <div className="data-input">
-                                <label htmlFor="clientname"> اسم العميل </label>
-                                <input onChange={e => handleAddress(e.target.value)} value={selectedClientName} name="orderType" className="form-control  list2 list-enter" list="datalistOptions2" id="exampleDataList2" placeholder="ابحث ..." required />
-                                <datalist id="datalistOptions2">
-                                    {
-                                        clientsInfo.map((i, idx) => (
-                                            <option key={idx}> {i.name} </option>
-                                        ))
-                                    }
-                                </datalist>
-                                {/* <select onChange={e => handleAddress(e.target.value)}>
+                            <div style={{
+                                'display': 'flex',
+                                'flexDirection': 'column',
+                                'alignItems': 'flex-end',
+                                'justifyContent': 'flex-end',
+                                'textAlign': 'left',
+                                'width': '100%',
+                                'margin': '10px 0'
+                            }} className="static-info">
+                                <div className="static-data-holder client-print-data">
+
+
+                                    <p>
+                                        <span>
+                                            {selectedClientAddress}
+                                        </span>
+                                        &nbsp;
+                                        <span>
+                                            : عنوان العميل
+                                        </span>
+                                    </p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <p>
+                                        <span> {selectedClientName} </span>
+                                        &nbsp;
+                                        <span>: اسم العميل</span>
+                                    </p>
+                                </div>
+                                <div className="static-data-holder">
+                                    <p>
+                                        <span> {selectedCarNumber} </span>
+                                        &nbsp;
+                                        <span>: رقم العربيه</span>
+                                    </p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <p>
+                                        <span> {selectedLorryNumber} </span>
+                                        &nbsp;
+                                        <span>: رقم المقطوره</span>
+                                    </p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <p>
+                                        <span> {selectedDriverMobile} </span>
+                                        &nbsp;
+                                        <span>: رقم السائق</span>
+                                    </p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    <p>
+                                        <span>
+                                            {selectedDriverName}
+                                        </span>
+                                        &nbsp;
+                                        <span>
+                                            : اسم السائق
+                                        </span>
+                                    </p>
+                                </div>
+                                <div className="static-data-holder">
+                                    <p>
+                                        __________________/ت.المستلم
+                                    </p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    <p>
+                                        __________________/المستلم
+                                    </p>
+                                </div>
+                            </div>
+                            <Receipt ironArr={ironArr} ironTypeArr={ironTypeArr} ironRadiusArr={ironRadiusArr} ironWeightArr={ironWeightArr} />
+                            <p>
+                                انا الموقع ادناه استلمت البضاعه المبينه بعاليه بحاله جيده بصفه امانه لحين توريد ثمنها بإصال مستقل.
+                            </p>
+                            <p>
+                                اقرار استلام عميل
+                            </p>
+                            <p style={{ 'width': '100%' }}>
+                                ______________________/الاسم
+                            </p>
+                            <p style={{ 'width': '100%' }}>
+                                _____________________/التوقع
+                            </p>
+
+                        </div>
+                        <div className="client-details">
+                            <div className="operate-type">
+
+                                <h1 >خارج</h1>
+                            </div>
+                            <div className="client-data">
+                                <h2 style={{ textAlign: "center" }}>
+                                    بيانات العميل
+                                </h2>
+                                <div className="client-holder">
+                                    <div className="data-input">
+                                        <label htmlFor="address"> العنوان </label>
+                                        <input name="address" type="text" onChange={e => setSelectedClientAddress(e.target.value)} value={selectedClientAddress}  />
+                                    </div>
+                                    <div className="data-input">
+                                        <label htmlFor="clientname"> اسم العميل </label>
+                                        <input onChange={e => setSelectedClientName(e.target.value)} value={selectedClientName} name="orderType" className="form-control  list2 list-enter" list="datalistOptions2" id="exampleDataList2" placeholder="ابحث ..." required />
+                                        
+                                        {/* <select onChange={e => handleAddress(e.target.value)}>
                                     
                                 </select> */}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="driver-data">
-                        <h2>
-                            بيانات السائق و العربيه
-                        </h2>
-                        <div className="driver-holder">
-                            <div className="driver-data-holder">
-                                <div className="data-input">
-                                    <input name="driverNum" type="text" value={selectedDriverMobile} readOnly />
-                                    <label htmlFor="driverNum"> رقم تليفون السائق </label>
-                                </div>
-                                <div className="data-input">
-                                    <select value={selectedDriverName} onChange={e => handleDriverNumber(e.target.value)}>
-                                        <option> اختر سائق</option>
-                                        {
-                                            driverInfo.map((i, idx) => (
-                                                <option key={idx}> {i.name} </option>
-                                            ))
-                                        }
-                                    </select>
-                                    <label htmlFor="driverName"> اسم السائق </label>
-                                </div>
-                            </div>
-                            <div className="car-data-holder">
-                                <div className="data-input">
-                                    <input name="carNum" type="text" value={selectedLorryNumber} readOnly />
-                                    <label htmlFor="carNum"> رقم العربيه </label>
-                                </div>
-                                <div className="data-input">
-                                    <select value={selectedCarNumber} onChange={e => handleLorry(e.target.value)}>
-                                        <option> اختر عربه</option>
-                                        {
-                                            carInfo.map((i, idx) => (
-                                                <option key={idx}> {i.number} </option>
-                                            ))
-                                        }
-                                    </select>
-                                    <label htmlFor="lorryNum"> رقم المقطوره </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button className="iron-btn add-btn" onClick={handleIronAdd}> اضافه وزنه </button>
-                <div className="iron-input">
-                    {
-                        ironArr && ironArr.map((i, key) => (
-                            <div key={key} className="section-content">
-                                {key !== 0 && <div className="weigh-data-holder" style={{ "width": "100%" }}>
-                                    <div className="weigh-data-input">
-                                        <select value={ironRadiusArr[key]} onChange={e => handleRaduisChange(key, e.target.value)} >
-                                            <option>اختر قطر</option>
-                                            <option>6</option>
-                                            <option>8</option>
-                                            <option>10</option>
-                                            <option>12</option>
-                                            <option>14</option>
-                                            <option>16</option>
-                                            <option>18</option>
-                                            <option>20</option>
-                                            <option>22</option>
-                                            <option>25</option>
-                                            <option>32</option>
-                                        </select>
-                                        <label htmlFor="clientname"> القطر</label>
                                     </div>
+                                </div>
+                            </div>
+                            <div className="driver-data">
+                                <h2>
+                                    بيانات السائق و العربيه
+                                </h2>
+                                <div className="driver-holder">
+                                    <div className="driver-data-holder">
+                                        <div className="data-input">
+                                            <input name="driverNum" type="text" value={selectedDriverMobile} readOnly />
+                                            <label htmlFor="driverNum"> رقم تليفون السائق </label>
+                                        </div>
+                                        <div className="data-input">
+                                            <select value={selectedDriverName} onChange={e => handleDriverNumber(e.target.value)}>
+                                                <option> اختر سائق</option>
+                                                {
+                                                    driverInfo.map((i, idx) => (
+                                                        <option key={idx}> {i.name} </option>
+                                                    ))
+                                                }
+                                            </select>
+                                            <label htmlFor="driverName"> اسم السائق </label>
+                                        </div>
+                                    </div>
+                                    <div className="car-data-holder">
+                                        <div className="data-input">
+                                            <input name="carNum" type="text" value={selectedLorryNumber} readOnly />
+                                            <label htmlFor="carNum"> رقم العربيه </label>
+                                        </div>
+                                        <div className="data-input">
+                                            <select value={selectedCarNumber} onChange={e => handleLorry(e.target.value)}>
+                                                <option> اختر عربه</option>
+                                                {
+                                                    carInfo.map((i, idx) => (
+                                                        <option key={idx}> {i.number} </option>
+                                                    ))
+                                                }
+                                            </select>
+                                            <label htmlFor="lorryNum"> رقم المقطوره </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button className="iron-btn add-btn" onClick={handleIronAdd}> اضافه وزنه </button>
+                        <div className="iron-input">
+                            {
+                                ironArr && ironArr.map((i, key) => (
+                                    <div key={key} className="section-content">
+                                        {key !== 0 && <div className="weigh-data-holder" style={{ "width": "100%" }}>
+                                            <div className="weigh-data-input">
+                                                <select value={ironRadiusArr[key]} onChange={e => handleRaduisChange(key, e.target.value)} >
+                                                    <option>اختر قطر</option>
+                                                    <option>6</option>
+                                                    <option>8</option>
+                                                    <option>10</option>
+                                                    <option>12</option>
+                                                    <option>14</option>
+                                                    <option>16</option>
+                                                    <option>18</option>
+                                                    <option>20</option>
+                                                    <option>22</option>
+                                                    <option>25</option>
+                                                    <option>32</option>
+                                                </select>
+                                                <label htmlFor="clientname"> القطر</label>
+                                            </div>
 
-                                    <div className="weigh-data-input">
-                                        <select value={ironTypeArr[key]} onChange={e => handleIronTypeChange(key, e.target.value)} >
-                                            <option> اختر نوع</option>
+                                            <div className="weigh-data-input">
+                                                <select value={ironTypeArr[key]} onChange={e => handleIronTypeChange(key, e.target.value)} >
+                                                    <option> اختر نوع</option>
+                                                    {
+                                                        ironInfo.map((i, idx) => (
+                                                            <option key={idx}> {i.name} </option>
+                                                        ))
+                                                    }
+                                                </select>
+                                                <label htmlFor="clientname"> نوع الحديد </label>
+                                            </div>
+                                        </div>
+                                        }
+                                        <div className="first-weigh">
+                                            <div className="weigh-data-input">
+                                                <input name="weight" type="text" value={ironWeightArr[key]} readOnly />
+
+                                                <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label>
+                                            </div>
+                                            <div className="weigh-data-input">
+                                                <input name="date" type="text" value={ironDate[key]} readOnly />
+                                                <label htmlFor="date"> التاريخ </label>
+                                            </div>
+                                            <div className="weigh-data-input">
+                                                <input name="time" type="text" value={ironTime[key]} readOnly />
+                                                <label htmlFor="time"> التوقت </label>
+                                            </div>
                                             {
-                                                ironInfo.map((i, idx) => (
-                                                    <option key={idx}> {i.name} </option>
-                                                ))
+                                                key !== 0 &&
+                                                <div className="weigh-data-input">
+                                                    <input name="weight" type="text" value={ironWeightArr[key] - ironWeightArr[key - 1] > 0 ? ironWeightArr[key] - ironWeightArr[key - 1] : "قم باضافه الوزنه التاليه"} readOnly />
+                                                    <label htmlFor="weight"> صافي الوزن </label>
+                                                </div>
                                             }
-                                        </select>
-                                        <label htmlFor="clientname"> نوع الحديد </label>
-                                    </div>
-                                </div>
-                                }
-                                <div className="first-weigh">
-                                    <div className="weigh-data-input">
-                                        <input name="weight" type="text" value={ironWeightArr[key]} readOnly />
+                                            <button onClick={e => { handleScaleWeight(key, ironRadiusArr[key], ironTypeArr[key]) }} className="iron-btn"> تحميل الوزن </button>
+                                        </div>
 
-                                        <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label>
+                                        {key !== 0 && <div style={{ 'width': '100%' }}>
+                                            <button onClick={handleRemoveAdditionalWeigh} className="iron-btn remove"> ازاله </button>
+                                        </div>}
                                     </div>
-                                    <div className="weigh-data-input">
-                                        <input name="date" type="text" value={ironDate[key]} readOnly />
-                                        <label htmlFor="date"> التاريخ </label>
-                                    </div>
-                                    <div className="weigh-data-input">
-                                        <input name="time" type="text" value={ironTime[key]} readOnly />
-                                        <label htmlFor="time"> التوقت </label>
-                                    </div>
+                                ))
+                            }
+                            <button onClick={handlePrint} className="iron-btn"> طباعه</button>
+                        </div>
 
-                                    <button onClick={e => { handleScaleWeight(key) }} className="iron-btn"> تحميل الوزن </button>
-                                </div>
-                                {key !== 0 && <div style={{ 'width': '100%' }}>
-                                    <button onClick={handleRemoveAdditionalWeigh} className="iron-btn remove"> ازاله </button>
-                                </div>}
-                            </div>
-                        ))
-                    }
-                    <button onClick={handlePrint} className="iron-btn"> طباعه</button>
-                </div>
-
-            </div>}
+                    </div>}
             </div>
         </>
     )

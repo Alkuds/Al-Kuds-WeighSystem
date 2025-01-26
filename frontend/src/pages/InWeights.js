@@ -37,9 +37,9 @@ const Receipt = ({ ironArr, ironRadiusArr, ironTypeArr, ironWeightArr }) => {
                         </p>
                     </div>
                 </div>
-                <p className="total-weight">
-                    <span> صافي الوزنه:</span>
-                    <span> {ironWeightArr[idx] - ironWeightArr[idx + 1]} </span>
+                <p className="total-weight client-print-data">
+                صافي الوزنه:{ironWeightArr[idx] - ironWeightArr[idx + 1]}
+                    
                 </p>
             </div>
         )
@@ -106,10 +106,31 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
     const [timeArr, setTimeArr] = useState(oldTicketId != null?dummTimeArr:[])
     const isFirstRender = useRef(true);
     const [modal, setModal] = useState(false)
-    
+    const [manualWeight,setManualWeigh] = useState(0)
     
     const handleView = (idx) =>{
+        if(modal==true)
+            window.location.reload();
         setModal(!modal);
+        if(type ==='new'){
+            setId(null);
+            setIronArr([]);
+            setIronWeightArr([])
+            setIronTime([])
+            setIronDate([])
+            setIronTypeArr([])
+            setIronRadiusArr([])
+            setSelectedClientName(null)
+            setSelectedClientAddress(null)
+            setSelectedDriverName(null)
+            setSelectedDriverMobile(null)
+            setSelectedCarNumber(null)
+            setSelectedLorryNumber(null)
+            setSelectedIron(null)
+            setSelectedRadius(null)
+            setDateArr([])
+            setTimeArr([])
+        }
     }
 
     useEffect(() => {
@@ -177,37 +198,10 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
         getFactoryInfo()
         getIronStorage()
 
-        window.addEventListener('keydown', (e) => {
-            if (e.keyCode == 80 && (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
-                e.preventDefault()
-                if (e.stopImmediatePropagation)
-                    e.stopImmediatePropagation()
-                else
-                    e.stopPropagation()
-            }
-        }, true)
-
-        const unloadCallBack = (e) => {
-            e.preventDefault();
-            e.returnValue = "هل تري تحميل الصفحه من جديد؟"
-            return "";
-        }
-        window.addEventListener("beforeunload", unloadCallBack)
-        return () => window.removeEventListener("beforeunload", unloadCallBack)
+       
     }, [id,ironRadiusArr, ironTypeArr, ironWeightArr, ironArr, selectedCarNumber, selectedClientAddress, selectedClientName, selectedDriverMobile, selectedDriverName, selectedIron, selectedLorryNumber, selectedRadius])
 
-    const handleAddress = (name) => {
-        console.log(clientsInfo)
-        setSelectedClientName(name);
-        for (const i of clientsInfo) {
-            console.log(i.name.length + " " + name.length)
-            if (i.name === name) {
-                console.log("dddd")
-                setSelectedClientAddress(i.address);
-                break;
-            }
-        }
-    }
+    
 
     const handleDriverNumber = (name) => {
         setSelectedDriverName(name);
@@ -230,22 +224,25 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
         }
     }
 
-    const handleScaleWeight = async (idx) => {
+    const handleScaleWeight = async (idx,x,y,w) => {
+        if( idx !==0 && (x===null || x==="" || y===null || y===""|| x===0 || y===0)){
+            window.alert("ارجو اختيار نوع الحديد و القطر قبل تحميل الوزن")
+            return
+        }
         setIsLoading(true);
-        const response = await fetch('http://localhost:7000/irons/getScaleWeight',
-            {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-        const json = await response.json()
-        let dummyArr = ironWeightArr
-        if (response.ok) {
-            console.log(json.weight, idx)
+        // const response = await fetch('http://localhost:7000/irons/getScaleWeight',
+        //     {
+        //         method: "GET",
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     }
+        // )
+        // const json = await response.json()
+        // if (response.ok) {
+            console.log(w, idx)
             let dummyArr = ironWeightArr
-            dummyArr[idx] = json.weight
+            dummyArr[idx] = w
             setIronWeightArr(dummyArr);
 
 
@@ -258,7 +255,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
             setIronDate(dateDummyArr)
             setIronTime(timeDummyArr)
             setIsLoading(false)
-        }
+        // }
 
         let type = "in"
         let clientName = selectedClientName;
@@ -267,8 +264,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
         let driverNo = selectedDriverMobile
         let carNumber = selectedCarNumber;
         let lorryNumber = selectedLorryNumber;
-        let d = new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
-        let dateArr = d.split(',');
+       
         let date = dateArr[0];
         let time = dateArr[1];
         let weightBefore = dummyArr[0];
@@ -322,6 +318,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
         const autoSaveResponse = await autoTicketSave.json();
         setId(autoSaveResponse.id)
         console.log(autoSaveResponse);
+        setManualWeigh(0)
         dispatch({ type : 'SET_TICKETS', payload : autoSaveResponse.db})
 
     }
@@ -375,14 +372,15 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
             console.log("heeree")
             return
         }
-        for (let i of ironWeightArr) {
-            if (i === 0) {
+        for (let i=0;i<ironWeightArr.length;i++) {
+            console.log(i)
+            if (i > 0 && ironWeightArr[i]===0) {
                 window.alert("برجاء ادخال البيانات كامله")
                 console.log("heeree 1")
                 return
             }
         }
-        for (let i in ironRadiusArr) {
+        for (let i =0;i<ironRadiusArr.length;i++) {
             if (i > 0 && (ironRadiusArr[i] === 0 || ironTypeArr[i] === 0)) {
                 window.alert("برجاء ادخال البيانات كامله")
                 console.log("heeree 3")
@@ -412,6 +410,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                 setDateArr([])
                 setTimeArr([])
                 dispatch({ type : 'SET_TICKETS', payload : ans})
+                window.location.reload();
             }
 
         }
@@ -433,9 +432,27 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
         }
     }
 
+    const handleDelete = async () => {
+
+        const response = await fetch("http://localhost:7000/ticket/ticketDelete/" + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        const resp = await response.json()
+
+        if (response.ok) {
+            window.location.reload();
+        }
+
+
+    }
+
     return (
         <>
-            <div style={{"width":"100%"}}>
+            <div className="outWeightHolder">
                 <button style={{"fontSize":"25px"}} className="displayHidden add-btn iron-btn" onClick={handleView}>
                     {type === 'old' ? "افتح التذكره" : "انشاء تذكره وارد"}
                 </button>
@@ -444,7 +461,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                         &times;
                     </span>
                     <div style={{
-                        'background-image': `url(${require("../assets/images/kuds-watermark.png")})`
+                        'backgroundImage': `url(${require("../assets/images/kuds-watermark.png")})`
                     }} className="print-content">
                         <div className="print-header">
                             <div className="header-img-holder" >
@@ -474,7 +491,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                             'width': '100%',
                             'margin': '10px 0'
                         }} className="static-info">
-                            <div className="static-data-holder">
+                            <div className="static-data-holder client-print-data">
 
 
                                 <p>
@@ -508,7 +525,12 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                                     <span>: رقم المقطوره</span>
                                 </p>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+                                <p>
+                                    <span> {selectedDriverMobile} </span>
+                                    &nbsp;
+                                    <span>: رقم السائق</span>
+                                </p>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <p>
                                     <span>
                                         {selectedDriverName}
@@ -557,18 +579,11 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                             <div className="client-holder">
                                 <div className="data-input">
                                     <label htmlFor="address"> العنوان </label>
-                                    <input name="address" type="text" value={selectedClientAddress} readOnly />
+                                    <input name="address" type="text" onChange={e => setSelectedClientAddress(e.target.value)} value={selectedClientAddress}  />
                                 </div>
                                 <div className="data-input">
                                     <label htmlFor="clientname"> اسم المورد </label>
-                                    <input value={selectedClientName} onChange={e => handleAddress(e.target.value)} name="orderType" class="form-control  list2 list-enter" list="datalistOptions2" id="exampleDataList2" placeholder="ابحث ..." required />
-                                    <datalist id="datalistOptions2">
-                                        {
-                                            clientsInfo.map((i, idx) => (
-                                                <option key={idx}> {i.name} </option>
-                                            ))
-                                        }
-                                    </datalist>
+                                    <input value={selectedClientName} onChange={e => setSelectedClientName(e.target.value)} name="orderType" class="form-control  list2 list-enter" list="datalistOptions2" id="exampleDataList2" placeholder="ابحث ..."  />
                                 </div>
                             </div>
                         </div>
@@ -654,8 +669,8 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                                     <div className="first-weigh">
                                         <div className="weigh-data-input">
                                             <input name="weight" type="text" value={ironWeightArr[key]} readOnly />
-
-                                            <label htmlFor="weight"> وزنه رقم &nbsp;{key + 1} </label>
+                                            <input name="weight" type="text"  value={manualWeight} onChange={e=>setManualWeigh(e.target.value)}/>
+                                            <label htmlFor="weight">ادخل وزنه رقم &nbsp;{key + 1} </label>
                                         </div>
                                         <div className="weigh-data-input">
                                             <input name="date" type="text" value={ironDate[key]} readOnly />
@@ -666,8 +681,16 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                                             <label htmlFor="time"> التوقت </label>
                                         </div>
 
-                                        <button onClick={e => { handleScaleWeight(key) }} className="iron-btn"> تحميل الوزن </button>
+                                        <button onClick={e => { handleScaleWeight(key,ironRadiusArr[key],ironTypeArr[key],manualWeight) }} className="iron-btn"> تحميل الوزن </button>
+                                        {
+                                        key !==0 &&
+                                        <div className="weigh-data-input">
+                                            <input name="weight" type="text" value={ironWeightArr[key-1]-ironWeightArr[key]>0?ironWeightArr[key-1]-ironWeightArr[key]:"قم باضافه الوزنه التاليه"} readOnly />
+                                            <label htmlFor="weight"> صافي الوزن </label>
+                                        </div>
+                                    }
                                     </div>
+                                   
                                     {key !== 0 && <div style={{ 'width': '100%' }}>
                                         <button onClick={handleRemoveAdditionalWeigh} className="iron-btn remove"> ازاله </button>
                                     </div>}
@@ -675,6 +698,7 @@ const InWeighs = ({ type, oldTicketId, userId }) => {
                             ))
                         }
                         <button onClick={handlePrint} className="iron-btn"> طباعه</button>
+                        { type === "old" &&  <button onClick={handleDelete} className="iron-btn"> ازاله</button>}
                     </div>
                 </div>}
 

@@ -1,14 +1,20 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { SerialPort } = require('serialport')
 const path = require("path");
 const app = express();
+const mongoose = require('mongoose');
 
 app.use(bodyParser.json()); // for JSON data
-app.use(bodyParser.urlencoded({ extended: false })); // for URL-encoded data
 
 // const serialPort2 = new SerialPort({ path: 'COM1', baudRate: 9600});
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("mongo db connected "))
+    .catch(err => console.log(err));
+
 
 
 app.use((req,res,next) => {
@@ -20,15 +26,16 @@ app.use((req,res,next) => {
 
     next();
 })
-app.use('/ticket' , require("./routes/ticket"));
+app.use('/order' , require("./routes/order"));
 app.use('/car' , require("./routes/car"));
 app.use('/clients' , require("./routes/clients"));
 app.use('/factory' , require("./routes/factory"));
 app.use('/driver' , require("./routes/driver"));
 app.use('/irons' , require("./routes/irons"));
 app.use('/ticketId' , require("./routes/ticketId"));
+app.use('/wallet' , require("./routes/wallets"));
 
-if (true) {
+if (false) {
 	app.use(express.static(path.join(__dirname, '../frontend/build')))
 }
 
@@ -48,7 +55,7 @@ let readData;
 //     res.json(readData);
 // });
 
-if (true) {
+if (false) {
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
     });

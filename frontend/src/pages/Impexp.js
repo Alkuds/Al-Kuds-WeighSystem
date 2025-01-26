@@ -56,8 +56,8 @@ const Impexp = () => {
       <table className='out-table'>
           <thead>
             <tr>
-              <th> +/- </th>
               <th> نقديه </th>
+              <th> +/- </th>
             </tr>
           </thead>
           <tbody>

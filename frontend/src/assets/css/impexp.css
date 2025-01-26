@@ -11,9 +11,9 @@
 }
 
 .impexp-table {
-    width: 55%;
     border-collapse: collapse;
-
+    max-width: 100%;
+    white-space: no-wrap;
 }
 
 .impexp-table thead {

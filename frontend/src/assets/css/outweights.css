@@ -238,6 +238,10 @@ label {
 }
 @media print {
 
+    .client-print-data{
+        font-size: 25px;
+    }
+
     .outWeightHolder{
         width: unset;
     }

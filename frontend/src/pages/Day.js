@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from 'react'
 
-const InTableRow = ({ kg, ton, name, raduis, ironName }) => {
+const InTableRow = ({ w, name, raduis, ironName }) => {
   return (
     <tr>
       <td style={{ "minWidth": "90px" }}> {name} </td>
       <th style={{ "minWidth": "90px" }}> {ironName} </th>
       <td> {raduis} </td>
-      <td> {ton} </td>
-      <td> {kg} </td>
+      <td> {w} </td>
     </tr>
   )
 }
 
-const OutTableRow = ({ name, raduis, ton, kg, ironName }) => {
+const OutTableRow = ({ name, raduis, w, ironName }) => {
   return (
     <tr>
       <td style={{ "minWidth": "90px" }}> {name} </td>
       <th style={{ "minWidth": "90px" }}> {ironName} </th>
       <td> {raduis} </td>
-      <td> {ton} </td>
-      <td> {kg} </td>
+      <td> {w} </td>
     </tr>
   )
 }
@@ -156,9 +154,8 @@ const Day = () => {
                 else
                   kgValue = 0;
                 let obj = {
-                  name: i.reciept[j].clientName,
-                  ton: parseInt(i.reciept[j].weight / 1000),
-                  kg: kgValue,
+                  name: i.clientName,
+                  w: i.reciept[j].weight,
                   raduis: i.reciept[j].radius,
                   ironName: i.reciept[j].ironName,
                   field5: " ",
@@ -181,7 +178,7 @@ const Day = () => {
                 let kgStr = kgDummy.toString()
                 let kgSplit = kgStr.split(".")
                 let kgValue;
-                tOut += parseInt(i.reciept[j].weight);
+                tOut += Math.abs(parseInt(i.reciept[j].weight));
                 if (kgStr.indexOf('.') !== -1) {
                   kgValue = parseInt(kgSplit[1].padEnd(3, '0'));
                 }
@@ -189,11 +186,10 @@ const Day = () => {
                   kgValue = 0;
                 }
                 let obj = {
-                  name: i.reciept[j].clientName,
+                  name: i.clientName,
                   ironName: i.reciept[j].ironName,
-                  ton: parseInt(i.reciept[j].weight / 1000),
-                  kg: kgValue,
-                  raduis: i.reciept[j].radius,
+                  w:i.reciept[j].weight ,
+                  raduis: i.reciept[j].radius
                 }
                 outArr.push(obj)
               }
@@ -208,26 +204,31 @@ const Day = () => {
     }
     getTicketsInfo();
   }, [])
-
-
+  const MMDDYYYYDate =() =>{
+    let d = new Date().toLocaleString()
+    let dateArr = d.split(',');
+    d = dateArr[0]
+    let e = d.split('/');
+    return e[1]+"/"+e[0]+"/"+e[2];
+  }
+  console.log(MMDDYYYYDate())
   return (
     <>
-      <p style={{ "margin": '0', 'textAlign': 'center' }}>{new Date().toLocaleString()}</p>
+      <p style={{ "margin": '0', 'textAlign': 'center' }}> { MMDDYYYYDate()} / {new Date().toLocaleTimeString()}</p>
       <div className='daily-table-holder'>
-        <table className='in-table' align='right' >
+      <table className='in-table' align='right' >
           <thead>
             <tr>
               <th> مورد بضاعه </th>
               <th> نوع </th>
               <th> م </th>
-              <th> ط </th>
-              <th> كيلو </th>
+              <th> وزن</th>
             </tr>
           </thead>
           <tbody>
             {
               outArrWeightArr.map((i, idx) => (
-                <OutTableRow key={idx} ironName={i.ironName} name={i.name} kg={i.kg} ton={i.ton} raduis={i.raduis} />
+                <OutTableRow key={idx} ironName={i.ironName} name={i.name} w={i.w}  raduis={i.raduis} />
               ))
             }
           </tbody>
@@ -241,21 +242,20 @@ const Day = () => {
               </th>
             </tr>
           </tfoot>
-        </table>
-        <table className='out-table right-table'>
+        </table> 
+        <table className='in-table right-table'>
           <thead>
             <tr>
               <th> العميل </th>
               <th> نوع </th>
               <th> م </th>
-              <th> ط </th>
-              <th> كيلو </th>
+              <th> وزن</th>
             </tr>
           </thead>
           <tbody>
             {
               inArrWeightArr.map((i, idx) => (
-                <InTableRow key={idx} name={i.name} ironName={i.ironName} kg={i.kg} ton={i.ton} raduis={i.raduis} />
+                <InTableRow key={idx} name={i.name} ironName={i.ironName} w={i.w} raduis={i.raduis} />
               ))
             }
           </tbody>
@@ -270,6 +270,7 @@ const Day = () => {
             </tr>
           </tfoot>
         </table>
+      
       </div>
       <button className="iron-btn" onClick={e => window.print()}>  طباعه</button>
     </>

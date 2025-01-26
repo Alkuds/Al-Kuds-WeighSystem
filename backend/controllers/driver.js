@@ -1,28 +1,35 @@
 const { getDatabaseByName, updateDatabaseByName } = require("./databaseController");
+const Driver = require('../models/driver')
+const getDriversInfo = async (req , res) => {
+    let drivers
+    try{
+        drivers = await Driver.find();
+    }
+    catch(err){
+        console.log(err)
+    }
 
-const getDriversInfo = (req , res) => {
-    let db = getDatabaseByName('Driver');
-    res.json(db);
+    res.json(drivers)
 } 
-const addDriver = (req , res) => {
+const addDriver = async (req , res) => {
     const { name, mobile } = req.body
-    let db = getDatabaseByName('Driver');
-    db.push(
-        {
-            name,
-            mobile
-        }
-    )
-    updateDatabaseByName("Driver",JSON.stringify(db));
-    res.json({"msg":"success"})
+    let newDriver;
+    try{
+        newDriver = new Driver(
+            {
+                name,mobile
+            }
+        )
 
-}
-const updateDriversInfo = (req , res) => {
-    res.json( {
-        Drivers : "info"
-    })
+        newDriver.save()
+    }
+    catch(err){
+        console.log(err)
+    }
+
+    res.json(newDriver)
 
 }
 module.exports = {
-    getDriversInfo , addDriver , updateDriversInfo
+    getDriversInfo , addDriver 
 }

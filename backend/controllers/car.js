@@ -1,16 +1,35 @@
 const { getDatabaseByName } = require("./databaseController")
+const Car = require('../models/car')
+const getCarInfo = async (req, res) => {
+    let cars;
+    try{
+        cars = await Car.find()
+    }
+    catch(err){
+        console.log(err)
+    }
 
-const getCarInfo = (req, res) => {
-    let db = getDatabaseByName('car');
-    res.json(db);
+    res.json(cars)
  }
-const postCarInfo = (req, res) => {
-    res.json({
-        "vitolo": "viito"
-    })
+const addCar = async (req, res) => {
+    const {carNo, lorryNo} = req.body;
+    console.log(carNo,lorryNo)
+    let newCar
+    try{
+        newCar = new Car(
+            {
+                carNo,lorryNo
+            }
+        )
+        newCar.save();
+    }
+    catch(err){
+        console.log(err)
+    }
+
+    res.json(newCar)
  }
-const updateCarInfo = (req, res) => { }
 
 module.exports = {
-    getCarInfo, postCarInfo, updateCarInfo
+    getCarInfo, addCar
 }

@@ -1,25 +1,29 @@
 const { getDatabaseByName, updateDatabaseByName } = require("./databaseController");
-
+const Client = require('../models/client')
 const getClientsInfo = (req , res) => {
     let db = getDatabaseByName('Clients');
     res.json(db);
 
 }
-const addClients = (req , res) => {
+const addClients = async (req , res) => {
     const { name,address } = req.body
+    let newClient;
+    try{
+        newClient = new Client(
+            {
+                name,
+                address,
+                ticketsIds:[],
+                clientId:1
+            }
+        )
 
-    let db = getDatabaseByName('Clients');
-    console.log(db)
-    db.push(
-        {
-            name,
-            address,
-            tickets:[]
-        }
-    )
-
-    updateDatabaseByName("Clients",JSON.stringify(db));
-    res.json({"msg":"success"})
+        newClient.save()
+    }
+    catch(err){
+        console.log(err)
+    }
+    res.json(newClient)
 
 }
 const updateClientsInfo = (req , res) => {

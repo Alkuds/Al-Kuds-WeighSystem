@@ -7,6 +7,7 @@ const Storage = () => {
   const [password, setPassword] = useState()
   const [selectedWeight, setSelectedWeight] = useState(0)
   const [type,setType] = useState(null)
+  const [selectedClientName, setSelectedClientName] = useState()
   useEffect(() => {
     const getIronStorage = async () => {
       const response = await fetch('http://localhost:7000/irons/getIronStorage',
@@ -82,7 +83,7 @@ const Storage = () => {
       setSelectedWeight(json["newWeight"])
       setPassword("")
 
-      let clientName = "القدس";
+      let clientName = selectedClientName;
       let clientAddress = " ";
       let driverName =" ";
       let driverNo = " ";
@@ -94,7 +95,7 @@ const Storage = () => {
       let time = dateArr[1];
       let weightBefore = " ";
       let reciept = [];      
-      let singleReciept = { ironName:obj.name+"(القدس)", radius:obj.radius, weightAfter:obj.weight, weight:obj.weight, date, time };
+      let singleReciept = { ironName:obj.name, radius:obj.radius, weightAfter:obj.weight, weight:obj.weight, date, time };
       reciept.push(0)
       reciept.push(singleReciept);
 
@@ -173,6 +174,10 @@ const Storage = () => {
           <option>خارج</option>
         </select>
         <label name="radius" htmlFor="radius"> نوع التذكره </label>
+      </div>
+      <div className="data-input">
+        <input name="weight" type="text" value={selectedClientName} onChange={e => setSelectedClientName(e.target.value)} />
+        <label htmlFor="weight"> الاسم </label>
       </div>
       <div className="data-input">
         <input name="weight" type="number" value={selectedWeight} onChange={e => setSelectedWeight(e.target.value)} />

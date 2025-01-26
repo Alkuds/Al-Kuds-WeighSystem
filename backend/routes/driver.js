@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.get("/getDriversInfo" , getDriversInfo);
 router.post("/addDriver" , addDriver);
-router.post("/updateDriversInfo" , updateDriversInfo);
 
 
 module.exports = router; 
