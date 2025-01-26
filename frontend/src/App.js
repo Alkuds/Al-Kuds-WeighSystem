@@ -8,10 +8,18 @@ import Day from './pages/Day';
 import Storage from './pages/Storage';
 import Settings from './pages/Settings';
 import MainPage from './pages/MainPage';
+import { useUserContext } from './hooks/useUserContext';
+import Login from './pages/Login';
+
+const LoginRoute = () =>{
+  const { user } = useUserContext();
+  return user? <HomeLayout/> : <Navigate to="/login" />;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomeLayout />,
+    element: <LoginRoute/>,
     children: [
       {
         index: true,
@@ -32,10 +40,14 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: < Settings/>,
-      },
+      }
     ] , 
     
   } , 
+  {
+    path: "/login",
+    element: <Login/>,
+  }
   
 ])
 

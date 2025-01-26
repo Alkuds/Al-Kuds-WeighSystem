@@ -34,6 +34,7 @@ app.use('/driver' , require("./routes/driver"));
 app.use('/irons' , require("./routes/irons"));
 app.use('/ticketId' , require("./routes/ticketId"));
 app.use('/wallet' , require("./routes/wallets"));
+app.use('/user' , require("./routes/user"));
 
 if (false) {
 	app.use(express.static(path.join(__dirname, '../frontend/build')))
@@ -61,4 +62,4 @@ if (false) {
     });
 }
 
-app.listen('7000',()=>console.log("runnin on port 7000"));
+app.listen('8000',()=>console.log("runnin on port 7000"));

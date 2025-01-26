@@ -50,9 +50,8 @@ export const UnfinishedTicketsContextProvider = ({ children }) => {
                     dispatch({type:"SET_TICKETS",payload:[]})
                 
             }              
-        }
-
-        getUnfinishedTickets();
+        }  
+        //getUnfinishedTickets();
     }, [])
 
     return (
