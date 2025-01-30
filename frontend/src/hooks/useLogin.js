@@ -15,8 +15,7 @@ export const useLogin = () => {
       },
       body: cred,
     }).then(async (res) => {
-        console.log(res);
-        const json = res.data;
+        const json = res
         console.log(json);
         // save the user to local storage
         if (!json.error && json.user !== "user is not found") {

@@ -23,7 +23,6 @@
 .login-button {
     margin-top: 20px;
     padding: 10px 24px;
-    
     width: 30%;
     border-radius: 6px;
     background: black;
@@ -31,4 +30,17 @@
     border: none;
     text-align: center;
     cursor: pointer;
+    transition: 0.5s;
+}
+
+.login-button:hover{
+    background-color: greenyellow;
+    color: black;
+}
+
+@media screen and (max-width: 1080px) {
+    .user-data-holder{
+        width: 90%;
+        height: 90vh;
+    }
 }
