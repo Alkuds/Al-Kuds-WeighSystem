@@ -1,6 +1,6 @@
 .login-container{
     background-color: black;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,12 +16,12 @@
     justify-content: flex-start;
     background-color: white;
     border-radius: 30px;
-    height: 80vh;
+
     width: 50%;
 }
 
 .login-button {
-    margin-top: 20px;
+    margin:20px 0px;
     padding: 10px 24px;
     width: 30%;
     border-radius: 6px;
