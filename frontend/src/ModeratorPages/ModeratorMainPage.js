@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import OutWeighs from "../pages/OutWeighs";
-import InWeights from "../pages/InWeights";
+import OutWeighs from "../SharedComponents/OutWeighs";
+import InWeights from "../SharedComponents/InWeights";
 const ModeratorMainPage = () => {
   const [modal, setModal] = useState(false);
   return (

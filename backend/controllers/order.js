@@ -28,13 +28,24 @@ const getTicketsForDay = (req, res) => {
 
 const getUnfinishedTicketsInfo = async (req, res) => {
     let orders;
+    let ordersSorted = new Map()
     try {
         orders = await Order.find({ state: "progress" })
+        for(let x in orders){
+            if(ordersSorted.has(x.clientId)){
+                let newArr = ordersSorted.get(x.clientId)
+                newArr.push(x)
+                ordersSorted.set(x.clientId,newArr)
+            }
+            else{
+                ordersSorted.set(x.clientId,[x])
+            }
+        }
     }
     catch (err) {
         console.log(err)
     }
-    res.json(orders);
+    res.json(ordersSorted);
 }
 
 const getSpecificTicket = (req, res) => {

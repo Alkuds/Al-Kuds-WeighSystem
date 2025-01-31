@@ -6,7 +6,7 @@ const getClientsInfo = (req , res) => {
 
 }
 const addClients = async (req , res) => {
-    const { name,address } = req.body
+    const { name,address} = req.body
     let newClient;
     try{
         newClient = new Client(
@@ -14,7 +14,7 @@ const addClients = async (req , res) => {
                 name,
                 address,
                 ticketsIds:[],
-                clientId:1
+                clientId:2
             }
         )
 
