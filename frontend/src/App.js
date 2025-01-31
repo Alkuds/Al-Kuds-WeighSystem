@@ -1,6 +1,7 @@
 import { Navigate, createBrowserRouter, RouterProvider, useParams } from 'react-router-dom';
 import './App.css';
 import HomeLayout from './layouts/HomeLayout'
+import ModeratorPage from './layouts/ModeratorPage'
 import OutWeighs from './pages/OutWeighs';
 import InWeights from './pages/InWeights';
 import Impexp from './pages/Impexp';
@@ -13,7 +14,20 @@ import Login from './pages/Login';
 
 const LoginRoute = () =>{
   const { user } = useUserContext();
-  return user? <HomeLayout/> : <Navigate to="/login" />;
+  console.log(user)
+  if(!user){
+    return <Login/>;
+  }
+  else{
+    if(user.name === 'osama'){
+      console.log("heree")
+      return <ModeratorPage/>;
+    }
+    else{
+      return <HomeLayout/>;
+    }
+  }
+  
 }
 
 const router = createBrowserRouter([
@@ -46,7 +60,7 @@ const router = createBrowserRouter([
   } , 
   {
     path: "/login",
-    element: <Login/>,
+    element: <LoginRoute/>,
   }
   
 ])

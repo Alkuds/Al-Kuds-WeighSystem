@@ -11,6 +11,15 @@ app.use(bodyParser.json()); // for JSON data
 
 // const serialPort2 = new SerialPort({ path: 'COM1', baudRate: 9600});
 
+const corsOptions = {
+    //https://testing-deployment2-46a3b.web.app/
+    origin: "*",
+    credentials: true,
+    "access-control-allow-credentials": true,
+    optionSuccessStatus: 200,
+  };
+  app.use(cors(corsOptions));
+
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("mongo db connected "))
     .catch(err => console.log(err));
@@ -62,4 +71,4 @@ if (false) {
     });
 }
 
-app.listen('8000',()=>console.log("runnin on port 7000"));
+app.listen('8000',()=>console.log("running on port 8000"));

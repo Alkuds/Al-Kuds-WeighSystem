@@ -4,34 +4,32 @@ export const useLogin = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
   const { dispatch } = useUserContext();
-  const login = async (Email, password) => {
+  const login = async (username, password) => {
     setIsLoading(true);
     setError(null);
-    let cred = JSON.stringify({ email: Email, password: password });
-    const response = await fetch(`/users/login`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+    let cred = JSON.stringify({ username, password});
+    const response = await fetch(`/user/login`, {
+      method:"POST",
       body: cred,
-    }).then(async (res) => {
-        const json = res
-        console.log(json);
-        // save the user to local storage
-        if (!json.error && json.user !== "user is not found") {
-          localStorage.setItem("user", JSON.stringify(json));
-          // update the auth context
-          dispatch({ type: "LOGIN", payload: json });
-          // update loading state
-        } else {
-          setError("Email or Password is incorrect.");
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log("No internet Connection");
-      });
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type' : 'application/json',
+        'Access-Control-Allow-Origin' : '*'
+      }
+    })
+    const json = await response.json();
+    if(response.ok && json.status ==="success"){
+      console.log(json)
+      localStorage.setItem("user", JSON.stringify(json.msg));
+      // update the auth context
+      dispatch({ type: "LOGIN", payload: json.msg });
+      setIsLoading(false);
+    }
+    else{
+      setError(json.msg)
+      setIsLoading(false);
+    }
+    
   };
 
   return { login, isLoading, error };
