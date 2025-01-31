@@ -64,7 +64,7 @@ const EditOrderTicket = async (req, res) => {
 }
 
 const addOrder = async (req, res) => {
-    const { state, ticket, type, clientId, driverId, carId, totalPrice } = req.body
+    const { ticket, type, clientId, driverId, carId, totalPrice } = req.body
     let newOrder;
     try {
         newOrder = new Order(

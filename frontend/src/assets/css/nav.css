@@ -15,7 +15,7 @@
     gap: 10px;
 }
 
-.nav a{
+.nav .nav-container a{
     color: white;
     text-decoration: none;
     opacity: 0.5;
@@ -26,11 +26,11 @@
     opacity: 1 !important;
 }
 
-.nav a:hover{
+.nav .nav-container a:hover{
     opacity: 1;
 }
 
-.nav img{
+.nav .nav-container img{
     width: 60%;
     margin-bottom: 100px;
 }
