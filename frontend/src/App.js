@@ -20,12 +20,17 @@ import "./styles/tailwind.css";
 import ModeratorMainPage from "./ModeratorPages/ModeratorMainPage";
 const LoginRoute = () => {
   const { user } = useUserContext();
-  return user ? <HomeLayout /> : <Navigate to="/login" />;
+  if(!user){
+    return <Login />
+  }
+  else{
+    return user.name === "Osama" ? <Navigate to="/up" /> : <Navigate to="/down" />;
+  }
 };
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/down",
     element: <HomeLayout />,
     children: [
       {
@@ -51,8 +56,8 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: "/",
+    element: <LoginRoute/>,
   },
   {
     path: "/up",
