@@ -20,18 +20,37 @@ import "./styles/tailwind.css";
 import ModeratorMainPage from "./ModeratorPages/ModeratorMainPage";
 const LoginRoute = () => {
   const { user } = useUserContext();
-  if(!user){
-    return <Login />
-  }
-  else{
+  if (user === null) {
+    return <Login />;
+  } else {
     return user.name === "Osama" ? <Navigate to="/up" /> : <Navigate to="/down" />;
+  }
+};
+
+const ModeratorRoute = () => {
+
+  const { user } = useUserContext();
+  if (user === null) {
+    return <Navigate to="/" />;
+  } else {
+    return user.name === "Osama" ? <ModeratorLayout /> : <Navigate to="/" />;
+  }
+};
+
+const WorkerRoute = () => {
+
+  const { user } = useUserContext();
+  if (user === null) {
+    return <Navigate to="/" />;
+  } else {
+    return user.name === "Hassan" ? <HomeLayout /> : <Navigate to="/" />;
   }
 };
 
 const router = createBrowserRouter([
   {
     path: "/down",
-    element: <HomeLayout />,
+    element: <WorkerRoute />,
     children: [
       {
         index: true,
@@ -57,11 +76,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <LoginRoute/>,
+    element: <LoginRoute />,
   },
   {
     path: "/up",
-    element: <ModeratorLayout />,
+    element: <ModeratorRoute />,
     children: [
       {
         index: true,
