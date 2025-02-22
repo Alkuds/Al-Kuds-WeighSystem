@@ -140,7 +140,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
 
     useEffect(() => {
         const getCarInfo = async () => {
-            const response = await fetch('http://localhost:7000/car/getCarInfo',
+            const response = await fetch('http://localhost:8000/car/getCarInfo',
                 {
                     method: "GET",
                     headers: {
@@ -154,7 +154,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             setCarInfo(json)
         }
         const getDriverInfo = async () => {
-            const response = await fetch('http://localhost:7000/driver/getDriversInfo',
+            const response = await fetch('http://localhost:8000/driver/getDriversInfo',
                 {
                     method: "GET",
                     headers: {
@@ -168,7 +168,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             setDriverInfo(json)
         }
         const getClientsInfo = async () => {
-            const response = await fetch('http://localhost:7000/clients/getClientsInfo',
+            const response = await fetch('http://localhost:8000/clients/getClientsInfo',
                 {
                     method: "GET",
                     headers: {
@@ -182,7 +182,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             setClientsInfo(json);
         }
         const getIronStorage = async () => {
-            const response = await fetch('http://localhost:7000/irons/getIronStorage',
+            const response = await fetch('http://localhost:8000/irons/getIronStorage',
                 {
                     method: "GET",
                     headers: {
@@ -257,7 +257,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
             return
         }
         setIsLoading(true);
-        const response = await fetch('http://localhost:7000/irons/getScaleWeight',
+        const response = await fetch('http://localhost:8000/irons/getScaleWeight',
             {
                 method: "GET",
                 headers: {
@@ -335,7 +335,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
         }
         console.log(ticket)
         console.log(id)
-        const autoTicketSave = await fetch("http://localhost:7000/ticket/addTicket/" + id,
+        const autoTicketSave = await fetch("http://localhost:8000/ticket/addTicket/" + id,
             {
                 method: "POST",
                 headers: {
@@ -443,7 +443,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
 
     const handleTicketStateEnd = async () => {
 
-        const response = await fetch("http://localhost:7000/ticket/ticketFinishState/" + id, {
+        const response = await fetch("http://localhost:8000/ticket/ticketFinishState/" + id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -459,7 +459,7 @@ const OutWeighs = ({ type, oldTicketId, userId }) => {
 
     const handleDelete = async () => {
 
-        const response = await fetch("http://localhost:7000/ticket/ticketDelete/" + id, {
+        const response = await fetch("http://localhost:8000/ticket/ticketDelete/" + id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

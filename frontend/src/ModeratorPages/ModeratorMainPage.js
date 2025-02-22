@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import OutWeighs from "../SharedComponents/OutWeighs";
-import InWeights from "../SharedComponents/InWeights";
 import { useSocketContext } from "../hooks/useSocket";
+import OrderModal from "../components/OrderModal/index";
 const ModeratorMainPage = () => {
   const { socket } = useSocketContext();
   const [modal, setModal] = useState([]);
@@ -29,21 +28,31 @@ const ModeratorMainPage = () => {
       >
         <button
           onClick={() => setModal(true)}
-          style={{ fontSize: "25px" }}
-          className="displayHidden !text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
+          className=" text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
         >
           <p> {data} </p>
           انشاء طلب خارج
         </button>
         <button
           onClick={() => setModal(true)}
-          style={{ fontSize: "25px" }}
-          className="displayHidden w-[50%] whitespace-nowrap add-btn iron-btn min-w-[110px] !text-[14px] md:text-[25px]"
+          className=" w-[50%] whitespace-nowrap add-btn iron-btn min-w-[110px] text-[14px] md:text-[25px]"
         >
           انشاء طلب وارد
         </button>
       </div>
-     
+      {modal && (
+        // <div className="modal">
+        //   <span
+        //     className="displayHidden"
+        //     onClick={()=>{setModal(false)}}
+        //     style={{ fontSize: "30px", cursor: "pointer" }}
+        //   >
+        //     &times;
+        //   </span>
+        //   <h1>hello</h1>
+        // </div>
+        <OrderModal onClose={() => setModal(false)} />
+      )}
     </section>
   );
 };
