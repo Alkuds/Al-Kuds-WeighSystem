@@ -1,26 +1,47 @@
-const WorkerMainPage = () =>{
-    return (
-        <div className="worker-container">
-            <div className="in-orders">
-                <h3 style={{'textAlign':'center'}}>
-                    اوردرات وارد
-                </h3>
-                <div className="orders-holder">
-                    
-                </div>
-            </div>
-            <div>
-            </div>
-            <div className="out-orders">
-                <h3 style={{'textAlign':'center'}}>
-                    اوردرات خارج
-                </h3>
-                <div className="orders-holder">
+import { useEffect, useState } from "react";
+import { useSocketContext } from "../hooks/useSocket";
+import { useUnfinishedTicketsContext } from "../hooks/useUnfinishedTicketsContext";
+import { useClientContext } from "../hooks/useClientContext";
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import InOrders from "../SharedComponents/InOrders";
 
-                </div>
-            </div>
+const WorkerMainPage = () => {
+  const { socket } = useSocketContext();
+  const { unfinishedTickets } = useUnfinishedTicketsContext();
+  const [alignment, setAlignment] = useState('out');
+
+  const handleChange = async(event, newAlignment) => {
+    setAlignment(newAlignment);
+    await socket.emit("send_message", {message:"Hello from the other side",room:"123"});
+  };
+  useEffect(() => {}, [socket]);
+
+  return (
+    <div className="worker-container">
+      <div className="type-filter">
+        <ToggleButtonGroup
+        color="primary"
+        size="large"
+        value={alignment}
+        exclusive
+        onChange={handleChange}
+        aria-label="Platform"
+      >
+        <ToggleButton value="in">وارد</ToggleButton>
+        <ToggleButton value="out">خارج</ToggleButton>
+      </ToggleButtonGroup>
+      </div>
+      <div className="in-orders">
+        <div className="orders-holder">
+          {unfinishedTickets.inOrders && alignment ==="in" &&
+          unfinishedTickets.inOrders.map((i, idx) => <InOrders order={i} />)}
+          {unfinishedTickets.outOrders && alignment ==="out" &&
+          unfinishedTickets.outOrders.map((i, idx) => <InOrders order={i} />)}
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default WorkerMainPage
+export default WorkerMainPage;

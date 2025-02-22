@@ -26,19 +26,19 @@ const getTicketsForDay = (req, res) => {
     res.json(inProgressTickets);
 }
 
-const getUnfinishedTicketsInfo = async (req, res) => {
+const getUnfinishedOrdersInfoGroupedByClientId = async (req, res) => {
     let orders;
-    let ordersSorted = new Map()
+    let ordersSorted = {}
     try {
         orders = await Order.find({ state: "progress" })
-        for(let x in orders){
-            if(ordersSorted.has(x.clientId)){
-                let newArr = ordersSorted.get(x.clientId)
+        for(let x of orders){
+            if(x.clientId in ordersSorted){
+                let newArr = ordersSorted[`${x.clientId}`]
                 newArr.push(x)
-                ordersSorted.set(x.clientId,newArr)
+                ordersSorted[`${x.clientId}`]= newArr;
             }
             else{
-                ordersSorted.set(x.clientId,[x])
+                ordersSorted[`${x.clientId}`] = [x]
             }
         }
     }
@@ -46,6 +46,26 @@ const getUnfinishedTicketsInfo = async (req, res) => {
         console.log(err)
     }
     res.json(ordersSorted);
+}
+
+const getUnfinishedOrdersInfoGroupedByType = async (req, res) => {
+    let orders;
+    let inOrders =[], outOrders = [];
+    try {
+        orders = await Order.find({ state: "progress" })
+        for(let x of orders){
+            if(x.type === 'in'){
+                inOrders.push(x)
+            }
+            else{
+                outOrders.push(x)
+            }
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+    res.json({inOrders,outOrders});
 }
 
 const getSpecificTicket = (req, res) => {
@@ -102,7 +122,7 @@ const addOrder = async (req, res) => {
 
 }
 
-const getClientOrders = async (req, res) => {
+const getSpecificClientOrders = async (req, res) => {
     const { clientId } = req.body;
     let orders;
     try {
@@ -116,7 +136,7 @@ const getClientOrders = async (req, res) => {
 
 }
 
-const TicketFinishState = async (req, res) => {
+const OrderFinishState = async (req, res) => {
     const { orderId } = req.body;
     let updatedOrder
     try {
@@ -225,14 +245,15 @@ const TicketDelete = (req, res) => {
 }
 
 module.exports = {
+    getUnfinishedOrdersInfoGroupedByClientId,
+    getUnfinishedOrdersInfoGroupedByType,
     getTicketsInfo,
     addOrder,
-    TicketFinishState,
-    getUnfinishedTicketsInfo,
+    OrderFinishState,
     getSpecificTicket,
     getTicketsForDay,
     TicketDelete,
     EditOrderTicket,
-    getClientOrders,
+    getSpecificClientOrders,
     ticketUpdateTransaction
 }

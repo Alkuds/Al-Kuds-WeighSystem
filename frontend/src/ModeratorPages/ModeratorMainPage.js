@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OutWeighs from "../SharedComponents/OutWeighs";
 import InWeights from "../SharedComponents/InWeights";
+import { useSocketContext } from "../hooks/useSocket";
 const ModeratorMainPage = () => {
-  const [modal, setModal] = useState(false);
+  const { socket } = useSocketContext();
+  const [modal, setModal] = useState([]);
+  const [data,setData] = useState("hello")
+  useEffect(()=>{
+    socket.on("receive_message", (info) => {
+        console.log("here")
+        console.log(info)
+        setData(info.message)
+    });
+  },[socket])
+
   return (
     <section className="size-full ">
-      <div
+      <div 
         className="displayHidden space-x-4"
         style={{
           margin: "0 auto",
@@ -21,6 +32,7 @@ const ModeratorMainPage = () => {
           style={{ fontSize: "25px" }}
           className="displayHidden !text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
         >
+          <p> {data} </p>
           انشاء طلب خارج
         </button>
         <button
@@ -31,11 +43,7 @@ const ModeratorMainPage = () => {
           انشاء طلب وارد
         </button>
       </div>
-      {modal && (
-        <div className="modal">
-          <h1>hello</h1>
-        </div>
-      )}
+     
     </section>
   );
 };

@@ -8,6 +8,7 @@
     box-sizing: border-box;
     padding: 20px;
     text-align: right;
+    overflow-y: auto;
 }
 .operate-type{
     width: 100%;

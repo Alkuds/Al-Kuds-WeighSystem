@@ -1,8 +1,18 @@
 const { getDatabaseByName, updateDatabaseByName } = require("./databaseController");
 const Client = require('../models/client')
-const getClientsInfo = (req , res) => {
-    let db = getDatabaseByName('Clients');
-    res.json(db);
+const getClientsInfo = async(req , res) => {
+    let clients, clientsMap = {};
+    try{
+        clients = await Client.find({});
+        for(x of clients){
+            clientsMap[x.clientId] = x
+        }
+    }
+    catch(err){
+        console.log(err)
+    }
+    res.json(clientsMap)
+
 
 }
 const addClients = async (req , res) => {

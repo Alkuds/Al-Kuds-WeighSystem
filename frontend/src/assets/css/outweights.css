@@ -19,9 +19,10 @@
 
 .first-weigh,
 .second-weigh {
-    margin: 20px 0;
-    width: 49%;
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-content: flex-end;
 }
 
 .client-details {
@@ -122,6 +123,7 @@ select:focus {
 
 label {
     margin-bottom: 10px;
+    direction: rtl;
 }
 
 .weigh-data-holder {
@@ -142,20 +144,16 @@ label {
 .weigh-data-input {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-end;
     gap: 20px;
-    flex-grow: 1;
+    direction: ltr;
 }
 
-.weigh-data-input label {
-    width: 17%;
-}
 
 .first-weigh,
 .second-weigh {
-    display: flex;
-    flex-direction: column;
+    
 }
 
 .iron-btn {

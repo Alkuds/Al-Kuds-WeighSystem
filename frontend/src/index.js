@@ -12,14 +12,20 @@ import "./assets/css/workerMainPage.css";
 import App from "./App";
 import { UnfinishedTicketsContextProvider } from "./context/UnfinishedTicketsContext";
 import { UserContextProvider } from "./context/userContext";
+import { SocketProvider } from "./context/socketContext";
+import { ClientContextProvider } from "./context/ClientContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <UserContextProvider>
-      <UnfinishedTicketsContextProvider>
-        <App />
-      </UnfinishedTicketsContextProvider>
-    </UserContextProvider>
+    <ClientContextProvider>
+      <UserContextProvider>
+        <SocketProvider>
+          <UnfinishedTicketsContextProvider>
+            <App />
+          </UnfinishedTicketsContextProvider>
+        </SocketProvider>
+      </UserContextProvider>
+    </ClientContextProvider>
   </React.StrictMode>
 );
 
