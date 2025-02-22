@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import OutWeighs from "../pages/OutWeighs";
 import InWeights from "../pages/InWeights";
+import OrderModal from "../components/OrderModal/index";
 const ModeratorMainPage = () => {
   const [modal, setModal] = useState(false);
   return (
@@ -18,23 +19,29 @@ const ModeratorMainPage = () => {
       >
         <button
           onClick={() => setModal(true)}
-          style={{ fontSize: "25px" }}
-          className="displayHidden !text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
+          className=" text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
         >
           انشاء طلب خارج
         </button>
         <button
           onClick={() => setModal(true)}
-          style={{ fontSize: "25px" }}
-          className="displayHidden w-[50%] whitespace-nowrap add-btn iron-btn min-w-[110px] !text-[14px] md:text-[25px]"
+          className=" w-[50%] whitespace-nowrap add-btn iron-btn min-w-[110px] text-[14px] md:text-[25px]"
         >
           انشاء طلب وارد
         </button>
       </div>
       {modal && (
-        <div className="modal">
-          <h1>hello</h1>
-        </div>
+        // <div className="modal">
+        //   <span
+        //     className="displayHidden"
+        //     onClick={()=>{setModal(false)}}
+        //     style={{ fontSize: "30px", cursor: "pointer" }}
+        //   >
+        //     &times;
+        //   </span>
+        //   <h1>hello</h1>
+        // </div>
+        <OrderModal onClose={() => setModal(false)} />
       )}
     </section>
   );

@@ -42,11 +42,11 @@ const OrderSchema = new mongoose.Schema({
     },
     driverId: {
         type: String,
-        required: true
+        required: false
     },
     carId: {
         type: String,
-        required: true
+        required: false
     },
     date: {
         type: Date,
