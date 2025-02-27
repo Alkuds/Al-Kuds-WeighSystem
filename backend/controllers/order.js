@@ -14,27 +14,62 @@ const getTicketsInfo = (req, res) => {
     res.json(inProgressTickets);
 }
 
-const getTicketsForDay = (req, res) => {
-    let dataTickets = getDatabaseByName('Tickets');
-    let inProgressTickets = []
-    for (let i of dataTickets) {
-        if (i.state === "finished" || i.state === "Alkuds-Storage") {
-            inProgressTickets.push(i)
-        }
-    }
-    console.log(inProgressTickets)
-    res.json(inProgressTickets);
-}
-
-const getUnfinishedTicketsInfo = async (req, res) => {
-    let orders;
+const getTicketsForDay = async(req, res) => {
+    let orders,inProgressTickets = [];
     try {
-        orders = await Order.find({ state: "progress" })
+        orders = await Order.find()
+        for(let i of orders){
+            if (i.state === "finished" || i.state === "Alkuds-Storage") {
+                inProgressTickets.push(i)
+            }
+        }
     }
     catch (err) {
         console.log(err)
     }
-    res.json(orders);
+    res.json(inProgressTickets);
+}
+
+const getUnfinishedOrdersInfoGroupedByClientId = async (req, res) => {
+    let orders;
+    let ordersSorted = {}
+    try {
+        orders = await Order.find({ state: "progress" })
+        for(let x of orders){
+            if(x.clientId in ordersSorted){
+                let newArr = ordersSorted[`${x.clientId}`]
+                newArr.push(x)
+                ordersSorted[`${x.clientId}`]= newArr;
+            }
+            else{
+                ordersSorted[`${x.clientId}`] = [x]
+            }
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+    res.json(ordersSorted);
+}
+
+const getUnfinishedOrdersInfoGroupedByType = async (req, res) => {
+    let orders;
+    let inOrders =[], outOrders = [];
+    try {
+        orders = await Order.find({ state: "progress" })
+        for(let x of orders){
+            if(x.type === 'in'){
+                inOrders.push(x)
+            }
+            else{
+                outOrders.push(x)
+            }
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+    res.json({inOrders,outOrders});
 }
 
 const getSpecificTicket = (req, res) => {
@@ -91,7 +126,7 @@ const addOrder = async (req, res) => {
 
 }
 
-const getClientOrders = async (req, res) => {
+const getSpecificClientOrders = async (req, res) => {
     const { clientId } = req.body;
     let orders;
     try {
@@ -105,7 +140,7 @@ const getClientOrders = async (req, res) => {
 
 }
 
-const TicketFinishState = async (req, res) => {
+const OrderFinishState = async (req, res) => {
     const { orderId } = req.body;
     let updatedOrder
     try {
@@ -214,14 +249,15 @@ const TicketDelete = (req, res) => {
 }
 
 module.exports = {
+    getUnfinishedOrdersInfoGroupedByClientId,
+    getUnfinishedOrdersInfoGroupedByType,
     getTicketsInfo,
     addOrder,
-    TicketFinishState,
-    getUnfinishedTicketsInfo,
+    OrderFinishState,
     getSpecificTicket,
     getTicketsForDay,
     TicketDelete,
     EditOrderTicket,
-    getClientOrders,
+    getSpecificClientOrders,
     ticketUpdateTransaction
 }

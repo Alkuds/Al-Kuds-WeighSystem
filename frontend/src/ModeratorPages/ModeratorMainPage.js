@@ -1,12 +1,21 @@
-import React, { useState } from "react";
-import OutWeighs from "../pages/OutWeighs";
-import InWeights from "../pages/InWeights";
+import React, { useEffect, useState } from "react";
+import { useSocketContext } from "../hooks/useSocket";
 import OrderModal from "../components/OrderModal/index";
 const ModeratorMainPage = () => {
-  const [modal, setModal] = useState(false);
+  const { socket } = useSocketContext();
+  const [modal, setModal] = useState([]);
+  const [data,setData] = useState("hello")
+  useEffect(()=>{
+    socket.on("receive_message", (info) => {
+        console.log("here")
+        console.log(info)
+        setData(info.message)
+    });
+  },[socket])
+
   return (
     <section className="size-full ">
-      <div
+      <div 
         className="displayHidden space-x-4"
         style={{
           margin: "0 auto",
@@ -21,6 +30,7 @@ const ModeratorMainPage = () => {
           onClick={() => setModal(true)}
           className=" text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
         >
+          <p> {data} </p>
           انشاء طلب خارج
         </button>
         <button

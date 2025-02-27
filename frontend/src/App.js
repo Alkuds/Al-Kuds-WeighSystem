@@ -6,18 +6,19 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import HomeLayout from "./layouts/HomeLayout";
-import OutWeighs from "./pages/OutWeighs";
-import InWeights from "./pages/InWeights";
-import Impexp from "./pages/Impexp";
-import Day from "./pages/Day";
-import Storage from "./pages/Storage";
-import Settings from "./pages/Settings";
-import MainPage from "./pages/MainPage";
+import OutWeighs from "./SharedComponents/OutWeighs";
+import InWeights from "./SharedComponents/InWeights";
+import Impexp from "./SharedComponents/Impexp";
+import Day from "./SharedComponents/Day";
+import Storage from "./SharedComponents/Storage";
+import Settings from "./SharedComponents/Settings";
+import MainPage from "./SharedComponents/MainPage";
 import ModeratorLayout from "./layouts/ModeratorLayout";
 import { useUserContext } from "./hooks/useUserContext";
-import Login from "./pages/Login";
+import Login from "./SharedComponents/Login";
 import "./styles/tailwind.css";
 import ModeratorMainPage from "./ModeratorPages/ModeratorMainPage";
+import WorkerMainPage from "./WorkerPages/WorkerMainPage";
 const LoginRoute = () => {
   const { user } = useUserContext();
   if (user === null) {
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <MainPage />,
+        element: <WorkerMainPage />,
       },
       {
         path: "impexp",

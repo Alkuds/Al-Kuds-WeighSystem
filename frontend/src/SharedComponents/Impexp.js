@@ -7,7 +7,7 @@ const Impexp = () => {
   const [totalWeight, setTotalWeight] = useState(0);
   useEffect(() => {
     const getDailyData = async () => {
-      const response = await fetch('http://localhost:7000/irons/getIronStorage',
+      const response = await fetch('/irons/getIronStorage',
         {
           method: "GET",
           headers: {
@@ -24,11 +24,12 @@ const Impexp = () => {
       // console.log(ironStorage[0].props[0].date == dateArr[0]);
 
       let dummyDailyData = [], total = 0;
+      console.log(ironStorage)
       ironStorage.map((iron) => {
-        iron.props.map((prop) => {
+        iron[Object.keys(iron)[0]].map((prop) => {
           total += parseInt(prop.weight);
           let rowitem = {
-            name: iron.name,
+            name: Object.keys(iron)[0],
             weight: prop.weight,
             radius: prop.radius
           }
@@ -207,7 +208,7 @@ const Impexp = () => {
           <tbody>
             {dailyData.map((el) => (
               <>
-                {(el.weight > 0 || el.weight < 0) && (el.radius === 6) && <tr style={{ 'border': '2px solid black' }}>
+                {(el.weight > 0 || el.weight < 0) && (el.radius === "6") && <tr style={{ 'border': '2px solid black' }}>
                   <td>{el.weight}</td>
                   <td>{el.radius}</td>
                   <td>  {el.name}</td>
@@ -217,7 +218,7 @@ const Impexp = () => {
             }
             {dailyData.map((el) => (
               <>
-                {(el.weight > 0 || el.weight < 0) && (el.radius === 8) && <tr style={{ 'border': '2px solid black' }}>
+                {(el.weight > 0 || el.weight < 0) && (el.radius === "8") && <tr style={{ 'border': '2px solid black' }}>
                   <td>{el.weight}</td>
                   <td>{el.radius}</td>
                   <td>  {el.name}</td>
@@ -228,7 +229,7 @@ const Impexp = () => {
             {
               dailyData.map((el) => (
                 <>
-                  {(el.weight > 0 || el.weight < 0) && (el.radius !== 6 && el.radius !== 8) && <tr style={{ 'border': '2px solid black' }}>
+                  {(el.weight > 0 || el.weight < 0) && (el.radius !== "6" && el.radius !== "8") && <tr style={{ 'border': '2px solid black' }}>
                     <td>{el.weight}</td>
                     <td>{el.radius}</td>
                     <td>{el.name}</td>

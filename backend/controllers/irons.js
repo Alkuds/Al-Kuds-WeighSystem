@@ -52,9 +52,33 @@ const subtractIronWeight = (req, res) => {
 
 }
 
-const getIronStorage = (req, res) => {
-    let db = getDatabaseByName('IronStorage');
-    res.json(db);
+const getIronStorage = async(req, res) => {
+    let ironList, ironMap = {};
+    try {
+        ironList = await Iron.find()
+        for(let i of ironList){
+            totalWeight = 0
+            for(j of i["costPerWeight"]){
+                totalWeight += j["weight"]
+            }
+            if(i.name in ironMap){
+                ironMap[i.name].push({"radius":i["radius"],"weight":totalWeight})
+            }
+            else{
+                ironMap[i.name] = [
+                    {"radius":i["radius"],"weight":totalWeight}
+                ]
+            }
+        }
+        Object.keys(ironMap).forEach(key => {
+            ironMap[key].sort((a, b) => Number(a.radius) - Number(b.radius));
+        });
+        const ironArray = Object.entries(ironMap).map(([key, value]) => ({ [key]: value }));
+        res.json(ironArray)
+    }
+    catch(err){
+        console.log(err)
+    }
 }
 let x = 0;
 const getScaleWeight = (req, res) => {
