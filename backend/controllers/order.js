@@ -14,15 +14,19 @@ const getTicketsInfo = (req, res) => {
     res.json(inProgressTickets);
 }
 
-const getTicketsForDay = (req, res) => {
-    let dataTickets = getDatabaseByName('Tickets');
-    let inProgressTickets = []
-    for (let i of dataTickets) {
-        if (i.state === "finished" || i.state === "Alkuds-Storage") {
-            inProgressTickets.push(i)
+const getTicketsForDay = async(req, res) => {
+    let orders,inProgressTickets = [];
+    try {
+        orders = await Order.find()
+        for(let i of orders){
+            if (i.state === "finished" || i.state === "Alkuds-Storage") {
+                inProgressTickets.push(i)
+            }
         }
     }
-    console.log(inProgressTickets)
+    catch (err) {
+        console.log(err)
+    }
     res.json(inProgressTickets);
 }
 

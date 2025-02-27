@@ -21,13 +21,13 @@ const OrderSchema = new mongoose.Schema({
         netWeightForProcessing: { type: Number, default: 0 },
         isProcessed: { type: Boolean, default: false },
         profit: { type: Number, default: 0 },
-        date: { type: Date, default: Date.now }
+        date: { type: String, default: new Date().toLocaleString() }
     }],
     statement: [{
         paidAmount: { type: Number, required: true },
         bankName: { type: String, required: true },
         clientId: { type: String, required: true },
-        date: { type: Date, default: Date.now }
+        date: { type: String, default: new Date().toLocaleString() }
     }],
     totalProfit: { type: Number, default: 0 },
     totalPrice: { type: Number, default: 0 },
@@ -49,8 +49,8 @@ const OrderSchema = new mongoose.Schema({
         required: false
     },
     date: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: new Date().toLocaleString()
     },
     notes: {
         type: String,
