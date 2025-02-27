@@ -3,7 +3,7 @@ import { useSocketContext } from "../hooks/useSocket";
 import OrderModal from "../components/OrderModal/index";
 const ModeratorMainPage = () => {
   const { socket } = useSocketContext();
-  const [modal, setModal] = useState([]);
+  const [modal, setModal] = useState(false);
   const [data,setData] = useState("hello")
   useEffect(()=>{
     socket.on("receive_message", (info) => {
@@ -30,7 +30,6 @@ const ModeratorMainPage = () => {
           onClick={() => setModal(true)}
           className=" text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
         >
-          <p> {data} </p>
           انشاء طلب خارج
         </button>
         <button
