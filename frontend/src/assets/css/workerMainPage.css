@@ -50,3 +50,22 @@
 .type-filter{
     font-size: 20px;
 }
+
+.print-submit{
+    width: 100%;
+    outline: none;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.2);
+    transition: 0.5s;
+    cursor: pointer;
+    display: block;
+    margin-top: 30px;
+    color: white;
+    background-color: #16C47F;
+}
+
+.print-submit:hover{
+    background-color: black;
+}

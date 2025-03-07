@@ -5,12 +5,15 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TicketDetails from "./TicketDetails";
 import { useClientContext } from "../hooks/useClientContext";
-const InOrders = ({ order }) => {
+import { useUnfinishedTicketsContext } from "../hooks/useUnfinishedTicketsContext";
+const InOrders = ({ order, orderContextIdx}) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { client } = useClientContext();
+  const {unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
 
+  
   const style = {
     position: "absolute",
     top: "50%",
@@ -46,7 +49,7 @@ const InOrders = ({ order }) => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-              <TicketDetails tickets={order.ticket}/>
+              <TicketDetails orderContextIdx={orderContextIdx} order={order}/>
           </Box>
         </Modal>
       </div>

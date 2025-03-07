@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {ticketUpdateTransaction, addOrder , EditOrderTicket, getSpecificClientOrders, getTicketsInfo,getUnfinishedOrdersInfoGroupedByClientId,getUnfinishedOrdersInfoGroupedByType, OrderFinishState, getSpecificTicket, getTicketsForDay, TicketDelete} = require('../controllers/order'); 
+const {EditOrderFirstWeight, ticketUpdateTransaction, addOrder , EditOrderTicket, getSpecificClientOrders, getTicketsInfo,getUnfinishedOrdersInfoGroupedByClientId,getUnfinishedOrdersInfoGroupedByType, OrderFinishState, getSpecificTicket, getTicketsForDay, TicketDelete} = require('../controllers/order'); 
 
 router.get("/getUnfinishedOrdersInfoGroupedByClientId", getUnfinishedOrdersInfoGroupedByClientId)
 router.get("/getUnfinishedOrdersInfoGroupedByType", getUnfinishedOrdersInfoGroupedByType)
@@ -11,6 +11,7 @@ router.post("/EditOrderTicket", EditOrderTicket)
 router.post("/getClientOrders", getSpecificClientOrders)
 router.post("/orderFinishState", OrderFinishState)
 router.post("/ticketAddSatetment", ticketUpdateTransaction)
+router.post("/EditOrderFirstWeight", EditOrderFirstWeight)
 
 
 
