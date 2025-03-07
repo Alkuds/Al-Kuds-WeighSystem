@@ -72,26 +72,72 @@ const getUnfinishedOrdersInfoGroupedByType = async (req, res) => {
     res.json({inOrders,outOrders});
 }
 
-const getSpecificTicket = (req, res) => {
+const getSpecificTicket = async(req, res) => {
     let { id } = req.params
-    let dataTickets = getDatabaseByName('Tickets');
-    let inProgressTickets = []
-    for (let i of dataTickets) {
-        if (i.id === id) {
-            res.json(i);
-            break;
-        }
+    console.log(id)
+    let order;
+    try{
+        order = await Order.findById(id);
     }
+    catch(err){
+        console.log(err)
+    }
+    res.json(order)
 }
 
 const EditOrderTicket = async (req, res) => {
     const { orderId, ticket } = req.body
+    console.log(ticket)
     let newOrder;
     try {
         newOrder = await Order.findById(orderId)
         newOrder.ticket = ticket
         let orderUpdate = await Order.updateOne({ "_id": orderId }, newOrder);
-        res.json(orderUpdate)
+        let inOrders =[], outOrders = [];
+        let orders
+        orders = await Order.find({ state: "progress" })
+        for(let x of orders){
+            if(x.type === 'in'){
+                inOrders.push(x)
+            }
+            else{
+                outOrders.push(x)
+            }
+        }
+    
+        res.json({orderUpdate,outOrders,inOrders})
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+const EditOrderFirstWeight = async (req, res) => {
+    const { firstWeight, orderId } = req.body
+    let newOrder;
+    console.log(firstWeight, orderId)
+    try {
+        newOrder = await Order.findById(orderId)
+        let d = new Date().toLocaleString("en-EG", { timeZone: "Africa/Cairo" });
+        let dateArr = d.split(",");
+        let firstWeightObject = {
+            weight:firstWeight,
+            date: dateArr[0] + "," + dateArr[1]
+        }
+        let orderUpdate = await Order.updateOne({ "_id": orderId }, {firstWeight: firstWeightObject});
+        let inOrders =[], outOrders = [];
+        let orders
+        orders = await Order.find({ state: "progress" })
+        for(let x of orders){
+            if(x.type === 'in'){
+                inOrders.push(x)
+            }
+            else{
+                outOrders.push(x)
+            }
+        }
+    
+        res.json({orderUpdate,outOrders,inOrders})
     }
     catch (err) {
         console.log(err)
@@ -259,5 +305,6 @@ module.exports = {
     TicketDelete,
     EditOrderTicket,
     getSpecificClientOrders,
-    ticketUpdateTransaction
+    ticketUpdateTransaction,
+    EditOrderFirstWeight
 }

@@ -4,6 +4,10 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    firstWeight:{
+        weight: { type: Number, default: 0 },
+        date: { type: String, default: "" }
+    },
     ticket: [{
         ironName: { type: String, required: true },
         radius: { type: Number, required: true },
@@ -21,7 +25,7 @@ const OrderSchema = new mongoose.Schema({
         netWeightForProcessing: { type: Number, default: 0 },
         isProcessed: { type: Boolean, default: false },
         profit: { type: Number, default: 0 },
-        date: { type: String, default: new Date().toLocaleString() }
+        date: { type: String, default: "" }
     }],
     statement: [{
         paidAmount: { type: Number, required: true },

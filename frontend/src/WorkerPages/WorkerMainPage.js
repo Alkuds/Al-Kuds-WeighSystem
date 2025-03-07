@@ -15,7 +15,7 @@ const WorkerMainPage = () => {
     setAlignment(newAlignment);
     await socket.emit("send_message", {message:"Hello from the other side",room:"123"});
   };
-  useEffect(() => {}, [socket]);
+  useEffect(() => {}, [socket, unfinishedTickets]);
 
   return (
     <div className="worker-container">
@@ -35,9 +35,9 @@ const WorkerMainPage = () => {
       <div className="in-orders">
         <div className="orders-holder">
           {unfinishedTickets.inOrders && alignment ==="in" &&
-          unfinishedTickets.inOrders.map((i, idx) => <InOrders order={i} />)}
+          unfinishedTickets.inOrders.map((i, idx) => <InOrders order={i} orderContextIdx={idx} />)}
           {unfinishedTickets.outOrders && alignment ==="out" &&
-          unfinishedTickets.outOrders.map((i, idx) => <InOrders order={i} />)}
+          unfinishedTickets.outOrders.map((i, idx) => <InOrders order={i} orderContextIdx={idx} />)}
         </div>
       </div>
     </div>

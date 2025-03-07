@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import HomeLayout from "./layouts/HomeLayout";
+import PrintLayout from "./layouts/PrintLayout";
 import OutWeighs from "./SharedComponents/OutWeighs";
 import InWeights from "./SharedComponents/InWeights";
 import Impexp from "./SharedComponents/Impexp";
@@ -19,6 +20,7 @@ import Login from "./SharedComponents/Login";
 import "./styles/tailwind.css";
 import ModeratorMainPage from "./ModeratorPages/ModeratorMainPage";
 import WorkerMainPage from "./WorkerPages/WorkerMainPage";
+import ReceiptPrintPage, { GetOrder } from "./WorkerPages/ReceiptPrintPage";
 const LoginRoute = () => {
   const { user } = useUserContext();
   if (user === null) {
@@ -78,6 +80,17 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <LoginRoute />,
+  },
+  {
+    path: "/print/:id",
+    element: <PrintLayout />,
+    children: [
+      {
+        index: true,
+        element: <ReceiptPrintPage />,
+        loader: GetOrder
+      }
+    ]
   },
   {
     path: "/up",
