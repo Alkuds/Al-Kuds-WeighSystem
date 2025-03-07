@@ -8,7 +8,7 @@ router.get("/getSpecificTicket/:id", getSpecificTicket)
 router.get("/getUnfinishedTickets", getUnfinishedTicketsInfo)
 router.post("/addOrder", addOrder)
 router.post("/EditOrderTicket", EditOrderTicket)
-router.post("/getClientOrders", getClientOrders)
+router.get("/getClientOrders", getClientOrders)
 router.post("/ticketFinishState", TicketFinishState)
 router.post("/ticketAddSatetment", ticketUpdateTransaction)
 

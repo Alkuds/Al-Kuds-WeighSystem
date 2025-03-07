@@ -15,6 +15,7 @@ import Settings from "./pages/Settings";
 import MainPage from "./pages/MainPage";
 import ModeratorLayout from "./layouts/ModeratorLayout";
 import { useUserContext } from "./hooks/useUserContext";
+import OrdersPage from "components/OrdersPage/index"
 import Login from "./pages/Login";
 import "./styles/tailwind.css";
 import ModeratorMainPage from "./ModeratorPages/ModeratorMainPage";
@@ -67,10 +68,10 @@ const router = createBrowserRouter([
         index: true,
         element: <ModeratorMainPage />,
       },
-      // {
-      //   path: "impexp",
-      //   element: <Impexp />,
-      // },
+      {
+        path: "orders/:category",
+        element: < OrdersPage/>,
+      },
       // {
       //   path: "day",
       //   element: <Day />,

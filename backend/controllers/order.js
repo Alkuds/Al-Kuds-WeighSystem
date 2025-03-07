@@ -92,6 +92,7 @@ const addOrder = async (req, res) => {
 }
 
 const getClientOrders = async (req, res) => {
+    console.log("first")
     const { clientId } = req.body;
     let orders;
     try {
