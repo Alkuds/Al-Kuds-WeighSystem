@@ -6,37 +6,57 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import HomeLayout from "./layouts/HomeLayout";
-import OutWeighs from "./pages/OutWeighs";
-import InWeights from "./pages/InWeights";
-import Impexp from "./pages/Impexp";
-import Day from "./pages/Day";
-import Storage from "./pages/Storage";
-import Settings from "./pages/Settings";
-import MainPage from "./pages/MainPage";
+import OutWeighs from "./SharedComponents/OutWeighs";
+import InWeights from "./SharedComponents/InWeights";
+import Impexp from "./SharedComponents/Impexp";
+import Day from "./SharedComponents/Day";
+import Storage from "./SharedComponents/Storage";
+import Settings from "./SharedComponents/Settings";
+import MainPage from "./SharedComponents/MainPage";
 import ModeratorLayout from "./layouts/ModeratorLayout";
 import { useUserContext } from "./hooks/useUserContext";
 import OrdersPage from "components/OrdersPage/index"
 import Login from "./pages/Login";
 import "./styles/tailwind.css";
 import ModeratorMainPage from "./ModeratorPages/ModeratorMainPage";
+import WorkerMainPage from "./WorkerPages/WorkerMainPage";
 const LoginRoute = () => {
   const { user } = useUserContext();
-  if(!user){
-    return <Login />
-  }
-  else{
+  if (user === null) {
+    return <Login />;
+  } else {
     return user.name === "Osama" ? <Navigate to="/up" /> : <Navigate to="/down" />;
+  }
+};
+
+const ModeratorRoute = () => {
+
+  const { user } = useUserContext();
+  if (user === null) {
+    return <Navigate to="/" />;
+  } else {
+    return user.name === "Osama" ? <ModeratorLayout /> : <Navigate to="/" />;
+  }
+};
+
+const WorkerRoute = () => {
+
+  const { user } = useUserContext();
+  if (user === null) {
+    return <Navigate to="/" />;
+  } else {
+    return user.name === "Hassan" ? <HomeLayout /> : <Navigate to="/" />;
   }
 };
 
 const router = createBrowserRouter([
   {
     path: "/down",
-    element: <HomeLayout />,
+    element: <WorkerRoute />,
     children: [
       {
         index: true,
-        element: <MainPage />,
+        element: <WorkerMainPage />,
       },
       {
         path: "impexp",
@@ -58,11 +78,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <LoginRoute/>,
+    element: <LoginRoute />,
   },
   {
     path: "/up",
-    element: <ModeratorLayout />,
+    element: <ModeratorRoute />,
     children: [
       {
         index: true,

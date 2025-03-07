@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const {ticketUpdateTransaction, addOrder , EditOrderTicket, getClientOrders, getTicketsInfo, TicketFinishState, getUnfinishedTicketsInfo, getSpecificTicket, getTicketsForDay, TicketDelete} = require('../controllers/order'); 
+const {ticketUpdateTransaction, addOrder , EditOrderTicket, getSpecificClientOrders, getTicketsInfo,getUnfinishedOrdersInfoGroupedByClientId,getUnfinishedOrdersInfoGroupedByType, OrderFinishState, getSpecificTicket, getTicketsForDay, TicketDelete} = require('../controllers/order'); 
 
-router.get("/getTickets", getTicketsInfo)
+router.get("/getUnfinishedOrdersInfoGroupedByClientId", getUnfinishedOrdersInfoGroupedByClientId)
+router.get("/getUnfinishedOrdersInfoGroupedByType", getUnfinishedOrdersInfoGroupedByType)
 router.get("/getTicketsForDay", getTicketsForDay)
 router.get("/getSpecificTicket/:id", getSpecificTicket)
-router.get("/getUnfinishedTickets", getUnfinishedTicketsInfo)
 router.post("/addOrder", addOrder)
 router.post("/EditOrderTicket", EditOrderTicket)
 router.get("/getClientOrders", getClientOrders)
