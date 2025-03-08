@@ -22,6 +22,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+if (process.env.NODE_ENV === 'local') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')))
+}
+
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -73,10 +77,6 @@ app.use("/ticketId", require("./routes/ticketId"));
 app.use("/wallet", require("./routes/wallets"));
 app.use("/user", require("./routes/user"));
 
-if (false) {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
-}
-
 let readData;
 // serialPort2.on("open", function () {
 //     console.log("-- Connection opened --", serialPort2);
@@ -93,10 +93,13 @@ let readData;
 //     res.json(readData);
 // });
 
-if (false) {
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+
+if (process.env.NODE_ENV === 'local') {
+  console.log("here")
+  app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
   });
 }
 
-server.listen("8000", () => console.log("running on port 8000"));
+
+server.listen(process.env.PORT, () => console.log("running on port: "+process.env.PORT));
