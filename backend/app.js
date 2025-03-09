@@ -45,6 +45,11 @@ io.on("connection", (socket) => {
       console.log(data.room)
       socket.to(data.room).emit("receive_message", data);
     });
+
+    socket.on("send_order_update", (data) => {
+      console.log(data)
+      socket.to(data.room).emit("receive_order_finish_state", data);
+    });
   });
 
 mongoose

@@ -46,6 +46,9 @@ export default function ModeratorLayout() {
               <NavLink className="text-center" to={"/up/settings"}>
                 اعدادات
               </NavLink>
+              <NavLink className="text-center" to={"finishedOrders"}>
+                اوردرات منتهيه
+              </NavLink>
               <button onClick={handleLogout} className="iron-btn logout"> تسجيل خروج </button>
 
             </div>
