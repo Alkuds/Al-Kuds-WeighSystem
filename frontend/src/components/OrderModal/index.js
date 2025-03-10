@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Seperator from "../Seperator";
+import Seperator from "../Seperator/index";
 
 const OrderModal = ({ onClose, type }) => {
   const [selectedClient, setSelectedClient] = useState("");
@@ -55,14 +55,7 @@ const OrderModal = ({ onClose, type }) => {
     }
   };
   return (
-    <div dir="rtl" className="modal">
-      <span
-        className="displayHidden"
-        onClick={onClose}
-        style={{ fontSize: "30px", cursor: "pointer" }}
-      >
-        &times;
-      </span>
+    <div dir="rtl">
       <Seperator text={`بيانات طلب ${type}`} />
       <form className="w-full px-4 pt-6" onSubmit={HandleFormSubmission}>
         <div className="w-full flex md:flex-row flex-col gap-5 pb-6">

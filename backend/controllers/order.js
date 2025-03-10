@@ -259,6 +259,5 @@ module.exports = {
     getTicketsForDay,
     TicketDelete,
     EditOrderTicket,
-    getSpecificClientOrders,
     ticketUpdateTransaction
 }

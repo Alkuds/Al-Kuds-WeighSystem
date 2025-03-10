@@ -8,8 +8,6 @@ router.get("/getTicketsForDay", getTicketsForDay)
 router.get("/getSpecificTicket/:id", getSpecificTicket)
 router.post("/addOrder", addOrder)
 router.post("/EditOrderTicket", EditOrderTicket)
-router.get("/getClientOrders", getClientOrders)
-router.post("/ticketFinishState", TicketFinishState)
 router.post("/ticketAddSatetment", ticketUpdateTransaction)
 
 

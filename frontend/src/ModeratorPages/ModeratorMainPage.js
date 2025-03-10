@@ -5,15 +5,51 @@ import { ReactComponent as LoadIcon } from "../assets/icons/load.svg";
 import { ReactComponent as PayIcon } from "../assets/icons/pay.svg";
 import Seperator from "../components/Seperator";
 import { useNavigate } from "react-router-dom";
-
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 const ModeratorMainPage = () => {
-  const [modal, setModal] = useState(false);
   const [type, setType] = useState("");
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const handleOpen = (x) => {
+    if(x==1){
+      setType("خارج");
+    }
+    else{
+      setType("وارد");
+    }
+    setOpen(true)
+  };
+  const handleClose = () => setOpen(false);
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "90%",
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+    height:"80vh",
+    'overflow-y':"auto"
+  };
   return (
     <section className="p-8 size-full flex flex-col gap-4">
       <Seperator text="انشاء طلب" />
-      {modal && <OrderModal type={type} onClose={() => setModal(false)} />}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        style={{"overflow-y":"auto"}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <OrderModal type={type} />
+        </Box>
+      </Modal>
       <div
         className="displayHidden space-x-4"
         style={{
@@ -26,19 +62,13 @@ const ModeratorMainPage = () => {
         }}
       >
         <button
-          onClick={() => {
-            setType("خارج");
-            setModal(true);
-          }}
+          onClick={(e) => handleOpen(1)}
           className=" text-[14px] md:text-[25px] min-w-[110px] add-btn iron-btn w-[50%] whitespace-nowrap "
         >
           انشاء طلب خارج
         </button>
         <button
-          onClick={() => {
-            setType("وارد");
-            setModal(true);
-          }}
+          onClick={(e)=>handleOpen(2)}
           className=" w-[50%] whitespace-nowrap add-btn iron-btn min-w-[110px] text-[14px] md:text-[25px]"
         >
           انشاء طلب وارد
