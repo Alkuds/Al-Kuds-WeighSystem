@@ -110,6 +110,22 @@ const router = createBrowserRouter([
         path: "orders/:category",
         element: < OrdersPage/>,
       },
+      {
+        path: "finishedOrders",
+        element: <FinishedOrders />,
+      },
+      {
+        path: "impexp",
+        element: <Impexp />,
+      },
+      {
+        path: "day",
+        element: <Day />,
+      },
+      {
+        path: "storage",
+        element: <Storage />,
+      },
       // {
       //   path: "day",
       //   element: <Day />,
