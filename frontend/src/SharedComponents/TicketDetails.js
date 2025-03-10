@@ -25,9 +25,12 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
       else
         swal ( info.message ,  "تم طباعه اذن الاستلام بنجاح و ايضا تغير حاله الاوردر لجاري انتظار الدفع." ,  "success" )
       if(!isFinishedTicket)
+      {
+        console.log("Test Here")
         dispatch({ type: "UPDATE_TICKET", payload: info.order });
+      }
   });
-  }, [weight, time, date, netWeight, isLoading,firstWeight,firstDate,firstTime,socket]);
+  }, [unfinishedTickets, dispatch, weight, time, date, netWeight, isLoading,firstWeight,firstDate,firstTime,socket]);
 
 
   const handleSubmit = (e) =>{
