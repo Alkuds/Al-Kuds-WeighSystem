@@ -197,7 +197,8 @@ const addOrder = async (req, res) => {
 
 }
 
-const getSpecificClientOrders = async (req, res) => {
+const getClientOrders = async (req, res) => {
+    console.log("first")
     const { clientId } = req.body;
     let orders;
     try {
@@ -329,7 +330,6 @@ module.exports = {
     getTicketsForDay,
     TicketDelete,
     EditOrderTicket,
-    getSpecificClientOrders,
     ticketUpdateTransaction,
     EditOrderFirstWeight,
     getFinishedOrdersInfoGroupedByType
