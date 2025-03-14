@@ -22,9 +22,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-if (process.env.NODE_ENV === 'local') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')))
-}
+// if (process.env.NODE_ENV === 'local') {
+//   app.use(express.static(path.join(__dirname, '../frontend/build')))
+// }
 
 const io = new Server(server, {
   cors: {
@@ -99,12 +99,12 @@ let readData;
 // });
 
 
-if (process.env.NODE_ENV === 'local') {
-  console.log("here")
-  app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-  });
-}
+// if (process.env.NODE_ENV === 'local') {
+//   console.log("here")
+//   app.get('*', (req, res) => {
+//       res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+//   });
+// }
 
 
 server.listen(process.env.PORT, () => console.log("running on port: "+process.env.PORT));
