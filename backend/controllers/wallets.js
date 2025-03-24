@@ -1,22 +1,95 @@
 const Wallet = require('../models/wallet')
+const Order = require('../models/order')
+const Client = require('../models/client')
 
 const addTransaction = async (req, res) => {
-    const {amount, bankName, clientId, orderId, type} = req.body
+    const {amount, bankName, clientId, orderId, type, notes} = req.body
+    console.log("Here")
     let newTransaction, transactionObj = {
-        amount,bankName,clientId, orderId, type
-    }
+        amount,bankName,clientId, orderId, type, notes
+    } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate;
     try{
-        newTransaction =  Wallet.findOneAndUpdate(
-            {
-                bankName
-            },
-            {
-                $push: {
-                    'transactions': transactionObj
+        if(type == "out"){
+            orders = await Order.find(
+                {
+                    $and: [
+                        { clientId },
+                        { "state": "جاري انتظار الدفع" }
+                    ] 
+                }   
+            ).sort({ date: 1 });
+            console.log(orders)
+            for(let i of orders){
+                let RemainingPrice = i.totalPrice - i.totalPaid
+                if(amountProcessing == 0) break;
+                if(RemainingPrice <= amountProcessing && RemainingPrice != 0){
+                    isDivided.push(
+                        {
+                            amount: RemainingPrice,
+                            orderId: i._id
+                        }
+                    )
+                    amountProcessing = amountProcessing - RemainingPrice
+                } 
+            }
+            transactionObj["isDivided"] = isDivided
+            newTransaction = await Wallet.findOneAndUpdate(
+                {
+                    bankName
+                },
+                {
+                    $push: {
+                        'transactions': transactionObj
+                    },
+                    $inc: { totalAmount: amount } 
+                },
+                {
+                    returnDocument: 'after'
+                }
+            )
+
+            for(let i of newTransaction.transactions[newTransaction.transactions.length-1].isDivided){
+                for(let j of orders){
+                    if(i.orderId === j._id.toString()){
+                        statement = await Order.findOneAndUpdate
+                        (   
+                            {
+                                _id:i.orderId
+                            },
+                            {
+                                $push: {
+                                    'statement': 
+                                        {
+                                            "paidAmount":i.amount,
+                                            "clientId": clientId,
+                                            "bankName" : bankName,
+                                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                                            "walletTransactionId" : newTransaction.transactions[newTransaction.transactions.length-1]._id.toString()
+                                        }
+                                },
+                                $inc: {
+                                     totalPaid: i.amount
+                                },
+                                state: ((j.totalPrice - j.totalPaid - i.amount) == 0)? "منتهي" : j.state
+                            },
+                            { 
+                                returnDocument: 'after' 
+                            } 
+                        )
+                        break;
+                    }
                 }
             }
-        )
-        newTransaction.save()
+            if(amountProcessing>0){
+                clientUpdate = await Client.findOneAndUpdate({clientId},
+                    {
+                        $inc: {
+                            balance: amountProcessing
+                       },
+                    }
+                )
+            }
+        }
     }
     catch(err){
         console.log(err)
