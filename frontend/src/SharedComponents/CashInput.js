@@ -1,17 +1,23 @@
 import { useWalletContext } from "../hooks/useWalletContext";
 import { useClientContext } from "../hooks/useClientContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import swal from 'sweetalert';
+import { useAwaitForPaymentTicketsContext } from "../hooks/useAwaitForPaymentTicketsContext";
 const CashInput = () => {
   const [selectedClient, setSelectedClient] = useState("اختر عميل");
   const [selectedType, setSelectedType] = useState("نوع العمليه");
   const [notes, setNotes] = useState();
   const [amount, setAmount] = useState("");
   const [selectedBank, setSelectedBank] = useState("اختر البنك");
-  const { client } = useClientContext();
-  const { wallet } = useWalletContext();
+  const { client, dispatch: clientUpdate } = useClientContext();
+  const { wallet, dispatch: walletUpdate } = useWalletContext();
+  const { awaitForPaymentTickets, dispatch: awaitForPaymentTicketsUpdate} = useAwaitForPaymentTicketsContext();
+  console.log(awaitForPaymentTickets,wallet,client)
   const [isLoading,setIsLoading] = useState(false)
+  
+  useEffect(()=>{},[wallet, awaitForPaymentTickets,client,clientUpdate,walletUpdate,awaitForPaymentTicketsUpdate])
+  
   if(client == null || wallet == null){
     return <div> Loading....</div>
   }
@@ -42,6 +48,10 @@ const CashInput = () => {
         setSelectedType("نوع العمليه")
         setAmount("")
         setNotes("")
+        awaitForPaymentTicketsUpdate({ type: "UPDATE_TICKET", payload: addTransaction.orders })
+        if (addTransaction.client !==null)
+          clientUpdate({ type: "UPDATE_CLIENT", payload: addTransaction.client })
+        walletUpdate({ type: "UPDATE_WALLET", payload: addTransaction.bank })
     }
     else{
         swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حااول مجددا بعد قليل." ,  "error" )

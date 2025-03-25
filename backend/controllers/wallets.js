@@ -7,14 +7,15 @@ const addTransaction = async (req, res) => {
     console.log("Here")
     let newTransaction, transactionObj = {
         amount,bankName,clientId, orderId, type, notes
-    } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate;
+    } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate = null, updatedOrders=[];
     try{
         if(type == "out"){
             orders = await Order.find(
                 {
                     $and: [
                         { clientId },
-                        { "state": "جاري انتظار الدفع" }
+                        { "state": "جاري انتظار الدفع" },
+                        {type : "out"}
                     ] 
                 }   
             ).sort({ date: 1 });
@@ -47,7 +48,6 @@ const addTransaction = async (req, res) => {
                     returnDocument: 'after'
                 }
             )
-
             for(let i of newTransaction.transactions[newTransaction.transactions.length-1].isDivided){
                 for(let j of orders){
                     if(i.orderId === j._id.toString()){
@@ -76,6 +76,7 @@ const addTransaction = async (req, res) => {
                                 returnDocument: 'after' 
                             } 
                         )
+                        updatedOrders.push(statement)
                         break;
                     }
                 }
@@ -86,7 +87,10 @@ const addTransaction = async (req, res) => {
                         $inc: {
                             balance: amountProcessing
                        },
-                    }
+                    },
+                    { 
+                        returnDocument: 'after' 
+                    } 
                 )
             }
         }
@@ -94,7 +98,12 @@ const addTransaction = async (req, res) => {
     catch(err){
         console.log(err)
     }
-    res.json(newTransaction)
+    let returnedObj = {
+        bank: newTransaction,
+        orders: updatedOrders,
+        client: clientUpdate
+    }
+    res.json(returnedObj)
 }
 
 const addBank = async(req,res) =>{
@@ -129,7 +138,7 @@ const addBank = async(req,res) =>{
                 ]
             }
         )
-        await newBank.save().then(data=>{
+        await newBank.save().then(data =>{
             res.json(data)
         })
     }

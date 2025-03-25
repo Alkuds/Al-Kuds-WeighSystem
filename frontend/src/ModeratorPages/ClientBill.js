@@ -82,7 +82,7 @@ const Row = (props) => {
                       <TableCell align="right" component="th" scope="row">{ticketRow.ironName} </TableCell>
                       <TableCell align="right" component="th" scope="row">{ticketRow.radius}</TableCell>
                       <TableCell align="right" component="th" scope="row">{ticketRow.netWeight}</TableCell>
-                      <TableCell align="right" component="th" scope="row" align="right">{ticketRow.price}</TableCell>
+                      <TableCell align="right" component="th" scope="row">{ticketRow.price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -139,7 +139,7 @@ const ClientBill = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalPaid, setTotalPaid] = useState(0);
   const [balance, setBalance] = useState(0);
-  useEffect(() => {}, [clients, rows, isLoading]);
+  useEffect(() => {console.log("here")}, [clients, rows, isLoading, client]);
 
   if (!client) {
     console.log("here");
