@@ -14,6 +14,7 @@ router.post("/EditOrderTicket", EditOrderTicket)
 router.post("/ticketAddSatetment", ticketUpdateTransaction)
 router.post("/EditOrderFirstWeight", EditOrderFirstWeight)
 router.post("/addOrderStatement", addOrderStatement)
+router.post("/orderFinishState", OrderFinishState)
 
 
 

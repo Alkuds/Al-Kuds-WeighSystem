@@ -200,7 +200,7 @@ const addOrder = async (req, res) => {
         )
 
         newOrder.save().then(async (data) => {
-            await Client.updateOne({ "_id": clientId },
+            await Client.updateOne({ clientId },
                 {
                     $push: {
                         'ticketsIds': data._id.toString()
