@@ -376,6 +376,20 @@ const addOrderStatement = async(req,res) =>{
     res.json(statement)
 }
 
+
+const OrderIronPriceUpdate = async(req,res)=>{
+    const { order } = req.body;
+    let newPriceUpdate;
+    try{
+        newPriceUpdate = await Order.findByIdAndUpdate({_id:order._id},{order},{returnDocument:"after"})
+    }
+    catch(err){
+        console.log(err)
+    }
+    res.json(newPriceUpdate)
+}
+
+
 module.exports = {
     getUnfinishedOrdersInfoGroupedByClientId,
     getUnfinishedOrdersInfoGroupedByType,
@@ -391,5 +405,6 @@ module.exports = {
     getFinishedOrdersInfoGroupedByType,
     getAwaitForPaymentOrdersGroupedByType,
     getClientOrders,
-    addOrderStatement
+    addOrderStatement,
+    OrderIronPriceUpdate
 }
