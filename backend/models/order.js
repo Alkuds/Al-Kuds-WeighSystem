@@ -8,6 +8,7 @@ const OrderSchema = new mongoose.Schema({
         weight: { type: Number, default: 0 },
         date: { type: String, default: "" }
     },
+    deliveryFees: { type: Number, required: true },
     ticket: [{
         ironName: { type: String, required: true },
         radius: { type: Number, required: true },

@@ -195,7 +195,7 @@ const addOrder = async (req, res) => {
     try {
         newOrder = new Order(
             {
-                "state": "New", type, clientId, driverId, carId, ticket, totalPrice
+                "state": "جديد", type, clientId, driverId, carId, ticket, totalPrice, deliveryFees
             }
         )
 

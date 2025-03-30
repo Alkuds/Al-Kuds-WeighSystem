@@ -3,7 +3,7 @@ import { useRef } from "react";
 import kuds from "../assets/images/kuds.png";
 import useLogout from "../hooks/useLogout";
 
-export default function ModeratorLayout() {
+export default function AdminLayout() {
   const checkNav = (e) => {
     const user = window.confirm("هل تريد الذهاب من هذه الصفحه؟");
     if (!user) {
@@ -53,6 +53,10 @@ export default function ModeratorLayout() {
 
               <NavLink className="text-center" to={"moneyvault"}>
                 الخزنه
+              </NavLink>
+
+              <NavLink className="text-center" to={"profitreports"}>
+                التقارير
               </NavLink>
 
               <button onClick={handleLogout} className="iron-btn logout"> تسجيل خروج </button>
