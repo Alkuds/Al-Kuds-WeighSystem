@@ -38,6 +38,7 @@ const OrderSchema = new mongoose.Schema({
     }],
     totalProfit: { type: Number, default: 0 },
     totalPrice: { type: Number, default: 0 },
+    realTotalPrice: { type: Number, default: 0 },
     totalPaid: { type: Number, default: 0 },
     type: {
         type: String,

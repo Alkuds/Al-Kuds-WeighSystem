@@ -36,13 +36,13 @@ const OrderView = ({ order, isFinishedTicket }) => {
   const handleSubmit = (e) =>{
     e.preventDefault()
     window.open("http://localhost:3000/print/"+ isFinishedTicket.toString() + "/" + order._id,"_blank")
-    // window.open("https://alkuds-cd6a685335ea.herokuapp.com/print/"+ order._id,"_blank")
+    // window.open("https://alkuds-cd6a685335ea.herokuapp.com/print/"+ isFinishedTicket.toString() + "/" + order._id,"_blank")
   }
 
   const handlePurchaseBill = (e) =>{
     e.preventDefault()
     window.open("http://localhost:3000/print/purchasebill/" + order._id,"_blank")
-    // window.open("https://alkuds-cd6a685335ea.herokuapp.com/print/"+ order._id,"_blank")
+    // window.open("https://alkuds-cd6a685335ea.herokuapp.com/print/purchasebill/"+ order._id,"_blank")
   }
  
   return (

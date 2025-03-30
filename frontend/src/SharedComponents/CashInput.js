@@ -25,36 +25,70 @@ const CashInput = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    let newTransaction = {
-      amount, notes,"orderId":" ","type" : selectedType === "مدين"? "in":"out", "clientId":selectedClient, "bankName":selectedBank 
-    }
-    const addTransactionFetch = await fetch('/wallet/addTransaction',
-      {
-        method:"POST",
-        body: JSON.stringify(newTransaction),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+    let newTransaction
+    if(selectedClient === "4"){
+      newTransaction = {
+        amount, notes, "bankName":selectedBank 
       }
-    )
-
-    let addTransaction = await addTransactionFetch.json()
-    setIsLoading(false)
-    if(addTransactionFetch.ok){
-        swal ( "تم اضافعه العمليه بنجاح." ,  "تم تحديث البانات الماليه" ,  "success" )
-        console.log(addTransaction)
-        setSelectedBank("اختر البنك")
-        setSelectedClient("اختر عميل")
-        setSelectedType("نوع العمليه")
-        setAmount("")
-        setNotes("")
-        awaitForPaymentTicketsUpdate({ type: "UPDATE_TICKET", payload: addTransaction.orders })
-        if (addTransaction.client !==null)
-          clientUpdate({ type: "UPDATE_CLIENT", payload: addTransaction.client })
-        walletUpdate({ type: "UPDATE_WALLET", payload: addTransaction.bank })
+      const addCompanyExpenseTransactionFetch = await fetch('/wallet/addCompanyExpenses',
+        {
+          method:"POST",
+          body: JSON.stringify(newTransaction),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+  
+      let addCompanyExpenseTransaction = await addCompanyExpenseTransactionFetch.json()
+      setIsLoading(false)
+      if(addCompanyExpenseTransactionFetch.ok){
+          swal ( "تم اضافعه العمليه بنجاح." ,  "تم تحديث البانات الماليه" ,  "success" )
+          console.log(addCompanyExpenseTransaction)
+          setSelectedBank("اختر البنك")
+          setSelectedClient("اختر عميل")
+          setSelectedType("نوع العمليه")
+          setAmount("")
+          setNotes("")
+          clientUpdate({ type: "UPDATE_CLIENT", payload: addCompanyExpenseTransaction.client })
+          walletUpdate({ type: "UPDATE_WALLET", payload: addCompanyExpenseTransaction.bank })
+      }
+      else{
+          swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حاول مجددا بعد قليل." ,  "error" )
+      }
     }
     else{
-        swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حااول مجددا بعد قليل." ,  "error" )
+      newTransaction = {
+        amount, notes,"orderId":" ","type" : selectedType === "مدين"? "in":"out", "clientId":selectedClient, "bankName":selectedBank 
+      }
+      const addTransactionFetch = await fetch('/wallet/addTransaction',
+        {
+          method:"POST",
+          body: JSON.stringify(newTransaction),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+  
+      let addTransaction = await addTransactionFetch.json()
+      setIsLoading(false)
+      if(addTransactionFetch.ok){
+          swal ( "تم اضافعه العمليه بنجاح." ,  "تم تحديث البانات الماليه" ,  "success" )
+          console.log(addTransaction)
+          setSelectedBank("اختر البنك")
+          setSelectedClient("اختر عميل")
+          setSelectedType("نوع العمليه")
+          setAmount("")
+          setNotes("")
+          awaitForPaymentTicketsUpdate({ type: "UPDATE_TICKET", payload: addTransaction.orders })
+          if (addTransaction.client !==null)
+            clientUpdate({ type: "UPDATE_CLIENT", payload: addTransaction.client })
+          walletUpdate({ type: "UPDATE_WALLET", payload: addTransaction.bank })
+      }
+      else{
+          swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حااول مجددا بعد قليل." ,  "error" )
+      }
     }
   }
 

@@ -117,7 +117,7 @@ const ReceiptPrintPage = () => {
       } catch (err) {
         console.log(err);
       }
-      // window.print();
+      window.print();
     }
   };
 
