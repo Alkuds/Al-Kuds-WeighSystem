@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import swal from 'sweetalert';
 import { useAwaitForPaymentTicketsContext } from "../hooks/useAwaitForPaymentTicketsContext";
-const CashInput = () => {
+const CashInput = (props) => {
+  const { isKudsPersonnel } = props
   const [selectedClient, setSelectedClient] = useState("اختر عميل");
   const [selectedType, setSelectedType] = useState("نوع العمليه");
   const [notes, setNotes] = useState();
@@ -22,43 +23,44 @@ const CashInput = () => {
     return <div> Loading....</div>
   }
 
+  const handleKudsPersonnel = async(e) =>{
+    e.preventDefault()
+    setIsLoading(true)
+    let newTransaction = {
+      amount, notes, "bankName":selectedBank , clientId: selectedClient, type : selectedType
+    }
+    const addCompanyExpenseTransactionFetch = await fetch('/wallet/addCompanyExpenses',
+      {
+        method:"POST",
+        body: JSON.stringify(newTransaction),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+
+    let addCompanyExpenseTransaction = await addCompanyExpenseTransactionFetch.json()
+    setIsLoading(false)
+    if(addCompanyExpenseTransactionFetch.ok){
+        swal ( "تم اضافعه العمليه بنجاح." ,  "تم تحديث البانات الماليه" ,  "success" )
+        console.log(addCompanyExpenseTransaction)
+        setSelectedBank("اختر البنك")
+        setSelectedClient("اختر عميل")
+        setSelectedType("نوع العمليه")
+        setAmount("")
+        setNotes("")
+        clientUpdate({ type: "UPDATE_CLIENT", payload: addCompanyExpenseTransaction.client })
+        walletUpdate({ type: "UPDATE_WALLET", payload: addCompanyExpenseTransaction.bank })
+    }
+    else{
+        swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حاول مجددا بعد قليل." ,  "error" )
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    let newTransaction
-    if(selectedClient === "4"){
-      newTransaction = {
-        amount, notes, "bankName":selectedBank 
-      }
-      const addCompanyExpenseTransactionFetch = await fetch('/wallet/addCompanyExpenses',
-        {
-          method:"POST",
-          body: JSON.stringify(newTransaction),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-  
-      let addCompanyExpenseTransaction = await addCompanyExpenseTransactionFetch.json()
-      setIsLoading(false)
-      if(addCompanyExpenseTransactionFetch.ok){
-          swal ( "تم اضافعه العمليه بنجاح." ,  "تم تحديث البانات الماليه" ,  "success" )
-          console.log(addCompanyExpenseTransaction)
-          setSelectedBank("اختر البنك")
-          setSelectedClient("اختر عميل")
-          setSelectedType("نوع العمليه")
-          setAmount("")
-          setNotes("")
-          clientUpdate({ type: "UPDATE_CLIENT", payload: addCompanyExpenseTransaction.client })
-          walletUpdate({ type: "UPDATE_WALLET", payload: addCompanyExpenseTransaction.bank })
-      }
-      else{
-          swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حاول مجددا بعد قليل." ,  "error" )
-      }
-    }
-    else{
-      newTransaction = {
+    let newTransaction = {
         amount, notes,"orderId":" ","type" : selectedType === "مدين"? "in":"out", "clientId":selectedClient, "bankName":selectedBank 
       }
       const addTransactionFetch = await fetch('/wallet/addTransaction',
@@ -89,11 +91,18 @@ const CashInput = () => {
       else{
           swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حااول مجددا بعد قليل." ,  "error" )
       }
-    }
+    
   }
 
   return (
-    <form className="w-full px-4 pt-6 flex-nowrap" onSubmit={e => handleSubmit(e)}>
+    <form className="w-full px-4 pt-6 flex-nowrap" onSubmit={e => {
+      if(isKudsPersonnel){
+        handleKudsPersonnel(e)
+      }
+      else{
+        handleSubmit(e)
+      }
+    }}>
       {!isLoading ? <div
         style={{ direction: "rtl" }}
         className="w-full flex md:flex-row flex-col gap-5 pb-6 cash-holder overflow-y-auto"
@@ -111,7 +120,7 @@ const CashInput = () => {
               <option value="">أسم العميل</option>
               {client &&
                 [...Object.keys(client)].map((i, idx) => (
-                  <option value={client[i].clientId}> {client[i].name} </option>
+                  isKudsPersonnel ? client[i].isKudsPersonnel && <option value={client[i].clientId}> {client[i].name} </option> : !client[i].isKudsPersonnel && <option value={client[i].clientId}> {client[i].name} </option>
                 ))}
             </select>
           </div>
