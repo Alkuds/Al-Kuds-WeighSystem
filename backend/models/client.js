@@ -36,7 +36,13 @@ const ClientSchema = new mongoose.Schema({
     isFactory: {
         type: Boolean,
         default:false
+    },
+    isKudsPersonnel: {
+        type: Boolean,
+        default:false
     }
+    
+
 });
 
 const Client = mongoose.model('Client', ClientSchema);

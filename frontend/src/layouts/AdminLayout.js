@@ -34,13 +34,13 @@ export default function AdminLayout() {
                 {" "}
                 الرئيسيه{" "}
               </NavLink>
-              <NavLink className="text-center" to={"/up/impexp"}>
+              <NavLink className="text-center" to={"impexp"}>
                 جرد
               </NavLink>
-              <NavLink className="text-center" to={"/up/day"}>
+              <NavLink className="text-center" to={"day"}>
                 يوميه
               </NavLink>
-              <NavLink className="text-center" to={"/up/storage"}>
+              <NavLink className="text-center" to={"storage"}>
                 مخزن
               </NavLink>
               <NavLink className="text-center" to={"finishedOrders"}>

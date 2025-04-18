@@ -214,18 +214,6 @@ const router = createBrowserRouter([
         path: "profitreports",
         element: <ProfitReport />,
       }
-      // {
-      //   path: "day",
-      //   element: <Day />,
-      // },
-      // {
-      //   path: "storage",
-      //   element: <Storage />,
-      // },
-      // {
-      //   path: "settings",
-      //   element: <Settings />,
-      // },
     ],
   },
 ]);

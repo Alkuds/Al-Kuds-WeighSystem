@@ -107,13 +107,13 @@ const addTransaction = async (req, res) => {
 }
 
 const addCompanyExpenses = async(req,res)=>{
-    const {amount, bankName, clientId, notes} = req.body
-    let clientUpdate, newTransaction
+    const {amount, bankName, clientId, notes, type} = req.body
+    let clientUpdate, newTransaction, bankFactor = (type==="مدين")? 1 : -1 , clientFactor =  (type==="مدين") ? -1 : 1
     try{
-        clientUpdate = await Client.findOneAndUpdate({ clientId: "4" },
+        clientUpdate = await Client.findOneAndUpdate({ clientId },
             {
                 $inc: {
-                    balance: amount
+                    balance: amount * clientFactor
                 },
                 $push: {
                     purchasingNotes: {
@@ -136,10 +136,10 @@ const addCompanyExpenses = async(req,res)=>{
                     'transactions': { 
                         amount, 
                         notes,
-                        clientId : "4"
+                        clientId 
                     }
                 },
-                $inc: { totalAmount: -amount } 
+                $inc: { totalAmount: amount * bankFactor } 
             },
             {
                 returnDocument: 'after'
