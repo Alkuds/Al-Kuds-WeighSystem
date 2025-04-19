@@ -14,20 +14,32 @@ const getTicketsInfo = (req, res) => {
     res.json(inProgressTickets);
 }
 
+function isSameDay(date1Str, date2Str) {
+    const date1 = new Date(date1Str);
+    const date2 = new Date(date2Str);
+  
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+}
+
 const getTicketsForDay = async(req, res) => {
-    let orders,inProgressTickets = [];
+    let orders,todayTickets = [];
+    let { startDate } = req.body;
     try {
         orders = await Order.find()
         for(let i of orders){
-            if (i.state === "finished" || i.state === "Alkuds-Storage") {
-                inProgressTickets.push(i)
+            if ((i.state === "منتهي" || i.state === "جاري انتظار الدفع") && isSameDay(i.date,startDate)) {
+                todayTickets.push(i)
             }
         }
     }
     catch (err) {
         console.log(err)
     }
-    res.json(inProgressTickets);
+    res.json(todayTickets);
 }
 
 const getUnfinishedOrdersInfoGroupedByClientId = async (req, res) => {
@@ -98,7 +110,7 @@ const getFinishedOrdersInfoGroupedByType = async (req, res) => {
     try {
         orders = await Order.find(
             {
-               "state":"finished"
+               "state":"منتهي"
             }
         )
         for(let x of orders){
@@ -190,7 +202,7 @@ const EditOrderFirstWeight = async (req, res) => {
 }
 
 const addOrder = async (req, res) => {
-    const { ticket, type, clientId, driverId, carId, totalPrice } = req.body
+    const { ticket, type, clientId, driverId, carId, totalPrice, deliveryFees } = req.body
     let newOrder;
     try {
         newOrder = new Order(

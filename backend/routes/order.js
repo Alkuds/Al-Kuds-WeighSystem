@@ -6,7 +6,7 @@ router.get("/getUnfinishedOrdersInfoGroupedByClientId", getUnfinishedOrdersInfoG
 router.get("/getUnfinishedOrdersInfoGroupedByType", getUnfinishedOrdersInfoGroupedByType)
 router.get("/getFinishedOrdersInfoGroupedByType", getFinishedOrdersInfoGroupedByType)
 router.get("/getAwaitForPaymentOrdersGroupedByType", getAwaitForPaymentOrdersGroupedByType)
-router.get("/getTicketsForDay", getTicketsForDay)
+router.post("/getTicketsForDay", getTicketsForDay)
 router.get("/getClientOrders/:id", getClientOrders)
 router.get("/getSpecificTicket/:id", getSpecificTicket)
 router.post("/addOrder", addOrder)

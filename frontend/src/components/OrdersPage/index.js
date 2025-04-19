@@ -7,17 +7,8 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import OrdersViewHolder from "../../ModeratorPages/OrdersViewHolder";
 import Seperator from "../Seperator";
-const OrdersPage = () => {
-  const [open, setOpen] = useState(false);
+const OrdersPage = () => { 
   const { category } = useParams();
-  const { unfinishedTickets, dispatch: dispatchUnfinishedTickets } =
-    useUnfinishedTicketsContext();
-  const { finishedTickets, dispatch: dispatchFinishedTickets } =
-    useFinishedTicketsContext();
-  const { awaitForPaymentTickets, dispatch: dispatchAwaitForPaymentTickets } =
-    useAwaitForPaymentTicketsContext();
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const [alignment, setAlignment] = useState("out");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -25,13 +16,14 @@ const OrdersPage = () => {
   const [filteredDates, setFilteredDates] = useState([]);
   const [loadRange, setLoadRange] = useState(9);
   const [noMoreLoad, setNoMoreLoad] = useState(false);
+  const { unfinishedTickets} = useUnfinishedTicketsContext();
+  const { finishedTickets} = useFinishedTicketsContext();
+  const { awaitForPaymentTickets} = useAwaitForPaymentTicketsContext();
+
   useEffect(() => {}, [
     unfinishedTickets,
     finishedTickets,
-    awaitForPaymentTickets,
-    dispatchUnfinishedTickets,
-    dispatchFinishedTickets,
-    dispatchAwaitForPaymentTickets,
+    awaitForPaymentTickets
   ]);
 
   const handleChange = async (event, newAlignment) => {

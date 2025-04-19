@@ -129,6 +129,7 @@ const OrderModal = ({ onClose, type }) => {
                     }}
                   >
                     <option value="">نوع الحديد</option>
+                    <option value="حديدنا">حديدنا</option>
                     <option value="السويس للصلب">السويس للصلب</option>
                     <option value="الجارحي">الجارحي</option>
                     <option value="عز">عز</option>
