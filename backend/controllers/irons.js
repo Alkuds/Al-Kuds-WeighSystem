@@ -122,10 +122,10 @@ const getIronStorage = async(req, res) => {
     }
 }
 
-let x = 7600;
+let x = 1100;
 const getScaleWeight = (req, res) => {
     res.json({ "weight": x })
-
+    // x+= 1000
 
     // driver name
 

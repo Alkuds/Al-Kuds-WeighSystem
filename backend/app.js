@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("send_order_update", (data) => {
-      console.log(data)
+      console.log(data, "here")
       socket.to(data.room).emit("receive_order_finish_state", data);
     });
   });

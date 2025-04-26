@@ -40,7 +40,7 @@ const Day = () => {
     e.preventDefault()
     const response = await fetch("/order/getTicketsForDay", {
       method: "POST",
-      body:JSON.stringify(startDate),
+      body:JSON.stringify({startDate}),
       headers: {
         "Content-Type": "application/json",
       },
@@ -49,17 +49,9 @@ const Day = () => {
     let tOut = 0,
       tIn = 0;
     if (response.ok) {
-      let d = new Date().toLocaleString();
-      let dateArr = d.split(",");
-      let inArr = [],
-        outArr = [];
+      let inArr = [],outArr = [];
       for (let i of json) {
-        let orderDate = i.date.split(",")[0];
-        if (
-          orderDate === dateArr[0] &&
-          i.type === "in" &&
-          (i.state === "finished" || i.state == "Alkuds-Storage")
-        ) {
+        if (i.type === "in") {
           console.log(i);
           for (let j = 0; j < i.ticket.length; j++) {
             let kgDummy = i.ticket[j].netWeight / 1000;
@@ -88,12 +80,7 @@ const Day = () => {
         console.log(inArr)
       }
       for (let i of json) {
-        let orderDate = i.date.split(",")[0];
-        if (
-          orderDate === dateArr[0] &&
-          i.type === "out" &&
-          (i.state === "finished" || i.state === "Alkuds-Storage")
-        ) {
+        if (i.type === "out") {
           for (let j = 0; j < i.ticket.length; j++) {
             let kgDummy = i.ticket[j].netWeight / 1000;
             let kgStr = kgDummy.toString();

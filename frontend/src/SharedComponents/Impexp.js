@@ -20,7 +20,7 @@ const Impexp = () => {
   const [totalWeight, setTotalWeight] = useState(0);
   const { wallet } = useWalletContext();
   const [transactions, setTransactions] = useState("");
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState();
   const { client } = useClientContext()
   useEffect(() => {}, [dailyData, totalWeight, startDate, transactions]);
 

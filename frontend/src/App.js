@@ -92,10 +92,6 @@ const router = createBrowserRouter([
         element: <Day />,
       },
       {
-        path: "storage",
-        element: <Storage />,
-      },
-      {
         path: "settings",
         element: <Settings />,
       },

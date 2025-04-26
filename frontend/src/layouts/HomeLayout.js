@@ -42,9 +42,6 @@ export default function RootLayout() {
               <NavLink className="text-center" to={"day"}>
                 يوميه
               </NavLink>
-              <NavLink className="text-center" to={"storage"}>
-                مخزن
-              </NavLink>
               <NavLink className="text-center" to={"finishedOrders"}>
                 اوردرات منتهيه
               </NavLink>

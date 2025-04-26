@@ -3,7 +3,7 @@ import Seperator from "../Seperator/index";
 import { useClientContext } from "../../hooks/useClientContext";
 import swal from "sweetalert";
 import LoadingButton from "../../SharedComponents/LoadingButton";
-const OrderModal = ({ onClose, type }) => {
+const OrderModal = ({ onClose, type, closeFun }) => {
   const [price, setPrice] = useState(0);
   const [date, setDate] = useState();
   const [clients, setClients] = useState("اختر عميل");
@@ -41,13 +41,20 @@ const OrderModal = ({ onClose, type }) => {
       swal({
         text: "تم انشاء طلب بنجاح",
         icon: "success",
-      }).then(setAdding(false));
+      }).then(e=>{
+        setAdding(false)
+        closeFun()
+      });
     } catch (error) {
       swal({
         text: "حدث خطأ ما برجاء المحاولة مرة اخرى",
         icon: "error",
         buttons: "حاول مرة اخرى",
-      }).then(setAdding(false));
+      }).then(e=>{
+          setAdding(false)
+          closeFun()
+        }
+      );
     }
   };
   return (

@@ -40,9 +40,6 @@ export default function ModeratorLayout() {
               <NavLink className="text-center" to={"/up/day"}>
                 يوميه
               </NavLink>
-              <NavLink className="text-center" to={"/up/storage"}>
-                مخزن
-              </NavLink>
               <NavLink className="text-center" to={"finishedOrders"}>
                 اوردرات منتهيه
               </NavLink>
