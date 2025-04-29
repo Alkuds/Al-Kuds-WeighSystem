@@ -47,7 +47,7 @@ const getUnfinishedOrdersInfoGroupedByClientId = async (req, res) => {
     let orders;
     let ordersSorted = {}
     try {
-        orders = await Order.find({ state: "progress" })
+        orders = await Order.find({ state: "جاري انتظار التحميل" })
         for(let x of orders){
             if(x.clientId in ordersSorted){
                 let newArr = ordersSorted[`${x.clientId}`]
@@ -205,7 +205,7 @@ const EditOrderFirstWeight = async (req, res) => {
         let orderUpdate = await Order.updateOne({ "_id": orderId }, {firstWeight: firstWeightObject});
         let inOrders =[], outOrders = [];
         let orders
-        orders = await Order.find({ state: "progress" })
+        orders = await Order.find({ state: "جاري انتظار التحميل" })
         for(let x of orders){
             if(x.type === 'in'){
                 inOrders.push(x)
@@ -474,6 +474,8 @@ const orderChangeState = async(req,res)=>{
     }
     res.json(newUpdate)
 }
+
+
 
 
 module.exports = {

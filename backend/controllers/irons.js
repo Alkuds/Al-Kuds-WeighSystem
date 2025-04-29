@@ -122,7 +122,7 @@ const getIronStorage = async(req, res) => {
     }
 }
 
-let x = 1100;
+let x = 1560;
 const getScaleWeight = (req, res) => {
     res.json({ "weight": x })
     // x+= 1000

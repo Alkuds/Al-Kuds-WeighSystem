@@ -21,18 +21,26 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
   const { awaitForPaymentTicketsContext, dispatch: awaitForPaymentTicketsContextUpdate } = useAwaitForPaymentTicketsContext();
   const { socket } = useSocketContext();
   useEffect(() => {
-    socket.on("receive_order_finish_state", (info) => {
+    socket.on("receive_order_finish_state", async(info) => {
       console.log(info)
-      if(info.order === null)
+      if(info.order === null){
         swal ( info.message ,  "تم طباعه اذن الاستلام بنجاح ." ,  "success" )
-      else
+      }
+      else{
+        console.log("hereeeee")
+        await socket.emit("send_order_new_state", {
+          message: "Order Printed Successfully",
+          room: "123",
+          order: info.order,
+        });
         swal ( info.message ,  "تم طباعه اذن الاستلام بنجاح و ايضا تغير حاله الاوردر لجاري انتظار الدفع." ,  "success" )
+      }
       if(!isFinishedTicket){
         console.log("here", info.order)
         dispatch({ type: "DELETE_TICKET", payload: info.order });
         awaitForPaymentTicketsContextUpdate({type: "ADD_TICKET", payload: [info.order] })
       }
-  });
+    });
   }, [unfinishedTickets,awaitForPaymentTicketsContext,awaitForPaymentTicketsContextUpdate,dispatch,weight, time, date, netWeight, isLoading,firstWeight,firstDate,firstTime,socket]);
 
 
