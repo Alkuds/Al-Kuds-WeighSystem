@@ -277,18 +277,22 @@ const getClientOrders = async (req, res) => {
 
 const OrderFinishState = async (req, res) => { 
     const { orderId } = req.body;
-    let updatedOrder
+    let updatedOrder,client, newUpdatedOrder
     try {
-        updatedOrder = await Order.findByIdAndUpdate({ _id: orderId }, { "state": "جاري انتظار الدفع" }, { returnDocument: 'after' })
+        updatedOrder = await Order.findById({ _id: orderId })
+        client = await Client.findOne({"clientId":updatedOrder.clientId})
     }
     catch (err) {
         console.log(err)
     }
-
-    let totalProfitForOrder = 0;
+    console.log(updatedOrder)
+    let totalProfitForOrder = 0, totalPrice = 0;
     const orderTickets = updatedOrder.ticket
     if(updatedOrder.type === "out"){
         for (let i = 0; i < orderTickets.length; i++) {
+            let totalTicketPrice = parseFloat((orderTickets[i].netWeight / 1000)) * orderTickets[i].unitPrice 
+            orderTickets[i].realTotalPrice = totalTicketPrice
+            totalPrice += totalTicketPrice
             let ironData = await Iron.findOne({
                 $and: [
                     { "name": orderTickets[i].ironName },
@@ -324,7 +328,8 @@ const OrderFinishState = async (req, res) => {
                         orderTickets[i].netWeightForProcessing = orderTickets[i].netWeightForProcessing - totalInventoryWeight
                         orderTickets[i].usedUnitCostPerWeight.push({
                             weight: totalInventoryWeight,
-                            cost: ironData.costPerWeight[j].unitCostPerTon
+                            cost: ironData.costPerWeight[j].unitCostPerTon,
+                            ironId: ironData.costPerWeight[j]._id
                         })
                     }
                 }
@@ -340,13 +345,26 @@ const OrderFinishState = async (req, res) => {
                 costPerWeight: ironData.costPerWeight
             })
         }
-        let newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder }, { returnDocument: 'after' })
-        res.json(newUpdatedOrder);
+        console.log(client.balance, totalPrice)
+        if(client.balance<0 && client.balance + totalPrice <=0){
+
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice , state : "منتهي" , totalPaid : totalPrice}, { returnDocument: 'after' })
+        }
+        else if (client.balance<0 && client.balance + totalPrice > 0){
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice , state : "جاري انتظار الدفع" , totalPaid: Math.abs(Math.abs(client.balance)-totalPrice)}, { returnDocument: 'after' })
+        }
+        else if(client.balance>=0){
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice , state : "جاري انتظار الدفع" }, { returnDocument: 'after' })
+
+        }
+
+        let balanceUpdate = await Client.findOneAndUpdate({clientId:updatedOrder.clientId}, {$inc: { balance: totalPrice }})
+
     }
     else{
-        let realTotalPrice = 0;
+        let realTotalPrice = 0, ironId;
         for (let i = 0; i < orderTickets.length; i++) {
-            await Iron.updateOne(
+            await Iron.findOneAndUpdate(
                 {
                     $and: [
                         { "name": orderTickets[i].ironName },
@@ -358,21 +376,37 @@ const OrderFinishState = async (req, res) => {
                     {
                         costPerWeight: {
                             unitCostPerTon : orderTickets[i].unitPrice,
-                            weight : orderTickets[i].netWeight
+                            weight : orderTickets[i].netWeight,
                         }
                     }
                 },
-                { upsert: true }
-            )
-
+                { upsert: true ,returnDocument: 'after',}
+            ).then(res=>{
+                orderId = res["costPerWeight"][costPerWeight.length-1]._id
+            })
+            orderTickets[i].usedUnitCostPerWeight.push({
+                weight: orderTickets[i].netWeight,
+                cost: orderTickets[i].unitPrice,
+                ironId: orderId
+            })
             orderTickets[i].realTotalPrice = orderTickets[i].unitPrice * parseFloat((orderTickets[i].netWeight / 1000))
             realTotalPrice += orderTickets[i].realTotalPrice
         }
 
-        let newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice }, { returnDocument: 'after' })
-        res.json(newUpdatedOrder);
+        if(client.balance<0){
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "جاري انتظار الدفع"}, { returnDocument: 'after' })
+        }
+        else if (client.balance>0 && client.balance + (-realTotalPrice) <0 ){
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "جاري انتظار الدفع" , totalPaid : Math.abs(client.balance-realTotalPrice)}, { returnDocument: 'after' })
+        }
+        else if(client.balance>0 && client.balance + (-realTotalPrice) >=0 ){
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "منتهي" , totalPaid : realTotalPrice}, { returnDocument: 'after' })
+        }       
+        let balanceUpdate = await Client.findOneAndUpdate({clientId:updatedOrder.clientId}, {$inc: { balance: -realTotalPrice }})
+        
     }
 
+    res.json(newUpdatedOrder);
 
 }
 
@@ -417,31 +451,39 @@ const TicketDelete = (req, res) => {
 
 const addOrderStatement = async(req,res) =>{
     const { orderId, bankName, amount, type } = req.body
+    console.log(orderId, bankName, amount, type)
     let statement, order, walletTransaction, walletId;
     try{
         let order = await Order.findById(orderId);
-        walletTransaction = new Wallet.findOneAndUpdate(
+        walletTransaction = await Wallet.findOneAndUpdate(
             {
                 bankName
             },
             {
-                $psuh : { transactions:{ amount: paidAmount, clientId : order.clientId, type, orderId}}
+                $push : { transactions:{ amount: parseFloat(amount), clientId : order.clientId, type, orderId}}
             },
             {
                 returnDocument:'after' 
             }
         )
+        console.log(walletTransaction)
         order.statement.push(
             {
                 "paidAmount":amount,
                 "clientId": order.clientId,
                 "bankName" : bankName,
                 "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
-                "walletTransactionId" : walletTransaction.transactions[walletTransaction.transactions.length-1]._id
+                "walletTransactionId" : walletTransaction.transactions[walletTransaction.transactions.length-1].orderId
             }
         )
         
-        statement = await Order.findOneAndUpdate({_id:order._id},{statement:order.statement},{ returnDocument: 'after' } )
+        if(order.realTotalPrice <= amount+ order.totalPaid){
+            statement = await Order.findOneAndUpdate({_id:order._id},{statement:order.statement, state:"منتهي", totalPaid:order.realTotalPrice},{ returnDocument: 'after' } )
+        }
+        else if(order.realTotalPrice > amount+ order.totalPaid){
+            statement = await Order.findOneAndUpdate({_id:order._id},{statement:order.statement, $inc: { totalPaid: amount }},{ returnDocument: 'after' } )
+        }
+        let client = await Client.findOneAndUpdate({clientId: order.clientId}, {$inc: { balance: -amount }})
     }
     catch(err){
         console.log(err)

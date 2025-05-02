@@ -55,6 +55,22 @@ const isBeforeByMonthYear = (date1, date2) => {
     return false;
 }
 
+const isBeforeByMonthYearOrEqual = (date1, date2) => {
+    let d1 = new Date(date1);
+    let d2 = new Date(date2);
+
+    let year1 = d1.getFullYear();
+    let month1 = d1.getMonth() + 1; 
+
+    let year2 = d2.getFullYear();
+    let month2 = d2.getMonth() + 1;
+
+    if ((year2 <= year1 && month2 <= month1)) {
+        return true;  
+    }
+    return false;
+}
+
 const isSameMonth = (date1Str, date2Str) => {
     const date1 = new Date(date1Str);
     const date2 = new Date(date2Str);
@@ -82,6 +98,7 @@ const getProfitReportDataBasedOnDate = async(req,res)=>{
         console.log(soldOrders.length)
 
         for(let order of soldOrders){
+            // console.log(order.date, monthAndYear)
             if(order.date === monthAndYear ){
                 if(order.type === "out"){
                     soldProfit += order.totalProfit
@@ -93,21 +110,24 @@ const getProfitReportDataBasedOnDate = async(req,res)=>{
         }
 
         let formattedSentMonthAndYear = monthAndYear
-        console.log(formattedSentMonthAndYear)
+        // console.log(formattedSentMonthAndYear)
         for(let i of iron){
             for(let j of i.costPerWeight){
                 let monthBefore = subtractOneMonth(formattedSentMonthAndYear)
-                if(isBeforeByMonthYear(formattedSentMonthAndYear, j.date)){
+                // console.log(isBeforeByMonthYear(monthAndYear, j.date))
+                if(isBeforeByMonthYearOrEqual(monthAndYear, j.date)){
                     endingOfMonthIronPrice += (parseFloat((j.weight / 1000)) * j.unitCostPerTon)
                 }
-                if(isBeforeByMonthYear(monthBefore, j.date)){
+                console.log(isBeforeByMonthYearOrEqual(monthBefore, j.date),monthBefore, j.date)
+                if(isBeforeByMonthYearOrEqual(monthBefore, j.date) ){
+                    // console.log("heeree")
                     beginningOfMonthIronPrice += (parseFloat((j.weight / 1000)) * j.unitCostPerTon)
                 }
             }
         }
 
         let companyExpensesDoc = await Client.findOne({"clientId":"4"})
-        console.log(companyExpensesDoc["purchasingNotes"])
+        // console.log(companyExpensesDoc["purchasingNotes"])
         let companyExpenses = 0
         for(let i of companyExpensesDoc["purchasingNotes"]){
             if(isSameMonth(i.date,monthAndYear)){

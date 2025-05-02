@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {getIronStorage, subtractIronWeight, addIron, addIronWeight, changeIronWeight, getScaleWeight, handleChangePassword} = require('../controllers/irons')
-router.post('/getIronStorage', getIronStorage)
+const {getIronStorageAdmin, getIronStorage, subtractIronWeight, addIron, addIronWeight, changeIronWeight, getScaleWeight, handleChangePassword} = require('../controllers/irons')
+router.post('/getIronStorage', getIronStorageAdmin)
 router.post('/addIron', addIron)
 router.post('/addIronWeight', addIronWeight)
 router.post('/subtractIronWeight', subtractIronWeight)

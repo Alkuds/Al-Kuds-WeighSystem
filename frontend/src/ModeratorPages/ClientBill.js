@@ -165,7 +165,7 @@ const ClientBill = () => {
           paid = 0;
         for (let i = 0; i < getClientOrder.length; i++) {
             console.log(getClientOrder[i].totalPaid, i)
-          price += getClientOrder[i].totalPrice;
+          price += getClientOrder[i].realTotalPrice;
           paid += getClientOrder[i].totalPaid;
           let tickets = [],
             statements = [];
@@ -190,7 +190,7 @@ const ClientBill = () => {
             createData(
               getClientOrder[i].type,
               getClientOrder[i].state,
-              getClientOrder[i].totalPrice,
+              getClientOrder[i].realTotalPrice,
               getClientOrder[i].totalPaid,
               getClientOrder[i].date,
               tickets,

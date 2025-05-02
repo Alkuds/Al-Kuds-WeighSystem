@@ -37,27 +37,12 @@ const Impexp = () => {
         "Content-Type": "application/json",
       },
     });
-    const ironStorage = await response.json();
+    const {ironStorage, total} = await response.json();
+    console.log(ironStorage)
     let d = new Date().toLocaleString("en-EG", { timeZone: "Africa/Cairo" });
     let dateArr = d.split(",");
     // console.log(dateArr[0] );
     // console.log(ironStorage[0].props[0].date == dateArr[0]);
-
-    let dummyDailyData = [],
-      total = 0;
-    console.log(ironStorage);
-    ironStorage.map((iron) => {
-      iron[Object.keys(iron)[0]].map((prop) => {
-        total += parseInt(prop.weight);
-        let rowitem = {
-          name: Object.keys(iron)[0],
-          weight: prop.weight,
-          radius: prop.radius,
-        };
-        dummyDailyData.push(rowitem);
-      });
-    });
-
     const transactionsFetch = await fetch("/wallet/getWalletInventoryByDate", {
       method: "POST",
       body: JSON.stringify({ startDate }),
@@ -68,8 +53,7 @@ const Impexp = () => {
 
     const transactions = await transactionsFetch.json();
     if (transactionsFetch.ok && response.ok) {
-      console.log(dummyDailyData);
-      setDailyData([...dummyDailyData]);
+      setDailyData([...ironStorage]);
       setTransactions([...transactions]);
       setTotalWeight(total);
     }

@@ -40,12 +40,29 @@ export const AwaitForPaymentTicketsReducer = (state, action) => {
           awaitForPaymentTickets: usedArrObj
       };
     case "DELETE_TICKET":
-      return {
-        awaitForPaymentTickets: [
-          ...state.awaitForPaymentTickets.filter(
-            (w) => w._id !== action.payload._id
-          ),
-        ],
+      {
+        let typeObj = {
+          "in":"inOrders",
+          "out":"outOrders"
+        }
+        let newArr = []
+        for(let i = 0 ;i<state.awaitForPaymentTickets[`${typeObj[action.payload.type]}`].length;i++){
+          if(state.awaitForPaymentTickets[`${typeObj[action.payload.type]}`][i]._id !== action.payload._id){
+            newArr.push(state.awaitForPaymentTickets[`${typeObj[action.payload.type]}`][i])
+          }
+        }
+        if(typeObj[action.payload.type] === "in")
+        {
+          return {
+            awaitForPaymentTickets: {"inOrders": newArr, "outOrders":state.awaitForPaymentTickets["outOrders"] },
+          };
+        }
+        else
+        {
+          return {
+            awaitForPaymentTickets: {"outOrders": newArr, "inOrders":state.awaitForPaymentTickets["inOrders"] },
+          };
+        }
       };
     default:
       return state;

@@ -21,7 +21,8 @@ const OrderSchema = new mongoose.Schema({
         realTotalPrice: { type: Number, default: 0 },
         usedUnitCostPerWeight: [{
             weight: { type: Number, default: 0 },
-            cost: { type: Number, default: 0 }
+            cost: { type: Number, default: 0 },
+            ironId: { type: Number, default: 0 },
         }],
         totalCost: { type: Number, default: 0 },
         netWeightForProcessing: { type: Number, default: 0 },

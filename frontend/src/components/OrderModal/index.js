@@ -4,6 +4,7 @@ import { useClientContext } from "../../hooks/useClientContext";
 import swal from "sweetalert";
 import LoadingButton from "../../SharedComponents/LoadingButton";
 import { useSocketContext } from "../../hooks/useSocket";
+import { useUnfinishedTicketsContext } from "../../hooks/useUnfinishedTicketsContext";
 const OrderModal = ({ onClose, type, closeFun }) => {
   const [price, setPrice] = useState(0);
   const [date, setDate] = useState();
@@ -11,11 +12,15 @@ const OrderModal = ({ onClose, type, closeFun }) => {
   const { client } = useClientContext();
   const [adding, setAdding] = useState(false);
   const [deliveryFees, setDeliveryFees] = useState();
+  const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
   const [tickets, setTickets] = useState([
     { ironName: "", radius: "", neededWeight: "", unitPrice: "" },
   ]);
   const { socket } = useSocketContext();
  
+  useEffect(()=>{},[
+
+  ])
 
   const HandleFormSubmission = async (e) => {
     setAdding(true);
@@ -48,7 +53,9 @@ const OrderModal = ({ onClose, type, closeFun }) => {
           room: "123",
           order: result,
         });
+        dispatch({type:"ADD_TICKET",payload: [result]})
       }
+
       swal({
         text: "تم انشاء طلب بنجاح",
         icon: "success",
@@ -153,7 +160,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
                     <option value="عز">عز</option>
                     <option value="مصريين">مصريين</option>
                     <option value="بشاي">بشاي</option>
-                    <option value="مركبي">مركبي</option>
+                    <option value="مراكبي">مراكبي</option>
                     <option value="المدينة">المدينة</option>
                     <option value="العلا">العلا</option>
                     <option value="جيوشي">جيوشي</option>
