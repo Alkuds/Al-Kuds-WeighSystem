@@ -4,12 +4,17 @@ import "../assets/css/impexp.css";
 import { useWalletContext } from "../hooks/useWalletContext";
 import { useClientContext } from "../hooks/useClientContext";
 
+import { useUserContext } from "../hooks/useUserContext";
+// import { useUserContext } from "@/hooks/useUserContext";
+
 const DayExpenseRow = (props) => {
   const { data, client } = props;
+
   return (
     <>
       <div>
-        {data["notes"]}&nbsp; - &nbsp;{data["amount"]} &nbsp; - &nbsp; {client[data["clientId"]].name}
+        {data["notes"]}&nbsp; - &nbsp;{data["amount"]} &nbsp; - &nbsp;{" "}
+        {client[data["clientId"]].name}
       </div>
     </>
   );
@@ -21,7 +26,19 @@ const Impexp = () => {
   const { wallet } = useWalletContext();
   const [transactions, setTransactions] = useState("");
   const [startDate, setStartDate] = useState();
-  const { client } = useClientContext()
+  const { client } = useClientContext();
+  const [showPricePerTon, setShowPricePerTon] = useState(false);
+  const [showTotalPrice, setShowTotalPrice] = useState(false);
+  const { user } = useUserContext();
+  const [showTable, setShowTable] = useState(false);
+  useEffect(() => {
+    if (user.name === "Osama") {
+      setShowPricePerTon(true);
+    } else if (user.name === "Sobhy") {
+      setShowPricePerTon(true);
+      setShowTotalPrice(true);
+    }
+  }, []);
   useEffect(() => {}, [dailyData, totalWeight, startDate, transactions]);
 
   if (!wallet || !client) {
@@ -30,6 +47,9 @@ const Impexp = () => {
 
   const getDailyData = async (e) => {
     e.preventDefault();
+    if (!showTable) {
+      setShowTable(true);
+    }
     const response = await fetch("/irons/getIronStorage", {
       method: "POST",
       body: JSON.stringify({ startDate }),
@@ -45,6 +65,7 @@ const Impexp = () => {
 
     let dummyDailyData = [],
       total = 0;
+
     console.log(ironStorage);
     ironStorage.map((iron) => {
       iron[Object.keys(iron)[0]].map((prop) => {
@@ -85,7 +106,8 @@ const Impexp = () => {
         className="flex lg:flex-col items-center flex-col gap-2 lg:gap-4"
         onSubmit={(e) => getDailyData(e)}
       >
-        <div className="flex items-center gap-2">
+        <div className="mt-3 flex flex-row-reverse justify-center  items-center gap-2">
+          <label className="text-center">الجرد حتى تاريخ :</label>
           <input
             required
             type="date"
@@ -97,89 +119,141 @@ const Impexp = () => {
           {" "}
           بحث{" "}
         </button>
+        {!showTable && (
+          <p className="text-center text-xl font-bold">
+            يرجى اختيار تاريخ لعرض بيانات الجرد حتى ذلك اليوم
+          </p>
+        )}
       </form>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-start",
-        }}
-      >
-        <table className="out-table">
-          <thead>
-            <tr>
-              <th> نقديه </th>
-              <th> +/- </th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions &&
-              transactions.map((i, idx) => (
-                <>
-                  <DayExpenseRow data={i} key={idx} client={client} />
-                </>
-              ))}
-          </tbody>
-        </table>
-        <table style={{ direction: "rtl" }} className="impexp-table">
-          <thead>
-            <tr>
-              <th>وزن الحديد</th>
-              <th>القطر</th>
-              <th>النوع</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dailyData.map((el) => (
-              <>
-                {(el.weight > 0 || el.weight < 0) && el.radius === "6" && (
-                  <tr style={{ border: "2px solid black" }}>
-                    <td>{el.weight}</td>
-                    <td>{el.radius}</td>
-                    <td> {el.name}</td>
-                  </tr>
-                )}
-              </>
-            ))}
-            {dailyData.map((el) => (
-              <>
-                {(el.weight > 0 || el.weight < 0) && el.radius === "8" && (
-                  <tr style={{ border: "2px solid black" }}>
-                    <td>{el.weight}</td>
-                    <td>{el.radius}</td>
-                    <td> {el.name}</td>
-                  </tr>
-                )}
-              </>
-            ))}
-            {dailyData.map((el) => (
-              <>
-                {(el.weight > 0 || el.weight < 0) &&
-                  el.radius !== "6" &&
-                  el.radius !== "8" && (
-                    <tr style={{ border: "2px solid black" }}>
-                      <td>{el.weight}</td>
-                      <td>{el.radius}</td>
-                      <td>{el.name}</td>
-                    </tr>
+      {showTable && (
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+            }}
+          >
+            <table className="out-table">
+              <thead>
+                <tr>
+                  <th className="text-center border-l-2 border-black p-2">
+                    {" "}
+                    نقديه{" "}
+                  </th>
+                  <th className="text-center border-l-2 border-black p-2">
+                    {" "}
+                    +/-{" "}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions &&
+                  transactions.map((i, idx) => (
+                    <>
+                      <DayExpenseRow data={i} key={idx} client={client} />
+                    </>
+                  ))}
+              </tbody>
+            </table>
+            <table style={{ direction: "rtl" }} className="impexp-table">
+              <thead>
+                <tr>
+                  <th className="text-center border-l-2 border-black">
+                    وزن الحديد
+                  </th>
+                  <th className="text-center border-l-2 border-black">القطر</th>
+                  <th className="text-center border-l-2 border-black">النوع</th>
+                  {showPricePerTon && (
+                    <th className="text-center border-black">سعر/طن</th>
                   )}
-              </>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td>{totalWeight}</td>
-              <th>اجمالي الوزن</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <button className="iron-btn" onClick={(e) => {
-          window.print()
-        }}>
-        {" "}
-        طباعه
-      </button>
+                  {showTotalPrice && (
+                    <th className="text-center border-black">اجمالي السعر</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {dailyData.map((el) => (
+                  <>
+                    {(el.weight > 0 || el.weight < 0) && el.radius === "6" && (
+                      <tr style={{ border: "2px solid black" }}>
+                        <td className=" text-center border-l-2 border-black">
+                          {el.weight}
+                        </td>
+                        <td className="text-center border-l-2 border-black">
+                          {el.radius}
+                        </td>
+                        <td className="text-center border-l-2 border-black">
+                          {" "}
+                          {el.name}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))}
+                {dailyData.map((el) => (
+                  <>
+                    {(el.weight > 0 || el.weight < 0) && el.radius === "8" && (
+                      <tr style={{ border: "2px solid black" }}>
+                        <td className="text-center border-l-2 border-black">
+                          {" "}
+                          {el.weight}
+                        </td>
+                        <td className="text-center border-l-2 border-black">
+                          {el.radius}
+                        </td>
+                        <td className="text-center border-l-2 border-black">
+                          {" "}
+                          {el.name}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))}
+                {dailyData.map((el) => (
+                  <>
+                    {(el.weight > 0 || el.weight < 0) &&
+                      el.radius !== "6" &&
+                      el.radius !== "8" && (
+                        <tr style={{ border: "2px solid black" }}>
+                          <td className="text-center border-l-2 border-black">
+                            {" "}
+                            {el.weight}
+                          </td>
+                          <td className="text-center border-l-2 border-black">
+                            {el.radius}
+                          </td>
+                          <td className="text-center border-l-2 border-black">
+                            {el.name}
+                          </td>
+                        </tr>
+                      )}
+                  </>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td className="p-2 text-center border-r-2 border-b-2 border-l-2 border-black">
+                    {totalWeight}
+                  </td>
+                  <th className="p-2 text-center border-black border-l-2 border-b-2">
+                    اجمالي الوزن
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <button
+            className="iron-btn mt-5 max-w-80 font-bold text-xl"
+            onClick={(e) => {
+              window.print();
+            }}
+          >
+            {" "}
+            طباعه
+          </button>
+        </>
+      )}
     </div>
   );
 };
