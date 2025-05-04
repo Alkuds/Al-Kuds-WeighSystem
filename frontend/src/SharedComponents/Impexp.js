@@ -3,6 +3,7 @@ import inventory from "../assets/images/inventory_icon.PNG";
 import "../assets/css/impexp.css";
 import { useWalletContext } from "../hooks/useWalletContext";
 import { useClientContext } from "../hooks/useClientContext";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useUserContext } from "../hooks/useUserContext";
 // import { useUserContext } from "@/hooks/useUserContext";
@@ -31,7 +32,9 @@ const Impexp = () => {
   const [showTotalPrice, setShowTotalPrice] = useState(false);
   const { user } = useUserContext();
   const [showTable, setShowTable] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
+    console.log(user.name)
     if (user.name === "Osama") {
       setShowPricePerTon(true);
     } else if (user.name === "Sobhy") {
@@ -39,7 +42,7 @@ const Impexp = () => {
       setShowTotalPrice(true);
     }
   }, []);
-  useEffect(() => {}, [dailyData, totalWeight, startDate, transactions]);
+  useEffect(() => {}, [dailyData, totalWeight, startDate, transactions, isLoading]);
 
   if (!wallet || !client) {
     return <div> Loading... </div>;
@@ -47,6 +50,7 @@ const Impexp = () => {
 
   const getDailyData = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     if (!showTable) {
       setShowTable(true);
     }
@@ -59,10 +63,6 @@ const Impexp = () => {
     });
     const {ironStorage, total} = await response.json();
     console.log(ironStorage)
-    let d = new Date().toLocaleString("en-EG", { timeZone: "Africa/Cairo" });
-    let dateArr = d.split(",");
-    // console.log(dateArr[0] );
-    // console.log(ironStorage[0].props[0].date == dateArr[0]);
     const transactionsFetch = await fetch("/wallet/getWalletInventoryByDate", {
       method: "POST",
       body: JSON.stringify({ startDate }),
@@ -77,6 +77,7 @@ const Impexp = () => {
       setTransactions([...transactions]);
       setTotalWeight(total);
     }
+    setIsLoading(false)
   };
 
   return (
@@ -110,7 +111,7 @@ const Impexp = () => {
       </form>
       {showTable && (
         <>
-          <div
+          { !isLoading ?<div
             style={{
               display: "flex",
               flexDirection: "row",
@@ -170,6 +171,16 @@ const Impexp = () => {
                           {" "}
                           {el.name}
                         </td>
+                       { showPricePerTon && <td className="text-center border-l-2 border-black">
+                          {" "}
+                          {el.price}
+                        </td>}
+                        { showTotalPrice && 
+                          <td className="text-center border-l-2 border-black">
+                            {" "}
+                            {el.totalPrice}
+                          </td>
+                        }
                       </tr>
                     )}
                   </>
@@ -189,6 +200,16 @@ const Impexp = () => {
                           {" "}
                           {el.name}
                         </td>
+                        { showPricePerTon && <td className="text-center border-l-2 border-black">
+                          {" "}
+                          {el.price}
+                        </td>}
+                        { showTotalPrice && 
+                          <td className="text-center border-l-2 border-black">
+                            {" "}
+                            {el.totalPrice}
+                          </td>
+                        }
                       </tr>
                     )}
                   </>
@@ -209,6 +230,16 @@ const Impexp = () => {
                           <td className="text-center border-l-2 border-black">
                             {el.name}
                           </td>
+                          { showPricePerTon && <td className="text-center border-l-2 border-black">
+                            {" "}
+                            {el.price}
+                          </td>}
+                          { showTotalPrice && 
+                            <td className="text-center border-l-2 border-black">
+                              {" "}
+                              {el.totalPrice}
+                            </td>
+                          }
                         </tr>
                       )}
                   </>
@@ -225,7 +256,7 @@ const Impexp = () => {
                 </tr>
               </tfoot>
             </table>
-          </div>
+          </div> : <CircularProgress/>}
           <button
             className="iron-btn mt-5 max-w-80 font-bold text-xl"
             onClick={(e) => {

@@ -285,7 +285,6 @@ const OrderFinishState = async (req, res) => {
     catch (err) {
         console.log(err)
     }
-    console.log(updatedOrder)
     let totalProfitForOrder = 0, totalPrice = 0;
     const orderTickets = updatedOrder.ticket
     if(updatedOrder.type === "out"){
@@ -362,7 +361,8 @@ const OrderFinishState = async (req, res) => {
 
     }
     else{
-        let realTotalPrice = 0, ironId;
+        console.log("heereee")
+        let realTotalPrice = 0, ironId = "";
         for (let i = 0; i < orderTickets.length; i++) {
             await Iron.findOneAndUpdate(
                 {
@@ -382,12 +382,12 @@ const OrderFinishState = async (req, res) => {
                 },
                 { upsert: true ,returnDocument: 'after',}
             ).then(res=>{
-                orderId = res["costPerWeight"][costPerWeight.length-1]._id
+                ironId = res["costPerWeight"][res["costPerWeight"].length-1]._id.toString()
             })
             orderTickets[i].usedUnitCostPerWeight.push({
                 weight: orderTickets[i].netWeight,
                 cost: orderTickets[i].unitPrice,
-                ironId: orderId
+                ironId
             })
             orderTickets[i].realTotalPrice = orderTickets[i].unitPrice * parseFloat((orderTickets[i].netWeight / 1000))
             realTotalPrice += orderTickets[i].realTotalPrice
