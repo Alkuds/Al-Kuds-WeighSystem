@@ -39,7 +39,6 @@ const formatDate = (date) => {
     return `${month}/${day}/${year}, ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
 }
 
-
 const isBeforeByMonthYearOrEqual = (date1, date2) => {
     let d1 = new Date(date1);
     let d2 = new Date(date2);
@@ -82,34 +81,43 @@ const getBeginningOfMonthIronPrice = async(startDate) => {
                     
                 } 
                 else{
-                    ironMap[i.name][`${i["radius"]}`] =[{"weight":j["weight"],"unitCost":j["unitCostPerTon"],"id": j["_id"]}]
+                    let obj = {"weight":j["weight"],"unitCost":j["unitCostPerTon"],"id": j["_id"]}
+                    ironMap[i.name][`${i["radius"]}`] =[obj]
                 }
             }
         }
         const orders = await Order.find({
             state: { $in: ["جاري انتظار الدفع", "منتهي"] }
         });
+        // res.json({ironStorage:ironMap , total:1})
         const wantedDate = new Date(startDate);
         for(let order of orders){
             let orderDate = new Date(order.date)
             if(isDateBetween(orderDate,wantedDate)){
+                console.log(order._id)
                 for(let ticket of order.ticket){
                     for(let consumedUnitPerWeight of ticket.usedUnitCostPerWeight){
                         let hasTheConsumedIron = false
                         for(let k = 0 ; k<ironMap[ticket.ironName][ticket.radius].length ; k++){
-                            if( consumedUnitPerWeight.orderId === ironMap[ticket.ironName][ticket.radius][k]._id){
+                            // console.log("ironId here: ",ironMap[ticket.ironName][ticket.radius][k] , "  order Id: ",order._id)
+                            console.log("OrderIronId: ",consumedUnitPerWeight, "  iron Id: ",ironMap[ticket.ironName][ticket.radius][k].id.toString())
+                            if( consumedUnitPerWeight.ironId === ironMap[ticket.ironName][ticket.radius][k].id.toString()){
                                 hasTheConsumedIron = true    
                                 if(order.type === "out"){
+                                    console.log("out before: ",ironMap[ticket.ironName][ticket.radius][k], "  ironName:  ", ticket.ironName,  "  radius:  ", ticket.radius)
                                     ironMap[ticket.ironName][ticket.radius][k].weight += consumedUnitPerWeight.weight
+                                    console.log("out after: ",ironMap[ticket.ironName][ticket.radius][k])
                                 }
                                 else{
+                                    console.log("in before: ",ironMap[ticket.ironName][ticket.radius][k], "  ironName:  ", ticket.ironName,  "  radius:  ", ticket.radius)
                                     ironMap[ticket.ironName][ticket.radius][k].weight -= consumedUnitPerWeight.weight
+                                    console.log("in after: ",ironMap[ticket.ironName][ticket.radius][k])
                                 }
                             }                            
                         }
-                        if(!hasTheConsumedIron){
-                            ironMap[ticket.ironName][ticket.radius].push({"weight":consumedUnitPerWeight.weight,"unitCostPerTon":consumedUnitPerWeight.cost})
-                        }
+                        // if(!hasTheConsumedIron){
+                        //     ironMap[ticket.ironName][ticket.radius].push({"weight":consumedUnitPerWeight.weight,"unitCostPerTon":consumedUnitPerWeight.cost})
+                        // }
                     }
                 }
             }

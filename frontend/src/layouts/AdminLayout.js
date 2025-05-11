@@ -40,9 +40,6 @@ export default function AdminLayout() {
               <NavLink className="text-center" to={"day"}>
                 يوميه
               </NavLink>
-              <NavLink className="text-center" to={"finishedOrders"}>
-                اوردرات منتهيه
-              </NavLink>
 
               <NavLink className="text-center" to={"clientbill"}>
                 كشفات الحسابات

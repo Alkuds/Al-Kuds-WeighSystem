@@ -11,7 +11,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
   const [clients, setClients] = useState("اختر عميل");
   const { client } = useClientContext();
   const [adding, setAdding] = useState(false);
-  const [deliveryFees, setDeliveryFees] = useState();
+  const [deliveryFees, setDeliveryFees] = useState(0);
   const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
   const [tickets, setTickets] = useState([
     { ironName: "", radius: "", neededWeight: "", unitPrice: "" },
@@ -117,7 +117,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
               />
             </div>
           </div>
-          <div className="md:w-[33%] w-full flex justify-center">
+          {type === 'out' && <div className="md:w-[33%] w-full flex justify-center">
             <div className="flex flex-col gap-2 w-full max-w-[300px]">
               <label className="text-center">المشال</label>
               <input
@@ -134,7 +134,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
                 placeholder="المشال"
               />
             </div>
-          </div>
+          </div>}
         </div>
         {tickets.map((_, index) => (
           <div key={index}>

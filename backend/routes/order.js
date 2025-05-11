@@ -9,7 +9,7 @@ router.get("/getFinishedOrdersInfoGroupedByType", getFinishedOrdersInfoGroupedBy
 router.get("/getNewOrdersInfoGroupedByType", getNewOrdersInfoGroupedByType)
 router.get("/getAwaitForPaymentOrdersGroupedByType", getAwaitForPaymentOrdersGroupedByType)
 router.post("/getTicketsForDay", getTicketsForDay)
-router.get("/getClientOrders/:id", getClientOrders)
+router.post("/getClientOrders/", getClientOrders)
 router.get("/getSpecificTicket/:id", getSpecificTicket)
 router.post("/addOrder", addOrder)
 router.post("/EditOrderTicket", EditOrderTicket)

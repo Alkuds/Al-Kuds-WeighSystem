@@ -50,7 +50,8 @@ const CashInput = (props) => {
         setAmount("")
         setNotes("")
         clientUpdate({ type: "UPDATE_CLIENT", payload: addCompanyExpenseTransaction.client })
-        walletUpdate({ type: "UPDATE_WALLET", payload: addCompanyExpenseTransaction.bank })
+        if(addCompanyExpenseTransaction.bank !== null)
+          walletUpdate({ type: "UPDATE_WALLET", payload: addCompanyExpenseTransaction.bank })
     }
     else{
         swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حاول مجددا بعد قليل." ,  "error" )
@@ -159,13 +160,12 @@ const CashInput = (props) => {
           <div className="flex flex-col gap-2 w-full max-w-[300px]">
             <label className="text-center">البنك</label>
             <select
-              required
               value={selectedBank}
               onChange={(e) => {
                 setSelectedBank(e.target.value);
               }}
             >
-              <option value="">أسم البنك</option>
+              <option value="اختر البنك">أسم البنك</option>
               {wallet &&
                 [...Object.keys(wallet)].map((i, idx) => (
                   <option value={wallet[i].bankName}> {wallet[i].bankName} </option>

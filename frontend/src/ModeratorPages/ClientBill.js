@@ -15,6 +15,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Fragment, useEffect, useState } from "react";
 import { useClientContext } from "../hooks/useClientContext";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useUserContext } from "../hooks/useUserContext";
 
 const Row = (props) => {
   const { row } = props;
@@ -131,11 +132,16 @@ const Row = (props) => {
 const ClientBill = () => {
   const [clients, setClients] = useState("اختر عميل");
   const { client } = useClientContext();
+  const [selectedClient, setSelectedClient] = useState('')
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalPaid, setTotalPaid] = useState(0);
   const [balance, setBalance] = useState(0);
+  const [totalProfit, setTotalProfit] = useState(0)
+  const [transactionMonth, setTransactionMonth] = useState();
+
+  const { user } = useUserContext();
   useEffect(() => {console.log("here")}, [clients, rows, isLoading, client]);
 
   if (!client) {
@@ -143,14 +149,15 @@ const ClientBill = () => {
     return <div>Loading...</div>; // Prevents rendering until data is available
   }
   const handleChange = async (e) => {
+    e.preventDefault()
     setIsLoading(true);
-    setClients(client[e.target.value].name);
-    const clientData = e.target.value;
     try {
+      console.log(transactionMonth)
       const getClientOrderFetch = await fetch(
-        "/order/getClientOrders/" + clientData,
+        "/order/getClientOrders",
         {
-          method: "GET",
+          method: "POST",
+          body:JSON.stringify({"date":transactionMonth,"id":selectedClient}),
           headers: {
             "Content-Type": "application/json",
           },
@@ -160,49 +167,12 @@ const ClientBill = () => {
       const getClientOrder = await getClientOrderFetch.json();
       console.log(getClientOrder);
       if (getClientOrderFetch.ok) {
-        let orders = [],
-          price = 0,
-          paid = 0;
-        for (let i = 0; i < getClientOrder.length; i++) {
-            console.log(getClientOrder[i].totalPaid, i)
-          price += getClientOrder[i].realTotalPrice;
-          paid += getClientOrder[i].totalPaid;
-          let tickets = [],
-            statements = [];
-          for (let j = 0; j < getClientOrder[i]["ticket"].length; j++) {
-            tickets.push({
-              ironName: getClientOrder[i]["ticket"][j].ironName,
-              radius: getClientOrder[i]["ticket"][j].radius,
-              netWeight: getClientOrder[i]["ticket"][j].netWeight,
-              price: getClientOrder[i]["ticket"][j].unitPrice,
-            });
-          }
-          for (let j = 0; j < getClientOrder[i]["statement"].length; j++) {
-            statements.push({
-              walletId: getClientOrder[i]["statement"][j]._id,
-              bankName: getClientOrder[i]["statement"][j].bankName,
-              paidAmount: getClientOrder[i]["statement"][j].paidAmount,
-              date: getClientOrder[i]["statement"][j].date,
-            });
-          }
-
-          orders.push(
-            createData(
-              getClientOrder[i].type,
-              getClientOrder[i].state,
-              getClientOrder[i].realTotalPrice,
-              getClientOrder[i].totalPaid,
-              getClientOrder[i].date,
-              tickets,
-              statements
-            )
-          );
-        }
-        console.log(orders);
-        setRows([...orders]);
-        setBalance(client[e.target.value].balance);
-        setTotalPaid(paid);
-        setTotalPrice(price);
+        console.log(getClientOrder.orders);
+        setRows([...getClientOrder.orders]);
+        setBalance(client[selectedClient].balance);
+        setTotalPaid(getClientOrder.paid);
+        setTotalPrice(getClientOrder.price);
+        setTotalProfit(getClientOrder.profit)
       }
     } catch (err) {
       console.log(err);
@@ -210,36 +180,40 @@ const ClientBill = () => {
     setIsLoading(false);
   };
 
-  function createData(
-    type,
-    state,
-    totalPrice,
-    paidAmount,
-    date,
-    tickets,
-    statements
-  ) {
-    return {
-      type,
-      state,
-      totalPrice,
-      paidAmount,
-      date,
-      tickets,
-      statements,
-    };
-  }
+  
 
   return (
     <div>
       <div className="name-filter">
-        <select  onChange={(e) => handleChange(e)}>
-        <option value={1}> اختر عميل </option>
-          {client &&
-            [...Object.keys(client)].map((i, idx) => (
-              <option value={client[i].clientId}> {client[i].name} </option>
-            ))}
-        </select>
+      <form
+          onSubmit={e=>handleChange(e)}
+          dir="rtl"
+          className="w-full flex-col justify-center py-6 flex items-center gap-2"
+        >
+          <div>
+            <label> عمليات شهر : </label>
+            <input
+              required
+              type="date"
+              value={transactionMonth}
+              onChange={(e) => setTransactionMonth(e.target.value)}
+            />
+          </div>
+          <select  onChange={(e) => {
+                setClients(client[e.target.value].name);
+                setSelectedClient(e.target.value)
+          }} required>
+            <option value="" disabled selected> اختر عميل </option>
+              {client &&
+                [...Object.keys(client)].map((i, idx) => {
+                  { return (!client[i].isKudsPersonnel) && <option value={client[i].clientId}> {client[i].name} </option>}
+                })}
+          </select>
+          <button type="submit" className="iron-btn search-btn w-auto">
+            {" "}
+            بحث{" "}
+          </button>
+        </form>
       </div>
       <TableContainer component={Paper}>
         <Table style={{ direction: "rtl" }} aria-label="collapsible table">
@@ -274,6 +248,10 @@ const ClientBill = () => {
               <TableCell colSpan={2}>الرصيد</TableCell>
               <TableCell component="th" scope="row" align="right">{balance}</TableCell>
             </TableRow>
+            { user.name === "Sobhy" && <TableRow>
+              <TableCell colSpan={2}>صافي الربح</TableCell>
+              <TableCell component="th" scope="row" align="right">{totalProfit}</TableCell>
+            </TableRow>}
           </TableBody>
         </Table>
       </TableContainer>

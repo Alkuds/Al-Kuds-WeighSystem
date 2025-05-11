@@ -261,17 +261,89 @@ const addOrder = async (req, res) => {
 
 }
 
+const resetTime = (date) => {
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
+
+function isDateBefore(firstDateStr, secondDateStr) {
+    const firstDate = new Date(firstDateStr);
+    const secondDate = new Date(secondDateStr);
+  
+    return firstDate < secondDate;
+}
+
+function createData(
+    type,
+    state,
+    totalPrice,
+    paidAmount,
+    date,
+    tickets,
+    statements
+  ) {
+    return {
+      type,
+      state,
+      totalPrice,
+      paidAmount,
+      date,
+      tickets,
+      statements,
+    };
+  }
+
 const getClientOrders = async (req, res) => {
-    const { id } = req.params;
-    let orders;
+    const { id, date } = req.body;
+    let orders, orderByDate = [],ordersParsedAndCleaned = [], price = 0, paid = 0, profit = 0;
     try {
         orders = await Order.find({ "clientId": id })
+        for(let order of orders){
+            let orderDate = new Date(order.date)
+            if(isDateBefore(orderDate,date)){
+                orderByDate.push(order)
+            }
+        }
+        for (let i = 0; i < orderByDate.length; i++) {
+            price += orderByDate[i].realTotalPrice;
+            paid += orderByDate[i].totalPaid;
+            profit += orderByDate[i].totalProfit + orderByDate[i].deliveryFees
+            let tickets = [], statements = [];
+            for (let j = 0; j < orderByDate[i]["ticket"].length; j++) {
+            tickets.push({
+                ironName: orderByDate[i]["ticket"][j].ironName,
+                radius: orderByDate[i]["ticket"][j].radius,
+                netWeight: orderByDate[i]["ticket"][j].netWeight,
+                price: orderByDate[i]["ticket"][j].unitPrice,
+            });
+            }
+            for (let j = 0; j < orderByDate[i]["statement"].length; j++) {
+            statements.push({
+                walletId: orderByDate[i]["statement"][j]._id,
+                bankName: orderByDate[i]["statement"][j].bankName,
+                paidAmount: orderByDate[i]["statement"][j].paidAmount,
+                date: orderByDate[i]["statement"][j].date,
+            });
+            }
+
+            ordersParsedAndCleaned.push(
+            createData(
+                orderByDate[i].type,
+                orderByDate[i].state,
+                orderByDate[i].realTotalPrice,
+                orderByDate[i].totalPaid,
+                orderByDate[i].date,
+                tickets,
+                statements
+            )
+            );
+        }
+
     }
     catch (err) {
         console.log(err)
     }
-    console.log(orders)
-    res.json(orders)
+    res.json({"orders": ordersParsedAndCleaned, paid, price, profit})
 
 }
 
@@ -314,7 +386,8 @@ const OrderFinishState = async (req, res) => {
                         orderTickets[i].totalCost += totalCostForTicket
                         orderTickets[i].usedUnitCostPerWeight.push({
                             weight: totalNeededWeight,
-                            cost: ironData.costPerWeight[j].unitCostPerTon
+                            cost: ironData.costPerWeight[j].unitCostPerTon,
+                            ironId: ironData.costPerWeight[j]._id
                         })
                         break;
                     }
@@ -347,13 +420,13 @@ const OrderFinishState = async (req, res) => {
         console.log(client.balance, totalPrice)
         if(client.balance<0 && client.balance + totalPrice <=0){
 
-            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice , state : "منتهي" , totalPaid : totalPrice}, { returnDocument: 'after' })
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "منتهي" , totalPaid : totalPrice}, { returnDocument: 'after' })
         }
         else if (client.balance<0 && client.balance + totalPrice > 0){
-            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice , state : "جاري انتظار الدفع" , totalPaid: Math.abs(Math.abs(client.balance)-totalPrice)}, { returnDocument: 'after' })
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "جاري انتظار الدفع" , totalPaid: Math.abs(Math.abs(client.balance)-totalPrice)}, { returnDocument: 'after' })
         }
         else if(client.balance>=0){
-            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice , state : "جاري انتظار الدفع" }, { returnDocument: 'after' })
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "جاري انتظار الدفع" }, { returnDocument: 'after' })
 
         }
 
@@ -491,7 +564,6 @@ const addOrderStatement = async(req,res) =>{
 
     res.json(statement)
 }
-
 
 const OrderIronPriceUpdate = async(req,res)=>{
     const { order } = req.body;

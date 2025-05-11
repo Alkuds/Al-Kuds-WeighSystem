@@ -108,7 +108,7 @@ const addTransaction = async (req, res) => {
 
 const addCompanyExpenses = async(req,res)=>{
     const {amount, bankName, clientId, notes, type} = req.body
-    let clientUpdate, newTransaction, bankFactor = (type==="مدين")? 1 : -1 , clientFactor =  (type==="مدين") ? -1 : 1
+    let clientUpdate, newTransaction = null, bankFactor = (type==="مدين")? 1 : -1 , clientFactor =  (type==="مدين") ? -1 : 1
     try{
         clientUpdate = await Client.findOneAndUpdate({ clientId },
             {
@@ -126,25 +126,26 @@ const addCompanyExpenses = async(req,res)=>{
                 returnDocument: 'after' 
             } 
         )
-
-        newTransaction = await Wallet.findOneAndUpdate(
-            {
-                bankName
-            },
-            {
-                $push: {
-                    'transactions': { 
-                        amount, 
-                        notes,
-                        clientId 
-                    }
+        if(bankName !== "اختر البنك"){
+            newTransaction = await Wallet.findOneAndUpdate(
+                {
+                    bankName
                 },
-                $inc: { totalAmount: amount * bankFactor } 
-            },
-            {
-                returnDocument: 'after'
-            }
-        )
+                {
+                    $push: {
+                        'transactions': { 
+                            amount, 
+                            notes,
+                            clientId 
+                        }
+                    },
+                    $inc: { totalAmount: amount * bankFactor } 
+                },
+                {
+                    returnDocument: 'after'
+                }
+            )
+        }
     }
     catch(err){
         console.log(err)
@@ -164,28 +165,7 @@ const addBank = async(req,res) =>{
             {
                 totalAmount,
                 bankName,
-                transactions:[
-                    {
-                        clientId:1,
-                        amount:1000000,
-                        type:"in"
-                    },
-                    {
-                        clientId:1,
-                        amount:2000000,
-                        type:"in"
-                    },
-                    {
-                        clientId:1,
-                        amount:10000000,
-                        type:"in"
-                    },
-                    {
-                        clientId:2,
-                        amount:500000,
-                        type:"in"
-                    }
-                ]
+                transactions:[]
             }
         )
         await newBank.save().then(data =>{

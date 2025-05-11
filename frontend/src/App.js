@@ -191,10 +191,6 @@ const router = createBrowserRouter([
         element: < MoneyVault/>,
       },
       {
-        path: "finishedOrders",
-        element: <FinishedOrders />,
-      },
-      {
         path: "impexp",
         element: <Impexp />,
       },
