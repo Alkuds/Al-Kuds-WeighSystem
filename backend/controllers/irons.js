@@ -124,8 +124,8 @@ const getIronStorageAdmin = async(req, res) => {
                         name: ironName,
                         weight: items[i].weight + items[i+1].weight,
                         radius: radius,
-                        price: items[i].unitCost,
-                        totalPrice: (parseFloat(items[i].weight/1000) * items[i].unitCost) + (parseFloat(items[i+1].weight/1000) * items[i+1].unitCost),
+                        price: items[i].unitCost.toLocaleString(),
+                        totalPrice: ((parseFloat(items[i].weight/1000) * items[i].unitCost) + (parseFloat(items[i+1].weight/1000) * items[i+1].unitCost)).toLocaleString(),
                     };
                     ironStorage.push(rowitem);
                     i++;
@@ -136,14 +136,15 @@ const getIronStorageAdmin = async(req, res) => {
                         name: ironName,
                         weight: items[i].weight,
                         radius: radius,
-                        price: items[i].unitCost,
-                        totalPrice: parseFloat(items[i].weight/1000) * items[i].unitCost,
+                        price: items[i].unitCost.toLocaleString(),
+                        totalPrice: (parseFloat(items[i].weight/1000) * items[i].unitCost).toLocaleString(),
                     };
                     ironStorage.push(rowitem);
                 }
             }
           }
         }
+        total = total.toLocaleString()
         res.json({ironStorage,total})
     }
     catch(err){
@@ -152,7 +153,7 @@ const getIronStorageAdmin = async(req, res) => {
 }
 
 
-let x = 11000;
+let x = 11500;
 const getScaleWeight = (req, res) => {
     res.json({ "weight": x })
     // x+= 1000

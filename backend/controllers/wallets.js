@@ -21,7 +21,7 @@ const addTransaction = async (req, res) => {
             ).sort({ date: 1 });
             console.log(orders)
             for(let i of orders){
-                let RemainingPrice = i.totalPrice - i.totalPaid
+                let RemainingPrice = i.realTotalPrice - i.totalPaid
                 if(amountProcessing == 0) break;
                 if(RemainingPrice <= amountProcessing && RemainingPrice != 0){
                     isDivided.push(
@@ -70,13 +70,23 @@ const addTransaction = async (req, res) => {
                                 $inc: {
                                     totalPaid: i.amount
                                 },
-                                state: ((j.totalPrice - j.totalPaid - i.amount) == 0)? "منتهي" : j.state
+                                state: ((j.realTotalPrice - j.totalPaid - i.amount) == 0)? "منتهي" : j.state
                             },
                             { 
                                 returnDocument: 'after' 
                             } 
                         )
                         updatedOrders.push(statement)
+                        clientUpdate = await Client.findOneAndUpdate({clientId},
+                            {
+                                $push: {
+                                    'transactionsHistory': { amount, type }
+                                },
+                            },
+                            { 
+                                returnDocument: 'after' 
+                            } 
+                        )
                         break;
                     }
                 }
@@ -86,7 +96,109 @@ const addTransaction = async (req, res) => {
                     {
                         $inc: {
                             balance: amountProcessing
+                        },
+                        $push: {
+                            'transactionsHistory': { amount:amountProcessing, type }
+                        },
                     },
+                    { 
+                        returnDocument: 'after' 
+                    } 
+                )
+            }
+        }
+        else{
+            console.log("here inside in",clientId)
+            orders = await Order.find(
+                {
+                    $and: [
+                        { clientId },
+                        { "state": "جاري انتظار الدفع" },
+                        {type : "in"}
+                    ] 
+                }   
+            ).sort({ date: 1 });
+            console.log(orders)
+            for(let i of orders){
+                let RemainingPrice = i.realTotalPrice - i.totalPaid
+                if(amountProcessing == 0) break;
+                if(RemainingPrice <= amountProcessing && RemainingPrice != 0){
+                    isDivided.push(
+                        {
+                            amount: RemainingPrice,
+                            orderId: i._id
+                        }
+                    )
+                    amountProcessing = amountProcessing - RemainingPrice
+                } 
+            }
+            transactionObj["isDivided"] = isDivided
+            newTransaction = await Wallet.findOneAndUpdate(
+                {
+                    bankName
+                },
+                {
+                    $push: {
+                        'transactions': transactionObj
+                    },
+                    $inc: { totalAmount: amount } 
+                },
+                {
+                    returnDocument: 'after'
+                }
+            )
+            for(let i of newTransaction.transactions[newTransaction.transactions.length-1].isDivided){
+                for(let j of orders){
+                    if(i.orderId === j._id.toString()){
+                        statement = await Order.findOneAndUpdate
+                        (   
+                            {
+                                _id:i.orderId
+                            },
+                            {
+                                $push: {
+                                    'statement': 
+                                        {
+                                            "paidAmount":i.amount,
+                                            "clientId": clientId,
+                                            "bankName" : bankName,
+                                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                                            "walletTransactionId" : newTransaction.transactions[newTransaction.transactions.length-1]._id.toString()
+                                        }
+                                },
+                                $inc: {
+                                    totalPaid: i.amount
+                                },
+                                state: ((j.realTotalPrice - j.totalPaid - i.amount) == 0)? "منتهي" : j.state
+                            },
+                            { 
+                                returnDocument: 'after' 
+                            } 
+                        )
+                        updatedOrders.push(statement)
+                        clientUpdate = await Client.findOneAndUpdate({clientId},
+                            {
+                                $push: {
+                                    'transactionsHistory': { amount, type }
+                                },
+                            },
+                            { 
+                                returnDocument: 'after' 
+                            } 
+                        )
+                        break;
+                    }
+                }
+            }
+            if(amountProcessing>0){
+                clientUpdate = await Client.findOneAndUpdate({clientId},
+                    {
+                        $inc: {
+                            balance: amountProcessing
+                        },
+                        $push: {
+                            'transactionsHistory': { amount:amountProcessing, type }
+                        },
                     },
                     { 
                         returnDocument: 'after' 
@@ -104,6 +216,38 @@ const addTransaction = async (req, res) => {
         client: clientUpdate
     }
     res.json(returnedObj)
+}
+
+let isInCurrentMonth = (dateString) => {
+    const inputDate = new Date(dateString);
+    const now = new Date();
+
+    return (
+        inputDate.getFullYear() === now.getFullYear() &&
+        inputDate.getMonth() === now.getMonth()
+    );
+}
+
+const getOldClientBalance = async(req,res)=>{
+    let { clientId } = req.body
+    let client, previousBalance = 0
+    try{
+        client = await Client.findOne({clientId})
+        previousBalance = client.balance
+        for(let i of client.transactionsHistory){
+            if(isInCurrentMonth(i.date))
+            if(i.type === "out"){
+                previousBalance+= (-i.amount)
+            }
+            else{
+                previousBalance+= (i.amount)
+            }
+        }
+    }
+    catch(err){
+        console.log(err)
+    }
+    res.json(previousBalance.toLocaleString())
 }
 
 const addCompanyExpenses = async(req,res)=>{
@@ -178,13 +322,29 @@ const addBank = async(req,res) =>{
    
 }
 
+
+function isDateBefore(firstDateStr, secondDateStr) {
+    const firstDate = new Date(firstDateStr);
+    const secondDate = new Date(secondDateStr);
+  
+    return firstDate <= secondDate;
+}
+
+function createData(id, bankName, amount, date) {
+    return { id, bankName, amount, date,  };
+}
+
 const getSpecificClientTransactions = async (req,res) =>{
-    const { clientId  } = req.params
-    let transactions = {}
+    const { clientId, date  } = req.body
+    let wallets, transactions = []
     try{
-        transactions = await Wallet.find({clientId})
-        for(let i of transactions){
-            transactions[i._id] = i
+        wallets = await Wallet.find()
+        for(let i of wallets){
+            for(let j of i.transactions){
+                if(isDateBefore(j.date,date) && j.clientId === clientId){
+                    transactions.push(createData(j._id, i.bankName, j.amount, j.date))
+                }
+            }
         }
     }
     catch(err){
@@ -243,5 +403,6 @@ module.exports = {
     getTransactionsGroupedByBank,
     addBank,
     addCompanyExpenses,
-    getWalletInventoryByDate
+    getWalletInventoryByDate,
+    getOldClientBalance
 }

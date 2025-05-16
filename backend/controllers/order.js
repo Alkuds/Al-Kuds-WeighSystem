@@ -261,16 +261,12 @@ const addOrder = async (req, res) => {
 
 }
 
-const resetTime = (date) => {
-    date.setHours(0, 0, 0, 0);
-    return date;
-}
 
 function isDateBefore(firstDateStr, secondDateStr) {
     const firstDate = new Date(firstDateStr);
     const secondDate = new Date(secondDateStr);
   
-    return firstDate < secondDate;
+    return firstDate <= secondDate;
 }
 
 function createData(
@@ -291,7 +287,7 @@ function createData(
       tickets,
       statements,
     };
-  }
+}
 
 const getClientOrders = async (req, res) => {
     const { id, date } = req.body;
@@ -304,6 +300,7 @@ const getClientOrders = async (req, res) => {
                 orderByDate.push(order)
             }
         }
+        console.log(orderByDate.length)
         for (let i = 0; i < orderByDate.length; i++) {
             price += orderByDate[i].realTotalPrice;
             paid += orderByDate[i].totalPaid;
@@ -319,7 +316,7 @@ const getClientOrders = async (req, res) => {
             }
             for (let j = 0; j < orderByDate[i]["statement"].length; j++) {
             statements.push({
-                walletId: orderByDate[i]["statement"][j]._id,
+                walletId: orderByDate[i]["statement"][j].walletTransactionId,
                 bankName: orderByDate[i]["statement"][j].bankName,
                 paidAmount: orderByDate[i]["statement"][j].paidAmount,
                 date: orderByDate[i]["statement"][j].date,
@@ -418,23 +415,38 @@ const OrderFinishState = async (req, res) => {
             })
         }
         console.log(client.balance, totalPrice)
-        if(client.balance<0 && client.balance + totalPrice <=0){
+        if(client.balance<0 && client.balance + (totalPrice + updatedOrder.deliveryFees) <=0){
 
-            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "منتهي" , totalPaid : totalPrice}, { returnDocument: 'after' })
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "منتهي" , totalPaid : totalPrice + updatedOrder.deliveryFees, $push: {
+                'statement': 
+                    {
+                        "paidAmount":totalPrice + updatedOrder.deliveryFees,
+                        "clientId": updatedOrder.clientId,
+                        "bankName" : "تم سحبه تلقائي من رصيد العميل",
+                        "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                        "walletTransactionId" : "لا يوجد"
+                    }
+            }}, { returnDocument: 'after' })
         }
-        else if (client.balance<0 && client.balance + totalPrice > 0){
+        else if (client.balance<0 && client.balance + (totalPrice + updatedOrder.deliveryFees) > 0){
             newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "جاري انتظار الدفع" , totalPaid: Math.abs(Math.abs(client.balance)-totalPrice)}, { returnDocument: 'after' })
         }
         else if(client.balance>=0){
             newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "جاري انتظار الدفع" }, { returnDocument: 'after' })
 
         }
-
-        let balanceUpdate = await Client.findOneAndUpdate({clientId:updatedOrder.clientId}, {$inc: { balance: totalPrice }})
+        let balanceUpdate = await Client.findOneAndUpdate(
+            {clientId:updatedOrder.clientId},
+            {
+                $inc: { balance: (totalPrice + updatedOrder.deliveryFees) },
+                $push: {
+                    'transactionsHistory': { amount:totalPrice + updatedOrder.deliveryFees, type : "out"}
+                }
+            }
+        )
 
     }
     else{
-        console.log("heereee")
         let realTotalPrice = 0, ironId = "";
         for (let i = 0; i < orderTickets.length; i++) {
             await Iron.findOneAndUpdate(
@@ -475,7 +487,16 @@ const OrderFinishState = async (req, res) => {
         else if(client.balance>0 && client.balance + (-realTotalPrice) >=0 ){
             newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "منتهي" , totalPaid : realTotalPrice}, { returnDocument: 'after' })
         }       
-        let balanceUpdate = await Client.findOneAndUpdate({clientId:updatedOrder.clientId}, {$inc: { balance: -realTotalPrice }})
+        let balanceUpdate = await Client.findOneAndUpdate(
+            {clientId:updatedOrder.clientId},
+            {
+                $inc: { balance: -realTotalPrice },
+                $push: {
+                    'transactionsHistory': { amount:realTotalPrice, type : "in"}
+                },
+            }
+        )
+        console.log(balanceUpdate)
         
     }
 

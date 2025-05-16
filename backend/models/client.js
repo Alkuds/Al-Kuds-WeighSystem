@@ -14,6 +14,11 @@ const ClientSchema = new mongoose.Schema({
         notes: {type: String, default: "لا يوجد ملاحظات"},
         date : { type: String, default: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })}
     }],
+    transactionsHistory: [{
+        amount: { type: Number, required: true },
+        type: {type: String, default:""},
+        date : { type: String, default: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })}
+    }],
     clientId: {
         type: String,
         required: true

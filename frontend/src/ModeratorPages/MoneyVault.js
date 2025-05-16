@@ -79,7 +79,7 @@ const Row = (props) => {
                           {transactionRow.notes}
                         </TableCell>
                         <TableCell align="right" component="th" scope="row">
-                          {transactionRow.amount}
+                          {transactionRow.amount.toLocaleString()}
                         </TableCell>
                         <TableCell align="right" component="th" scope="row">
                           {transactionRow.date}
@@ -133,7 +133,7 @@ const MoneyVault = () => {
           transactionsArr.push(transactionObj);
         }
         walletsArr.push(
-          createData(wallet[i]._id, i, wallet[i].totalAmount, transactionsArr)
+          createData(wallet[i]._id, i, wallet[i].totalAmount.toLocaleString(), transactionsArr)
         );
       }
       console.log("helllllllllllllllllllllllllllowowowow");

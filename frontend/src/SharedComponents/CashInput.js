@@ -62,7 +62,7 @@ const CashInput = (props) => {
     e.preventDefault()
     setIsLoading(true)
     let newTransaction = {
-        amount, notes,"orderId":" ","type" : selectedType === "مدين"? "in":"out", "clientId":selectedClient, "bankName":selectedBank 
+        amount, notes,"orderId":" ","type" : selectedType === "مدين"? "out":"in", "clientId":selectedClient, "bankName":selectedBank 
       }
       const addTransactionFetch = await fetch('/wallet/addTransaction',
         {
