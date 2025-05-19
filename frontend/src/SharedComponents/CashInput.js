@@ -62,7 +62,7 @@ const CashInput = (props) => {
     e.preventDefault()
     setIsLoading(true)
     let newTransaction = {
-        amount, notes,"orderId":" ","type" : selectedType === "مدين"? "out":"in", "clientId":selectedClient, "bankName":selectedBank 
+        amount, notes,"orderId":" ","type" : selectedType, "clientId":selectedClient, "bankName":selectedBank 
       }
       const addTransactionFetch = await fetch('/wallet/addTransaction',
         {
@@ -110,6 +110,24 @@ const CashInput = (props) => {
       >
         <div className="md:w-[50%] w-full flex justify-center">
           <div className="flex flex-col gap-2 w-full max-w-[300px]">
+            <label className="text-center">نوع العمليه</label>
+            <select
+              required
+              value={selectedType}
+              onChange={(e) => {
+                setSelectedType(e.target.value);
+              }}
+            >
+              <option value="">نوع العمليه</option>
+              <option value="in">استلام من</option>
+              <option value="out">تحويل الي</option>
+              { !isKudsPersonnel &&<option value="out">اكراميه</option>}
+              {!isKudsPersonnel && <option value="out">خصم</option>}
+            </select>
+          </div>
+        </div>
+        <div className="md:w-[50%] w-full flex justify-center">
+          <div className="flex flex-col gap-2 w-full max-w-[300px]">
             <label className="text-center">أسم العميل</label>
             <select
               required
@@ -123,22 +141,6 @@ const CashInput = (props) => {
                 [...Object.keys(client)].map((i, idx) => (
                   isKudsPersonnel ? client[i].isKudsPersonnel && <option value={client[i].clientId}> {client[i].name} </option> : !client[i].isKudsPersonnel && <option value={client[i].clientId}> {client[i].name} </option>
                 ))}
-            </select>
-          </div>
-        </div>
-        <div className="md:w-[50%] w-full flex justify-center">
-          <div className="flex flex-col gap-2 w-full max-w-[300px]">
-            <label className="text-center">نوع العمليه</label>
-            <select
-              required
-              value={selectedType}
-              onChange={(e) => {
-                setSelectedType(e.target.value);
-              }}
-            >
-              <option value="">نوع العمليه</option>
-              <option value="in">مدين</option>
-              <option value="out">دائن</option>
             </select>
           </div>
         </div>

@@ -3,13 +3,14 @@ const Order = require('../models/order')
 const Client = require('../models/client')
 
 const addTransaction = async (req, res) => {
-    const {amount, bankName, clientId, orderId, type, notes} = req.body
-    console.log("Here")
+    let {amount, bankName, clientId, orderId, type, notes} = req.body
+    console.log("Here") 
+    type = (type === "استلام من")? "in":"out"
     let newTransaction, transactionObj = {
         amount,bankName,clientId, orderId, type, notes
     } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate = null, updatedOrders=[];
     try{
-        if(type == "out"){
+        if(type == "in"){
             orders = await Order.find(
                 {
                     $and: [
@@ -107,7 +108,7 @@ const addTransaction = async (req, res) => {
                 )
             }
         }
-        else{
+        else if(type==="out"){
             console.log("here inside in",clientId)
             orders = await Order.find(
                 {
@@ -206,6 +207,36 @@ const addTransaction = async (req, res) => {
                 )
             }
         }
+        else if(type ==="اكراميه"){
+            clientUpdate = await Client.findOneAndUpdate({clientId},
+                {
+                    $inc: {
+                        balance: amount
+                    },
+                    $push: {
+                        'transactionsHistory': { amount, type }
+                    },
+                },
+                { 
+                    returnDocument: 'after' 
+                } 
+            )
+        }
+        else if(type ==="خصم"){
+            clientUpdate = await Client.findOneAndUpdate({clientId},
+                {
+                    $inc: {
+                        balance: -amount
+                    },
+                    $push: {
+                        'transactionsHistory': { amount, type }
+                    },
+                },
+                { 
+                    returnDocument: 'after' 
+                } 
+            )
+        }
     }
     catch(err){
         console.log(err)
@@ -252,43 +283,83 @@ const getOldClientBalance = async(req,res)=>{
 
 const addCompanyExpenses = async(req,res)=>{
     const {amount, bankName, clientId, notes, type} = req.body
-    let clientUpdate, newTransaction = null, bankFactor = (type==="مدين")? 1 : -1 , clientFactor =  (type==="مدين") ? -1 : 1
+    let clientUpdate, newTransaction = null;
     try{
-        clientUpdate = await Client.findOneAndUpdate({ clientId },
-            {
-                $inc: {
-                    balance: amount * clientFactor
-                },
-                $push: {
-                    purchasingNotes: {
-                        amount,
-                        notes
-                    }
-                }
-            },
-            { 
-                returnDocument: 'after' 
-            } 
-        )
-        if(bankName !== "اختر البنك"){
-            newTransaction = await Wallet.findOneAndUpdate(
+        if(type === "استلام من"){
+            clientUpdate = await Client.findOneAndUpdate({ clientId },
                 {
-                    bankName
-                },
-                {
-                    $push: {
-                        'transactions': { 
-                            amount, 
-                            notes,
-                            clientId 
-                        }
+                    $inc: {
+                        balance: -amount 
                     },
-                    $inc: { totalAmount: amount * bankFactor } 
+                    $push: {
+                        purchasingNotes: {
+                            amount,
+                            notes
+                        }
+                    }
                 },
-                {
-                    returnDocument: 'after'
-                }
+                { 
+                    returnDocument: 'after' 
+                } 
             )
+            if(bankName !== "اختر البنك"){
+                newTransaction = await Wallet.findOneAndUpdate(
+                    {
+                        bankName
+                    },
+                    {
+                        $push: {
+                            'transactions': { 
+                                amount, 
+                                notes,
+                                clientId 
+                            }
+                        },
+                        $inc: { totalAmount: amount } 
+                    },
+                    {
+                        returnDocument: 'after'
+                    }
+                )
+            }
+        }
+        else if(type === "تحويل الي"){
+            clientUpdate = await Client.findOneAndUpdate({ clientId },
+                {
+                    $inc: {
+                        balance: amount 
+                    },
+                    $push: {
+                        purchasingNotes: {
+                            amount,
+                            notes
+                        }
+                    }
+                },
+                { 
+                    returnDocument: 'after' 
+                } 
+            )
+            if(bankName !== "اختر البنك"){
+                newTransaction = await Wallet.findOneAndUpdate(
+                    {
+                        bankName
+                    },
+                    {
+                        $push: {
+                            'transactions': { 
+                                amount, 
+                                notes,
+                                clientId 
+                            }
+                        },
+                        $inc: { totalAmount: -amount } 
+                    },
+                    {
+                        returnDocument: 'after'
+                    }
+                )
+            }
         }
     }
     catch(err){

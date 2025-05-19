@@ -52,6 +52,7 @@ const Row = (props) => {
         <TableCell component="th" scope="row" align="right">{row.state}</TableCell>
         <TableCell component="th" scope="row" align="right">{row.totalPrice.toLocaleString()}</TableCell>
         <TableCell component="th" scope="row" align="right">{row.paidAmount.toLocaleString()}</TableCell>
+        <TableCell component="th" scope="row" align="right">{(row.totalPrice - row.paidAmount).toLocaleString()}</TableCell>
         <TableCell component="th" scope="row" align="right">{row.date}</TableCell>
       </TableRow>
       <TableRow style={{verticalAlign:"baseline"}}>
@@ -293,6 +294,7 @@ const ClientBill = () => {
               <TableCell align="right">الحاله</TableCell>
               <TableCell align="right">الاجمالي</TableCell>
               <TableCell align="right">المسدد</TableCell>
+              <TableCell align="right">المتبقي</TableCell>
               <TableCell align="right">التاريخ</TableCell>
             </TableRow>
           </TableHead>

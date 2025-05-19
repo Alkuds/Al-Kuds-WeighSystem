@@ -9,9 +9,9 @@ export const SocketProvider = ({ children }) => {
     const { user } = useUserContext()
     useEffect(() => {
         const socket = io.connect("http://localhost:8000");
-        socket.emit("join_room","123");
+        // socket.emit("join_room","123");
         setSocket(socket);
-
+        console.log(socket)
         return () => {
             socket.disconnect();
         };
