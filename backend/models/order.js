@@ -31,11 +31,11 @@ const OrderSchema = new mongoose.Schema({
         date: { type: String, default: "" }
     }],
     statement: [{
-        walletTransactionId:  { type: String, required: true },
+        walletTransactionId:  { type: String, default:"" },
         paidAmount: { type: Number, required: true },
-        bankName: { type: String, required: true },
+        bankName: { type: String, default:"" },
         clientId: { type: String, required: true },
-        date: { type: String, default: new Date().toLocaleString() }
+        date: { type: String, default: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }
     }],
     totalProfit: { type: Number, default: 0 },
     totalPrice: { type: Number, default: 0 },

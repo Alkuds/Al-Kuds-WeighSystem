@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import TablePagination from '@mui/material/TablePagination';
 import { Fragment, useEffect, useState } from "react";
 import { useClientContext } from "../hooks/useClientContext";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -49,8 +50,9 @@ const Row = (props) => {
         </TableCell>
         <TableCell component="th" scope="row" align="right">{(row.type === "in")? "وارد":"خارج"}</TableCell>
         <TableCell component="th" scope="row" align="right">{row.state}</TableCell>
-        <TableCell component="th" scope="row" align="right">{row.totalPrice}</TableCell>
-        <TableCell component="th" scope="row" align="right">{row.paidAmount}</TableCell>
+        <TableCell component="th" scope="row" align="right">{row.totalPrice.toLocaleString()}</TableCell>
+        <TableCell component="th" scope="row" align="right">{row.paidAmount.toLocaleString()}</TableCell>
+        <TableCell component="th" scope="row" align="right">{(row.totalPrice - row.paidAmount).toLocaleString()}</TableCell>
         <TableCell component="th" scope="row" align="right">{row.date}</TableCell>
       </TableRow>
       <TableRow style={{verticalAlign:"baseline"}}>
@@ -80,7 +82,7 @@ const Row = (props) => {
                       <TableCell align="right" component="th" scope="row">{ticketRow.ironName} </TableCell>
                       <TableCell align="right" component="th" scope="row">{ticketRow.radius}</TableCell>
                       <TableCell align="right" component="th" scope="row">{ticketRow.netWeight}</TableCell>
-                      <TableCell align="right" component="th" scope="row">{ticketRow.price}</TableCell>
+                      <TableCell align="right" component="th" scope="row">{ticketRow.price.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -115,7 +117,7 @@ const Row = (props) => {
                       <TableCell align="right" component="th" scope="row">
                         {statementRow.bankName}
                       </TableCell>
-                      <TableCell align="right" component="th" scope="row">{statementRow.paidAmount}</TableCell>
+                      <TableCell align="right" component="th" scope="row">{statementRow.paidAmount.toLocaleString()}</TableCell>
                       <TableCell align="right" component="th" scope="row">{statementRow.date}</TableCell>
                     </TableRow>
                   )): "لا يوجد تحويلات"}
@@ -140,9 +142,46 @@ const ClientBill = () => {
   const [balance, setBalance] = useState(0);
   const [totalProfit, setTotalProfit] = useState(0)
   const [transactionMonth, setTransactionMonth] = useState();
+  const [statementRows, setStatementRows] = useState([])
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [previousBalance, setPreviousBalance] = useState(0)
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   const { user } = useUserContext();
-  useEffect(() => {console.log("here")}, [clients, rows, isLoading, client]);
+  useEffect(() => {
+    const getPreviousMonthBalance = async() =>{
+      
+
+    }
+    if(selectedClient!=="")
+      getPreviousMonthBalance()
+  }, [clients, rows, isLoading, client, selectedClient]);
+  
+  const columns = [
+    { id: 'id', label: 'رقم المستند', minWidth: 170 },
+    { id: 'date', label: 'التاريخ', minWidth: 100 },
+    {
+      id: 'bankName',
+      label: 'جهه الدفع',
+      minWidth: 170,
+      align: 'right',
+      format: (value) => value,
+    },
+    {
+      id: 'amount',
+      label: 'المبلغ',
+      minWidth: 170,
+      align: 'right',
+      format: (value) => value.toLocaleString(),
+    },
+  ];
 
   if (!client) {
     console.log("here");
@@ -165,14 +204,40 @@ const ClientBill = () => {
       );
 
       const getClientOrder = await getClientOrderFetch.json();
-      console.log(getClientOrder);
-      if (getClientOrderFetch.ok) {
+
+      const getClientTransactionsFetch = await fetch(
+        "/wallet/getSpecificClientTransactions",
+        {
+          method: "POST",
+          body:JSON.stringify({"date":transactionMonth,"clientId":selectedClient}),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const getClientTransactions = await getClientTransactionsFetch.json();
+
+      const previousMonthBalanceFetch = await fetch('/wallet/getOldClientBalance',{
+        'method':'POST',
+        'body':JSON.stringify({"date":transactionMonth,"clientId":selectedClient}),
+        'headers': {
+            "Content-Type": "application/json",
+        },
+      })
+
+      const previousMonthBalance = await previousMonthBalanceFetch.json()
+
+      console.log(previousMonthBalance);
+      if (getClientOrderFetch.ok && getClientTransactionsFetch.ok && previousMonthBalanceFetch.ok) {
         console.log(getClientOrder.orders);
         setRows([...getClientOrder.orders]);
         setBalance(client[selectedClient].balance);
         setTotalPaid(getClientOrder.paid);
         setTotalPrice(getClientOrder.price);
         setTotalProfit(getClientOrder.profit)
+        setStatementRows([...getClientTransactions])
+        setPreviousBalance(previousMonthBalance)
       }
     } catch (err) {
       console.log(err);
@@ -215,7 +280,10 @@ const ClientBill = () => {
           </button>
         </form>
       </div>
-      <TableContainer component={Paper}>
+      <div style={{"display":"flex","flexDirection":"column","gap":"50px"}}>
+      
+    
+    <TableContainer component={Paper}>
         <Table style={{ direction: "rtl" }} aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -226,6 +294,7 @@ const ClientBill = () => {
               <TableCell align="right">الحاله</TableCell>
               <TableCell align="right">الاجمالي</TableCell>
               <TableCell align="right">المسدد</TableCell>
+              <TableCell align="right">المتبقي</TableCell>
               <TableCell align="right">التاريخ</TableCell>
             </TableRow>
           </TableHead>
@@ -238,24 +307,79 @@ const ClientBill = () => {
             <TableRow>
 
               <TableCell colSpan={2}>اجمالي قيمه الاصناف</TableCell>
-              <TableCell component="th" scope="row" align="right">{totalPrice}</TableCell>
+              <TableCell style={{ direction: "ltr" }} component="th" scope="row" align="right">{totalPrice.toLocaleString()}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={2}>اجمالي الدفعات</TableCell>
-              <TableCell component="th" scope="row" align="right">{totalPaid}</TableCell>
+              <TableCell style={{ direction: "ltr" }} component="th" scope="row" align="right">{totalPaid.toLocaleString()}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={2}>الرصيد</TableCell>
-              <TableCell component="th" scope="row" align="right">{balance}</TableCell>
+              <TableCell colSpan={2}>رصيد الشهر الماضي </TableCell>
+              <TableCell style={{ direction: "ltr" }} component="th" scope="row" align="right">{previousBalance}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={2}>الرصيد </TableCell>
+              <TableCell style={{ direction: "ltr" }} component="th" scope="row" align="right">{balance.toLocaleString()}</TableCell>
             </TableRow>
             { user.name === "Sobhy" && <TableRow>
               <TableCell colSpan={2}>صافي الربح</TableCell>
-              <TableCell component="th" scope="row" align="right">{totalProfit}</TableCell>
+              <TableCell component="th" scope="row" align="right">{totalProfit.toLocaleString()}</TableCell>
             </TableRow>}
           </TableBody>
         </Table>
+    </TableContainer>
+
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {statementRows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {column.format && typeof value === 'number'
+                            ? column.format(value)
+                            : value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 15]}
+        component="div"
+        count={statementRows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
     </div>
+    </div>
+
   );
 };
 

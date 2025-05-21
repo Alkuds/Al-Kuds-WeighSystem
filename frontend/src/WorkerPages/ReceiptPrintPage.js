@@ -96,23 +96,30 @@ const ReceiptPrintPage = () => {
           console.log(orderStateUpdate)
           if (orderStateUpdateFetch.ok) {
             console.log(44444)
+            await socket.emit("send_order_new_state", {
+              message: "Order Printed Successfully",
+              room: "123",
+              order: orderStateUpdate.newUpdatedOrder,
+              client : orderStateUpdate.balanceUpdate
+            });
             await socket.emit("send_order_update", {
               message: "Order Printed Successfully",
               room: "123",
-              order: orderStateUpdate,
+              order: orderStateUpdate.newUpdatedOrder,
+              client : orderStateUpdate.balanceUpdate
             });
           } else {
             console.log(333333)
-            await socket.emit("send_order_update", {
+            await socket.emit("send_order_new_state", {
               message: "Order failed to print",
               room: "123",
-              order: orderStateUpdate,
+              order: null,
             });
           }
         } else {
           console.log(11111)
-          await socket.emit("send_order_update", {
-            message: "Order Printed Successfully",
+          await socket.emit("send_order_new_state", {
+            message: "Error in printing order",
             room: "123",
             order: null,
           });

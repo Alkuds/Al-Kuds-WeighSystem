@@ -77,7 +77,7 @@ const Row = (props) => {
                           {transactionRow.notes}
                         </TableCell>
                         <TableCell align="right" component="th" scope="row">
-                          {transactionRow.amount}
+                          {transactionRow.amount.toLocaleString()}
                         </TableCell>
                         <TableCell align="right" component="th" scope="row">
                           {transactionRow.date}
@@ -131,7 +131,7 @@ const MoneyVault = () => {
           transactionsArr.push(transactionObj);
         }
         walletsArr.push(
-          createData(wallet[i]._id, i, wallet[i].totalAmount, transactionsArr)
+          createData(wallet[i]._id, i, wallet[i].totalAmount.toLocaleString(), transactionsArr)
         );
       }
 
@@ -168,9 +168,21 @@ const MoneyVault = () => {
   }
   const handleMonthSubmit = (e) => {
     e.preventDefault();
-    const TempFilteredRows = rows.map((row) => {
-      const filteredTxns = row.transactions.filter(
-        (txn) => txn.date.slice(0, 7) === transactionMonth
+    let tempRows = JSON.parse(JSON.stringify(rows));
+    let TempFilteredRows = tempRows.map((row) => {
+      let filteredTxns = row.transactions.filter(
+        (txn) => {
+          if(new Date(txn.date.slice(0, 7)) > new Date(transactionMonth)){
+            row.totalAmount = row.totalAmount.toString()
+            console.log(txn.date.slice(0, 7), transactionMonth)
+            console.log(txn)
+            console.log(row.totalAmount)
+            row.totalAmount = row.totalAmount.replaceAll(",","")
+            console.log(parseFloat(row.totalAmount))
+            row.totalAmount = parseFloat(row.totalAmount) - txn.amount
+          }
+          return txn.date.slice(0, 7) === transactionMonth
+        }
       );
 
       return {

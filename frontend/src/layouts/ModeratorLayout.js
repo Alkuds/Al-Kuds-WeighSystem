@@ -13,8 +13,10 @@ export default function ModeratorLayout() {
   const { socket } = useSocketContext();
   const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
   const { awaitForPaymentTickets, dispatch: awaitForPaymentTicketsUpdate } = useAwaitForPaymentTicketsContext()
+  const { client , dispatch: updateClient } = useClientContext()
   useEffect(()=>{
-    socket.on("receive_order_new_state", (info) => {
+    socket.on("receive_order_finish_state", (info) => {
+      console.log("i am heree")
       if(info.order === null){
         toast.warn('حدث عطل في تعديل الاوردر', {
           position: "top-right",
@@ -40,9 +42,12 @@ export default function ModeratorLayout() {
           });
           dispatch({type:"DELETE_TICKET",payload: info.order})
           awaitForPaymentTicketsUpdate({type:"ADD_TICKET",payload: [info.order]})
+          updateClient({type:"UPDATE_CLIENT", payload : info.client})
       }
     });
-  },[dispatch,awaitForPaymentTicketsUpdate])
+
+
+  },[dispatch, awaitForPaymentTicketsUpdate, socket, updateClient])
 
 
   const checkNav = (e) => {
