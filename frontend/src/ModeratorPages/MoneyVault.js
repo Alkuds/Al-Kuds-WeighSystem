@@ -36,7 +36,6 @@ const Row = (props) => {
             >
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
-            
           </div>
         </TableCell>
         <TableCell align="right" component="th" scope="row">
@@ -50,7 +49,6 @@ const Row = (props) => {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              
               {row.transactions.length > 0 ? (
                 <Table size="small" aria-label="purchases">
                   <TableHead>
@@ -136,8 +134,7 @@ const MoneyVault = () => {
           createData(wallet[i]._id, i, wallet[i].totalAmount, transactionsArr)
         );
       }
-      console.log("helllllllllllllllllllllllllllowowowow");
-      console.log(walletsArr);
+
       setRows([...walletsArr]);
       setFilteredRows([...walletsArr]);
       setIsLoading(false);

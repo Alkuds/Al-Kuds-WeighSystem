@@ -42,7 +42,10 @@ export default function AdminLayout() {
               </NavLink>
 
               <NavLink className="text-center" to={"clientbill"}>
-                كشفات الحسابات
+                كشف الحسابات
+              </NavLink>
+              <NavLink className="text-center" to={"personal-account-statement"}>
+                كشف حسابات شخصية
               </NavLink>
 
               <NavLink className="text-center" to={"moneyvault"}>

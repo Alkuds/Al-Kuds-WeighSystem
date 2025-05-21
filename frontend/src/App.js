@@ -28,6 +28,7 @@ import PurchaseBill from "./ModeratorPages/PurchaseBill";
 import MoneyVault from "./ModeratorPages/MoneyVault";
 import AdminLayout from "./layouts/AdminLayout";
 import ProfitReport from "./ModeratorPages/ProfitReport";
+import PersonalAccountStatement from "./ModeratorPages/PersonalAccountStatement";
 const LoginRoute = () => {
   const { user } = useUserContext();
   if (user === null) {
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
         element: < MoneyVault/>,
       },
       {
+        path: "personal-account-statement",
+        element: < PersonalAccountStatement/>,
+      },
+      {
         path: "impexp",
         element: <Impexp />,
       },
@@ -189,6 +194,10 @@ const router = createBrowserRouter([
       {
         path: "moneyvault",
         element: < MoneyVault/>,
+      },
+      {
+        path: "personal-account-statement",
+        element: < PersonalAccountStatement/>,
       },
       {
         path: "impexp",
