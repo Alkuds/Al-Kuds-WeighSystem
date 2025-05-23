@@ -4,13 +4,12 @@ const Client = require('../models/client')
 
 const addTransaction = async (req, res) => {
     let {amount, bankName, clientId, orderId, type, notes} = req.body
-    console.log("Here") 
-    type = (type === "استلام من")? "in":"out"
     let newTransaction, transactionObj = {
         amount,bankName,clientId, orderId, type, notes
     } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate = null, updatedOrders=[];
     try{
-        if(type == "in"){
+        console.log("type 1",type, bankName) 
+        if(type === "استلام من"){
             orders = await Order.find(
                 {
                     $and: [
@@ -20,28 +19,17 @@ const addTransaction = async (req, res) => {
                     ] 
                 }   
             ).sort({ date: 1 });
-            console.log(orders)
-            for(let i of orders){
-                let RemainingPrice = i.realTotalPrice - i.totalPaid
-                if(amountProcessing == 0) break;
-                if(RemainingPrice <= amountProcessing && RemainingPrice != 0){
-                    isDivided.push(
-                        {
-                            amount: RemainingPrice,
-                            orderId: i._id
-                        }
-                    )
-                    amountProcessing = amountProcessing - RemainingPrice
-                } 
-            }
-            transactionObj["isDivided"] = isDivided
             newTransaction = await Wallet.findOneAndUpdate(
                 {
                     bankName
                 },
                 {
                     $push: {
-                        'transactions': transactionObj
+                        'transactions': {
+                            "amount":amount,
+                            "clientId": clientId,
+                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
+                        }
                     },
                     $inc: { totalAmount: amount } 
                 },
@@ -49,66 +37,63 @@ const addTransaction = async (req, res) => {
                     returnDocument: 'after'
                 }
             )
-            for(let i of newTransaction.transactions[newTransaction.transactions.length-1].isDivided){
-                for(let j of orders){
-                    if(i.orderId === j._id.toString()){
-                        statement = await Order.findOneAndUpdate
-                        (   
-                            {
-                                _id:i.orderId
-                            },
-                            {
-                                $push: {
-                                    'statement': 
-                                        {
-                                            "paidAmount":i.amount,
-                                            "clientId": clientId,
-                                            "bankName" : bankName,
-                                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
-                                            "walletTransactionId" : newTransaction.transactions[newTransaction.transactions.length-1]._id.toString()
-                                        }
-                                },
-                                $inc: {
-                                    totalPaid: i.amount
-                                },
-                                state: ((j.realTotalPrice - j.totalPaid - i.amount) == 0)? "منتهي" : j.state
-                            },
-                            { 
-                                returnDocument: 'after' 
-                            } 
-                        )
-                        updatedOrders.push(statement)
-                        clientUpdate = await Client.findOneAndUpdate({clientId},
-                            {
-                                $push: {
-                                    'transactionsHistory': { amount, type }
-                                },
-                            },
-                            { 
-                                returnDocument: 'after' 
-                            } 
-                        )
-                        break;
+            for(let i of orders){
+                let RemainingPrice = i.realTotalPrice - i.totalPaid
+                console.log("RemainingPrice",RemainingPrice)
+                if(amountProcessing == 0) break;
+                if(amountProcessing > 0 && RemainingPrice > 0){
+                    let amountToPay;
+                    if(RemainingPrice > amountProcessing){
+                        amountToPay = amountProcessing
+                        RemainingPrice -= amountProcessing
+                        amountProcessing = 0;
                     }
-                }
+                    else{
+                        amountToPay = amountProcessing - RemainingPrice
+                        amountProcessing = amountProcessing - RemainingPrice
+                        RemainingPrice = 0
+                    }
+                    statement = await Order.findOneAndUpdate(   
+                        {
+                            _id:i._id
+                        },
+                        {
+                            $push: {
+                                'statement': 
+                                    {
+                                        "paidAmount":amountToPay,
+                                        "clientId": clientId,
+                                        "bankName" : bankName,
+                                        "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                                        "walletTransactionId" : newTransaction.transactions[newTransaction.transactions.length-1]._id.toString()
+                                    }
+                            },
+                            $inc: {
+                                totalPaid: amountToPay
+                            },
+                            state: ((i.realTotalPrice - i.totalPaid - amountToPay) === 0)? "منتهي" : i.state
+                        },
+                        { 
+                            returnDocument: 'after' 
+                        } 
+                    )
+                } 
             }
-            if(amountProcessing>0){
-                clientUpdate = await Client.findOneAndUpdate({clientId},
-                    {
-                        $inc: {
-                            balance: amountProcessing
-                        },
-                        $push: {
-                            'transactionsHistory': { amount:amountProcessing, type }
-                        },
+            clientUpdate = await Client.findOneAndUpdate({clientId},
+                {
+                    $inc: {
+                        balance: -amount
                     },
-                    { 
-                        returnDocument: 'after' 
-                    } 
-                )
-            }
+                    $push: {
+                        'transactionsHistory': { amount:amount, type }
+                    },
+                },
+                { 
+                    returnDocument: 'after' 
+                } 
+            )
         }
-        else if(type==="out"){
+        else if(type==="تحويل الي"){
             console.log("here inside in",clientId)
             orders = await Order.find(
                 {
@@ -120,92 +105,79 @@ const addTransaction = async (req, res) => {
                 }   
             ).sort({ date: 1 });
             console.log(orders)
-            for(let i of orders){
-                let RemainingPrice = i.realTotalPrice - i.totalPaid
-                if(amountProcessing == 0) break;
-                if(RemainingPrice <= amountProcessing && RemainingPrice != 0){
-                    isDivided.push(
-                        {
-                            amount: RemainingPrice,
-                            orderId: i._id
-                        }
-                    )
-                    amountProcessing = amountProcessing - RemainingPrice
-                } 
-            }
-            transactionObj["isDivided"] = isDivided
             newTransaction = await Wallet.findOneAndUpdate(
                 {
                     bankName
                 },
                 {
                     $push: {
-                        'transactions': transactionObj
+                        'transactions': {
+                            "amount":amount,
+                            "clientId": clientId,
+                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
+                        }
                     },
-                    $inc: { totalAmount: amount } 
+                    $inc: { totalAmount: -amount } 
                 },
                 {
                     returnDocument: 'after'
                 }
             )
-            for(let i of newTransaction.transactions[newTransaction.transactions.length-1].isDivided){
-                for(let j of orders){
-                    if(i.orderId === j._id.toString()){
-                        statement = await Order.findOneAndUpdate
-                        (   
-                            {
-                                _id:i.orderId
-                            },
-                            {
-                                $push: {
-                                    'statement': 
-                                        {
-                                            "paidAmount":i.amount,
-                                            "clientId": clientId,
-                                            "bankName" : bankName,
-                                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
-                                            "walletTransactionId" : newTransaction.transactions[newTransaction.transactions.length-1]._id.toString()
-                                        }
-                                },
-                                $inc: {
-                                    totalPaid: i.amount
-                                },
-                                state: ((j.realTotalPrice - j.totalPaid - i.amount) == 0)? "منتهي" : j.state
-                            },
-                            { 
-                                returnDocument: 'after' 
-                            } 
-                        )
-                        updatedOrders.push(statement)
-                        clientUpdate = await Client.findOneAndUpdate({clientId},
-                            {
-                                $push: {
-                                    'transactionsHistory': { amount, type }
-                                },
-                            },
-                            { 
-                                returnDocument: 'after' 
-                            } 
-                        )
-                        break;
+            for(let i of orders){
+                let RemainingPrice = i.realTotalPrice - i.totalPaid
+                console.log("RemainingPrice",RemainingPrice)
+                if(amountProcessing == 0) break;
+                if(amountProcessing > 0 && RemainingPrice > 0){
+                    let amountToPay;
+                    if(RemainingPrice > amountProcessing){
+                        amountToPay = amountProcessing
+                        RemainingPrice -= amountProcessing
+                        amountProcessing = 0;
                     }
-                }
+                    else{
+                        amountToPay = amountProcessing - RemainingPrice
+                        amountProcessing = amountProcessing - RemainingPrice
+                        RemainingPrice = 0
+                    }
+                    statement = await Order.findOneAndUpdate(   
+                        {
+                            _id:i._id
+                        },
+                        {
+                            $push: {
+                                'statement': 
+                                    {
+                                        "paidAmount":amountToPay,
+                                        "clientId": clientId,
+                                        "bankName" : bankName,
+                                        "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                                        "walletTransactionId" : newTransaction.transactions[newTransaction.transactions.length-1]._id.toString()
+                                    }
+                            },
+                            $inc: {
+                                totalPaid: amountToPay
+                            },
+                            state: ((i.realTotalPrice - i.totalPaid - amountToPay) === 0)? "منتهي" : i.state
+                        },
+                        { 
+                            returnDocument: 'after' 
+                        } 
+                    )
+                } 
             }
-            if(amountProcessing>0){
-                clientUpdate = await Client.findOneAndUpdate({clientId},
-                    {
-                        $inc: {
-                            balance: amountProcessing
-                        },
-                        $push: {
-                            'transactionsHistory': { amount:amountProcessing, type }
-                        },
+            clientUpdate = await Client.findOneAndUpdate({clientId},
+                {
+                    $inc: {
+                        balance: amount
                     },
-                    { 
-                        returnDocument: 'after' 
-                    } 
-                )
-            }
+                    $push: {
+                        'transactionsHistory': { amount:amount, type }
+                    },
+                },
+                { 
+                    returnDocument: 'after' 
+                } 
+            )
         }
         else if(type ==="اكراميه"){
             clientUpdate = await Client.findOneAndUpdate({clientId},

@@ -14,6 +14,7 @@ export const WalletReducer = (state, action) => {
       };
     case "UPDATE_WALLET":
       let newWallet = state.wallet
+      console.log(state.wallet)
       newWallet[action.payload.bankName] = action.payload
       return {
         wallet: newWallet
