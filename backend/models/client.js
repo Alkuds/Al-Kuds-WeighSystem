@@ -27,14 +27,6 @@ const ClientSchema = new mongoose.Schema({
         type: Number,
         default:0
     },
-    totalPrice: {
-        type: Number,
-        default:0
-    },
-    totalPaid: {
-        type: Number,
-        default:0
-    },
     isDebtor: {
         type: Boolean,
         default:false

@@ -167,8 +167,19 @@ const getProfitReportDataBasedOnDate = async(req,res)=>{
     let { monthAndYear } = req.body
     console.log(monthAndYear)
     let soldOrders, iron,soldProfit = 0, purchasedPrice = 0, beginningOfMonthIronPrice = 0, endingOfMonthIronPrice = 0, totalProfitWithoutExpenses = 0, overAllTotalProfit = 0, deliveryFees = 0;
-    let retObj;
+    let retObj, clients, totalDiscounts = 0;
     try{
+
+        clients = await Client.find()
+
+        for(let client of clients){
+            for(let transaction of client["transactionsHistory"]){
+                if(transaction.type === "خصم" && isSameMonth(transaction.date,monthAndYear)){
+                    totalDiscounts += transaction.amount
+                }
+            }
+        }
+
         iron = await Iron.find()
         soldOrders = await Order.find(
             {
@@ -183,7 +194,6 @@ const getProfitReportDataBasedOnDate = async(req,res)=>{
         for(let order of soldOrders){
             console.log(order.date, monthAndYear)
             if(isSameMonth(order.date ,monthAndYear )){
-                console.log("sold prof", order.realTotalPrice, order.type)
                 if(order.type === "out"){
                     soldProfit += order.realTotalPrice
                     deliveryFees += order.deliveryFees
@@ -213,9 +223,9 @@ const getProfitReportDataBasedOnDate = async(req,res)=>{
                 companyExpenses+=i.amount
             }
         }
-        console.log(deliveryFees,"fees")
-        totalProfitWithoutExpenses = ((soldProfit + endingOfMonthIronPrice) - (purchasedPrice + beginningOfMonthIronPrice)) + deliveryFees
-        overAllTotalProfit = (totalProfitWithoutExpenses - companyExpenses) 
+       
+        totalProfitWithoutExpenses = ((soldProfit + endingOfMonthIronPrice) - (purchasedPrice + beginningOfMonthIronPrice)) 
+        overAllTotalProfit = (totalProfitWithoutExpenses - companyExpenses) - totalDiscounts
 
         let totalDeficitAndSurplusOfGoods = 0
         retObj = {

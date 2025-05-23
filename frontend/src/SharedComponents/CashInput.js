@@ -119,10 +119,10 @@ const CashInput = (props) => {
               }}
             >
               <option value="">نوع العمليه</option>
-              <option value="in">استلام من</option>
-              <option value="out">تحويل الي</option>
-              { !isKudsPersonnel &&<option value="out">اكراميه</option>}
-              {!isKudsPersonnel && <option value="out">خصم</option>}
+              <option value="استلام من">استلام من</option>
+              <option value="تحويل الي">تحويل الي</option>
+              { !isKudsPersonnel &&<option value="اكراميه">اكراميه</option>}
+              {!isKudsPersonnel && <option value="خصم">خصم</option>}
             </select>
           </div>
         </div>

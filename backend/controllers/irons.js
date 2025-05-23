@@ -153,7 +153,7 @@ const getIronStorageAdmin = async(req, res) => {
 }
 
 
-let x = 18778;
+let x = 1000;
 const getScaleWeight = (req, res) => {
     res.json({ "weight": x })
     // x+= 1000

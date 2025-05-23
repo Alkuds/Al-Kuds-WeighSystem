@@ -544,12 +544,27 @@ const OrderFinishState = async (req, res) => {
             newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "جاري انتظار الدفع"}, { returnDocument: 'after' })
         }
         else if (client.balance>0 && client.balance + (-realTotalPrice) <0 ){
-            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "جاري انتظار الدفع" , totalPaid : Math.abs(client.balance-realTotalPrice)}, { returnDocument: 'after' })
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "جاري انتظار الدفع" , totalPaid : client.balance, 
+                $push:{ statement: {
+                    "paidAmount":client.balance,
+                    "clientId": updatedOrder.clientId,
+                    "bankName" : "تم سحبه تلقائي من رصيد العميل عند الشركه",
+                    "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                    "walletTransactionId" : "لا يوجد"
+                }
+             }}, { returnDocument: 'after' })
         }
         else if(client.balance>0 && client.balance + (-realTotalPrice) >=0 ){
-            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "منتهي" , totalPaid : realTotalPrice}, { returnDocument: 'after' })
+            newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "منتهي" , totalPaid : realTotalPrice, $push:{ statement: {
+                "paidAmount":realTotalPrice,
+                "clientId": updatedOrder.clientId,
+                "bankName" : "تم سحبه تلقائي من رصيد العميل عند الشركه",
+                "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                "walletTransactionId" : "لا يوجد"
+            }
+         }}, { returnDocument: 'after' })
         }       
-        balanceUpdate = await Client.findOneAndUpdate(
+        balanceUpdate = await Client.findOneAndUpdate( 
             {clientId:updatedOrder.clientId},
             {
                 $inc: { balance: -realTotalPrice },
