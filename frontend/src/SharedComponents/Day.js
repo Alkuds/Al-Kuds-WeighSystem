@@ -117,7 +117,7 @@ const Day = () => {
   };
   return (
     <>
-      <p style={{ margin: "0", textAlign: "center" }}>
+      <p className="mb-3" style={{ textAlign: "center" }}>
         {" "}
         {MMDDYYYYDate()} / {new Date().toLocaleTimeString()}
       </p>
