@@ -11,6 +11,7 @@ const ClientSchema = new mongoose.Schema({
     ticketsIds:[],
     purchasingNotes: [{
         amount: { type: Number, required: true },
+        type: {type: String, default:""},
         notes: {type: String, default: "لا يوجد ملاحظات"},
         date : { type: String, default: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })}
     }],

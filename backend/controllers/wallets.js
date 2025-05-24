@@ -265,6 +265,7 @@ const addCompanyExpenses = async(req,res)=>{
                     },
                     $push: {
                         purchasingNotes: {
+                            type,
                             amount,
                             notes
                         }
@@ -284,7 +285,8 @@ const addCompanyExpenses = async(req,res)=>{
                             'transactions': { 
                                 amount, 
                                 notes,
-                                clientId 
+                                clientId,
+                                type
                             }
                         },
                         $inc: { totalAmount: amount } 
@@ -303,6 +305,7 @@ const addCompanyExpenses = async(req,res)=>{
                     },
                     $push: {
                         purchasingNotes: {
+                            type,
                             amount,
                             notes
                         }
@@ -322,7 +325,8 @@ const addCompanyExpenses = async(req,res)=>{
                             'transactions': { 
                                 amount, 
                                 notes,
-                                clientId 
+                                clientId,
+                                type
                             }
                         },
                         $inc: { totalAmount: -amount } 
