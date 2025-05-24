@@ -98,6 +98,7 @@ const Row = (props) => {
 };
 
 const MoneyVault = () => {
+  const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -131,7 +132,12 @@ const MoneyVault = () => {
           transactionsArr.push(transactionObj);
         }
         walletsArr.push(
-          createData(wallet[i]._id, i, wallet[i].totalAmount.toLocaleString(), transactionsArr)
+          createData(
+            wallet[i]._id,
+            i,
+            wallet[i].totalAmount.toLocaleString(),
+            transactionsArr
+          )
         );
       }
 
@@ -168,22 +174,18 @@ const MoneyVault = () => {
   }
   const handleMonthSubmit = (e) => {
     e.preventDefault();
+    setIsSearching(true);
     let tempRows = JSON.parse(JSON.stringify(rows));
     let TempFilteredRows = tempRows.map((row) => {
-      let filteredTxns = row.transactions.filter(
-        (txn) => {
-          if(new Date(txn.date.slice(0, 7)) > new Date(transactionMonth)){
-            row.totalAmount = row.totalAmount.toString()
-            console.log(txn.date.slice(0, 7), transactionMonth)
-            console.log(txn)
-            console.log(row.totalAmount)
-            row.totalAmount = row.totalAmount.replaceAll(",","")
-            console.log(parseFloat(row.totalAmount))
-            row.totalAmount = parseFloat(row.totalAmount) - txn.amount
-          }
-          return txn.date.slice(0, 7) === transactionMonth
+      let filteredTxns = row.transactions.filter((txn) => {
+        if (new Date(txn.date.slice(0, 7)) > new Date(transactionMonth)) {
+          row.totalAmount = row.totalAmount.toString();
+          row.totalAmount = row.totalAmount.replaceAll(",", "");
+          console.log(parseFloat(row.totalAmount));
+          row.totalAmount = parseFloat(row.totalAmount) - txn.amount;
         }
-      );
+        return txn.date.slice(0, 7) === transactionMonth;
+      });
 
       return {
         ...row,
@@ -251,10 +253,25 @@ const MoneyVault = () => {
               onChange={(e) => setTransactionMonth(e.target.value)}
             />
           </div>
-          <button type="submit" className="iron-btn search-btn w-auto">
-            {" "}
-            بحث{" "}
-          </button>
+          <div className="w-full flex-col flex space-y-4 items-center">
+            <button type="submit" className="iron-btn search-btn w-auto">
+              {" "}
+              بحث{" "}
+            </button>
+            {isSearching && (
+              <button
+                className="iron-btn remove w-auto"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTransactionMonth("");
+                  setIsSearching(false);
+                  setFilteredRows(rows);
+                }}
+              >
+                الغاء البحث
+              </button>
+            )}
+          </div>
         </form>
         <TableContainer component={Paper}>
           <Table style={{ direction: "rtl" }} aria-label="collapsible table">

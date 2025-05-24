@@ -32,9 +32,9 @@ const Impexp = () => {
   const [showTotalPrice, setShowTotalPrice] = useState(false);
   const { user } = useUserContext();
   const [showTable, setShowTable] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    console.log(user.name)
+    console.log(user.name);
     if (user.name === "Osama") {
       setShowPricePerTon(true);
     } else if (user.name === "Sobhy") {
@@ -42,7 +42,13 @@ const Impexp = () => {
       setShowTotalPrice(true);
     }
   }, []);
-  useEffect(() => {}, [dailyData, totalWeight, startDate, transactions, isLoading]);
+  useEffect(() => {}, [
+    dailyData,
+    totalWeight,
+    startDate,
+    transactions,
+    isLoading,
+  ]);
 
   if (!wallet || !client) {
     return <div> Loading... </div>;
@@ -50,7 +56,7 @@ const Impexp = () => {
 
   const getDailyData = async (e) => {
     e.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
     if (!showTable) {
       setShowTable(true);
     }
@@ -61,8 +67,7 @@ const Impexp = () => {
         "Content-Type": "application/json",
       },
     });
-    const {ironStorage, total} = await response.json();
-    console.log(ironStorage)
+    const { ironStorage, total } = await response.json();
     const transactionsFetch = await fetch("/wallet/getWalletInventoryByDate", {
       method: "POST",
       body: JSON.stringify({ startDate }),
@@ -77,7 +82,7 @@ const Impexp = () => {
       setTransactions([...transactions]);
       setTotalWeight(total);
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   return (
@@ -111,152 +116,170 @@ const Impexp = () => {
       </form>
       {showTable && (
         <>
-          { !isLoading ?<div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-start",
-            }}
-          >
-            <table className="out-table">
-              <thead>
-                <tr>
-                  <th className="text-center border-l-2 border-black p-2">
-                    {" "}
-                    نقديه{" "}
-                  </th>
-                  <th className="text-center border-l-2 border-black p-2">
-                    {" "}
-                    +/-{" "}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions &&
-                  transactions.map((i, idx) => (
+          {!isLoading ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+              }}
+            >
+              <table className="out-table">
+                <thead>
+                  <tr>
+                    <th className="text-center border-l-2 border-black p-2">
+                      {" "}
+                      نقديه{" "}
+                    </th>
+                    <th className="text-center border-l-2 border-black p-2">
+                      {" "}
+                      +/-{" "}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions &&
+                    transactions.map((i, idx) => (
+                      <>
+                        <DayExpenseRow data={i} key={idx} client={client} />
+                      </>
+                    ))}
+                </tbody>
+              </table>
+              <table style={{ direction: "rtl" }} className="impexp-table">
+                <thead>
+                  <tr>
+                    <th className="text-center border-l-2 border-black">
+                      وزن الحديد
+                    </th>
+                    <th className="text-center border-l-2 border-black">
+                      القطر
+                    </th>
+                    <th className="text-center border-l-2 border-black">
+                      النوع
+                    </th>
+                    {showPricePerTon && (
+                      <th className="text-center border-black">سعر/طن</th>
+                    )}
+                    {showTotalPrice && (
+                      <th className="text-center border-black">اجمالي السعر</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {dailyData.map((el) => (
                     <>
-                      <DayExpenseRow data={i} key={idx} client={client} />
-                    </>
-                  ))}
-              </tbody>
-            </table>
-            <table style={{ direction: "rtl" }} className="impexp-table">
-              <thead>
-                <tr>
-                  <th className="text-center border-l-2 border-black">
-                    وزن الحديد
-                  </th>
-                  <th className="text-center border-l-2 border-black">القطر</th>
-                  <th className="text-center border-l-2 border-black">النوع</th>
-                  {showPricePerTon && (
-                    <th className="text-center border-black">سعر/طن</th>
-                  )}
-                  {showTotalPrice && (
-                    <th className="text-center border-black">اجمالي السعر</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {dailyData.map((el) => (
-                  <>
-                    {(el.weight > 0 || el.weight < 0) && el.radius === "6" && (
-                      <tr style={{ border: "2px solid black" }}>
-                        <td className=" text-center border-l-2 border-black">
-                          {el.weight}
-                        </td>
-                        <td className="text-center border-l-2 border-black">
-                          {el.radius}
-                        </td>
-                        <td className="text-center border-l-2 border-black">
-                          {" "}
-                          {el.name}
-                        </td>
-                       { showPricePerTon && <td className="text-center border-l-2 border-black">
-                          {" "}
-                          {el.price}
-                        </td>}
-                        { showTotalPrice && 
-                          <td className="text-center border-l-2 border-black">
-                            {" "}
-                            {el.totalPrice}
-                          </td>
-                        }
-                      </tr>
-                    )}
-                  </>
-                ))}
-                {dailyData.map((el) => (
-                  <>
-                    {(el.weight > 0 || el.weight < 0) && el.radius === "8" && (
-                      <tr style={{ border: "2px solid black" }}>
-                        <td className="text-center border-l-2 border-black">
-                          {" "}
-                          {el.weight}
-                        </td>
-                        <td className="text-center border-l-2 border-black">
-                          {el.radius}
-                        </td>
-                        <td className="text-center border-l-2 border-black">
-                          {" "}
-                          {el.name}
-                        </td>
-                        { showPricePerTon && <td className="text-center border-l-2 border-black">
-                          {" "}
-                          {el.price}
-                        </td>}
-                        { showTotalPrice && 
-                          <td className="text-center border-l-2 border-black">
-                            {" "}
-                            {el.totalPrice}
-                          </td>
-                        }
-                      </tr>
-                    )}
-                  </>
-                ))}
-                {dailyData.map((el) => (
-                  <>
-                    {(el.weight > 0 || el.weight < 0) &&
-                      el.radius !== "6" &&
-                      el.radius !== "8" && (
-                        <tr style={{ border: "2px solid black" }}>
-                          <td className="text-center border-l-2 border-black">
-                            {" "}
-                            {el.weight}
-                          </td>
-                          <td className="text-center border-l-2 border-black">
-                            {el.radius}
-                          </td>
-                          <td className="text-center border-l-2 border-black">
-                            {el.name}
-                          </td>
-                          { showPricePerTon && <td className="text-center border-l-2 border-black">
-                            {" "}
-                            {el.price}
-                          </td>}
-                          { showTotalPrice && 
+                      {(el.weight > 0 || el.weight < 0) &&
+                        el.radius === "6" && (
+                          <tr style={{ border: "2px solid black" }}>
+                            <td className=" text-center border-l-2 border-black">
+                              {el.weight}
+                            </td>
+                            <td className="text-center border-l-2 border-black">
+                              {el.radius}
+                            </td>
                             <td className="text-center border-l-2 border-black">
                               {" "}
-                              {el.totalPrice}
+                              {el.name}
                             </td>
-                          }
-                        </tr>
-                      )}
-                  </>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td className="p-2 text-center border-r-2 border-b-2 border-l-2 border-black">
-                    {totalWeight}
-                  </td>
-                  <th className="p-2 text-center border-black border-l-2 border-b-2">
-                    اجمالي الوزن
-                  </th>
-                </tr>
-              </tfoot>
-            </table>
-          </div> : <CircularProgress/>}
+                            {showPricePerTon && (
+                              <td className="text-center border-l-2 border-black">
+                                {" "}
+                                {el.price}
+                              </td>
+                            )}
+                            {showTotalPrice && (
+                              <td className="text-center border-l-2 border-black">
+                                {" "}
+                                {el.totalPrice}
+                              </td>
+                            )}
+                          </tr>
+                        )}
+                    </>
+                  ))}
+                  {dailyData.map((el) => (
+                    <>
+                      {(el.weight > 0 || el.weight < 0) &&
+                        el.radius === "8" && (
+                          <tr style={{ border: "2px solid black" }}>
+                            <td className="text-center border-l-2 border-black">
+                              {" "}
+                              {el.weight}
+                            </td>
+                            <td className="text-center border-l-2 border-black">
+                              {el.radius}
+                            </td>
+                            <td className="text-center border-l-2 border-black">
+                              {" "}
+                              {el.name}
+                            </td>
+                            {showPricePerTon && (
+                              <td className="text-center border-l-2 border-black">
+                                {" "}
+                                {el.price}
+                              </td>
+                            )}
+                            {showTotalPrice && (
+                              <td className="text-center border-l-2 border-black">
+                                {" "}
+                                {el.totalPrice}
+                              </td>
+                            )}
+                          </tr>
+                        )}
+                    </>
+                  ))}
+                  {dailyData.map((el) => (
+                    <>
+                      {(el.weight > 0 || el.weight < 0) &&
+                        el.radius !== "6" &&
+                        el.radius !== "8" && (
+                          <tr style={{ border: "2px solid black" }}>
+                            <td className="text-center border-l-2 border-black">
+                              {" "}
+                              {el.weight}
+                            </td>
+                            <td className="text-center border-l-2 border-black">
+                              {el.radius}
+                            </td>
+                            <td className="text-center border-l-2 border-black">
+                              {el.name}
+                            </td>
+                            {showPricePerTon && (
+                              <td className="text-center border-l-2 border-black">
+                                {" "}
+                                {el.price}
+                              </td>
+                            )}
+                            {showTotalPrice && (
+                              <td className="text-center border-l-2 border-black">
+                                {" "}
+                                {el.totalPrice}
+                              </td>
+                            )}
+                          </tr>
+                        )}
+                    </>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td className="p-2 text-center border-r-2 border-b-2 border-l-2 border-black">
+                      {totalWeight}
+                    </td>
+                    <th className="p-2 text-center border-black border-l-2 border-b-2">
+                      اجمالي الوزن
+                    </th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center">
+              <CircularProgress />
+            </div>
+          )}
           <button
             className="iron-btn mt-5 max-w-80 font-bold text-xl"
             onClick={(e) => {
