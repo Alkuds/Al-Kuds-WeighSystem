@@ -4,6 +4,10 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    clientName: {
+        type: String,
+        required: true
+    },
     firstWeight:{
         weight: { type: Number, default: 0 },
         date: { type: String, default: "" }

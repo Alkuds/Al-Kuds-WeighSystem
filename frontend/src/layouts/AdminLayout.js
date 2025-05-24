@@ -1,9 +1,94 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import kuds from "../assets/images/kuds.png";
 import useLogout from "../hooks/useLogout";
-
+import { useSocketContext } from "../hooks/useSocket";
+import { useUnfinishedTicketsContext } from "../hooks/useUnfinishedTicketsContext";
+import { useAwaitForPaymentTicketsContext } from "../hooks/useAwaitForPaymentTicketsContext";
+import { ToastContainer, toast, cssTransition } from 'react-toastify';
+import { useClientContext } from "../hooks/useClientContext";
+import { useFinishedTicketsContext } from "../hooks/useFinishedTicketsContext";
 export default function AdminLayout() {
+
+  const { socket } = useSocketContext();
+  const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
+  const { awaitForPaymentTickets, dispatch: awaitForPaymentTicketsUpdate } = useAwaitForPaymentTicketsContext()
+  const { finishedTickets , dispatch: finishedTicketsUpdate} = useFinishedTicketsContext()
+  const { client , dispatch: updateClient } = useClientContext()
+  useEffect(()=>{
+    socket.on("receive_order_finish_state", (info) => {
+      console.log("i am heree")
+      if(info.order === null){
+        toast.warn('حدث عطل في تعديل الاوردر', {
+          position: "top-right",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      else{
+        toast.success('تم تعديل حاله اوردر عميل بأسم ' + info.order.clientName, {
+          position: "top-right",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          if(info.order.type === "جاري انتظار التحميل"){
+            dispatch({type:"UPDATE_TICKET",payload:[info.order]})
+          }
+          else if(info.order.type === "جاري انتظار الدفع"){
+            dispatch({type:"DELETE_TICKET",payload: info.order})
+            awaitForPaymentTicketsUpdate({type:"ADD_TICKET",payload: [info.order]})
+
+          }
+          else if(info.order.type === "منتهي"){
+            dispatch({type:"DELETE_TICKET",payload: info.order})
+            awaitForPaymentTicketsUpdate({type:"DELETE_TICKET",payload: info.order})
+            finishedTicketsUpdate({type:"ADD_TICKET",payload: [info.order]})
+          }
+          updateClient({type:"UPDATE_CLIENT", payload : info.client})
+      }
+    });
+
+    socket.on("receive_transaction", (info) => {
+      console.log(info.transaction_details.bankName)
+      if(info.transaction === null){
+        toast.warn('حدث عطل في المعامله البنكيه ', {
+          position: "top-right",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      else{
+        console.log("heeree")
+        toast.success('تم تحويل مبلغ مالي الي  ' + info.transaction_details.bankName, {
+          position: "top-right",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+    });
+
+  },[dispatch, awaitForPaymentTicketsUpdate, socket, updateClient])
+
   const checkNav = (e) => {
     const user = window.confirm("هل تريد الذهاب من هذه الصفحه؟");
     if (!user) {
@@ -18,6 +103,7 @@ export default function AdminLayout() {
     <div className="background ">
       <div className="container h-[1px] max-w-[1900px] flex-col-reverse max-w-none md:max-[] md:flex-row gap-4 w-full md:p-7 p-0">
         <div className="main-content min-h-[90vh]  md:min-h-[82vh] w-full rounded-none md:rounded-[50px]">
+        <ToastContainer/>
           <Outlet />
         </div>
 

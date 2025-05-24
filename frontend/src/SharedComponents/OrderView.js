@@ -21,20 +21,20 @@ const OrderView = ({ order, isFinishedTicket, name }) => {
   const { socket } = useSocketContext();
   const [saveLoading, setSaveLoading] = useState(false);
   useEffect(() => {
-    socket.on("receive_order_finish_state", (info) => {
-      if (info.order === null) {
-        if (info.message === "Purchase Bill Printed Successfully") {
-          swal(info.message, "تم طباعه فاتوره المبيعات بنجاح .", "success");
-        } else {
-          swal(info.message, "تم طباعه اذن الاستلام بنجاح .", "success");
-        }
-      } else
-        swal(
-          info.message,
-          "تم طباعه اذن الاستلام بنجاح و ايضا تغير حاله الاوردر لجاري انتظار الدفع.",
-          "success"
-        );
-    });
+    // socket.on("receive_order_finish_state", (info) => {
+    //   if (info.order === null) {
+    //     if (info.message === "Purchase Bill Printed Successfully") {
+    //       swal(info.message, "تم طباعه فاتوره المبيعات بنجاح .", "success");
+    //     } else {
+    //       swal(info.message, "تم طباعه اذن الاستلام بنجاح .", "success");
+    //     }
+    //   } else
+    //     swal(
+    //       info.message,
+    //       "تم طباعه اذن الاستلام بنجاح و ايضا تغير حاله الاوردر لجاري انتظار الدفع.",
+    //       "success"
+    //     );
+    // });
   }, [
     weight,
     time,

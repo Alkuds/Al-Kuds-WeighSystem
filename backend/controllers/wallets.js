@@ -8,7 +8,6 @@ const addTransaction = async (req, res) => {
         amount,bankName,clientId, orderId, type, notes
     } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate = null, updatedOrders=[];
     try{
-        console.log("type 1",type, bankName) 
         if(type === "استلام من"){
             orders = await Order.find(
                 {
@@ -37,9 +36,10 @@ const addTransaction = async (req, res) => {
                     returnDocument: 'after'
                 }
             )
+            console.log('orders.length',orders.length)
             for(let i of orders){
                 let RemainingPrice = i.realTotalPrice - i.totalPaid
-                console.log("RemainingPrice",RemainingPrice)
+                console.log("RemainingPrice",RemainingPrice, "amountProcessing",amountProcessing)
                 if(amountProcessing == 0) break;
                 if(amountProcessing > 0 && RemainingPrice > 0){
                     let amountToPay;
@@ -49,10 +49,11 @@ const addTransaction = async (req, res) => {
                         amountProcessing = 0;
                     }
                     else{
-                        amountToPay = amountProcessing - RemainingPrice
+                        amountToPay = RemainingPrice
                         amountProcessing = amountProcessing - RemainingPrice
                         RemainingPrice = 0
                     }
+                    console.log("RemainingPrice",RemainingPrice, "amountToPay",amountToPay)
                     statement = await Order.findOneAndUpdate(   
                         {
                             _id:i._id
@@ -135,7 +136,7 @@ const addTransaction = async (req, res) => {
                         amountProcessing = 0;
                     }
                     else{
-                        amountToPay = amountProcessing - RemainingPrice
+                        amountToPay = RemainingPrice
                         amountProcessing = amountProcessing - RemainingPrice
                         RemainingPrice = 0
                     }
@@ -209,10 +210,14 @@ const addTransaction = async (req, res) => {
                 } 
             )
         }
+
+        updatedOrders = await Order.find({clientId})
+
     }
     catch(err){
         console.log(err)
     }
+
     let returnedObj = {
         bank: newTransaction,
         orders: updatedOrders,
@@ -370,9 +375,14 @@ const addBank = async(req,res) =>{
 }
 
 
+const resetTime = (date) => {
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
+
 function isDateBefore(firstDateStr, secondDateStr) {
-    const firstDate = new Date(firstDateStr);
-    const secondDate = new Date(secondDateStr);
+    const firstDate = resetTime(new Date(firstDateStr));
+    const secondDate = resetTime(new Date(secondDateStr));
   
     return firstDate <= secondDate;
 }
@@ -380,6 +390,7 @@ function isDateBefore(firstDateStr, secondDateStr) {
 function createData(id, bankName, amount, date) {
     return { id, bankName, amount, date,  };
 }
+
 
 const getSpecificClientTransactions = async (req,res) =>{
     const { clientId, date  } = req.body
@@ -397,6 +408,7 @@ const getSpecificClientTransactions = async (req,res) =>{
     catch(err){
         console.log(err)
     }
+    console.log(transactions)
     res.json(transactions)
 }
 

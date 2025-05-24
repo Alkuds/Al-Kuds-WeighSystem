@@ -93,7 +93,6 @@ const ReceiptPrintPage = () => {
           });
            
           const orderStateUpdate = await orderStateUpdateFetch.json();
-          console.log(orderStateUpdate)
           if (orderStateUpdateFetch.ok) {
             console.log(44444)
             await socket.emit("send_order_new_state", {

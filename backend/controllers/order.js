@@ -234,12 +234,12 @@ function isSameDay(date1Str, date2Str) {
 }
 
 const addOrder = async (req, res) => {
-    const { ticket, type, clientId, driverId, carId, totalPrice, deliveryFees, date } = req.body
+    const { ticket, type, clientId, driverId, carId, totalPrice, deliveryFees, date, clientName } = req.body
     let newOrder;
     try {
         newOrder = new Order(
             {
-                "state": isSameDay(date,new Date())? "جاري انتظار التحميل" : "جديد", type, clientId, driverId, carId, ticket, totalPrice, deliveryFees, date
+                clientName, "state": isSameDay(date,new Date())? "جاري انتظار التحميل" : "جديد", type, clientId, driverId, carId, ticket, totalPrice, deliveryFees, date
             }
         )
 
@@ -423,30 +423,32 @@ const OrderFinishState = async (req, res) => {
                 ]
             }).sort({ date: 1 });
             let remainingTotalPrice = totalPrice
-            console.log("client.balance before",client.balance)
+            let isOutOrders = false
             for(let i of inClientOrders){
-                let deltaTotalPriceAndInOrderPrice = remainingTotalPrice - i.realTotalPrice
+                // in order fadelo 1,000,000 paid 200,000 - 800,000
+                // out order 1,300,000
+                isOutOrders = true
+                console.log("remainingTotalPrice",remainingTotalPrice,"(i.realTotalPrice-i.paidAmount)",(i.realTotalPrice-i.totalPaid))
+                let deltaTotalPriceAndInOrderPrice = remainingTotalPrice - (i.realTotalPrice-i.totalPaid)
                 if(deltaTotalPriceAndInOrderPrice >= 0){
-                    client.balance += i.realTotalPrice
+                    client.balance += deltaTotalPriceAndInOrderPrice
                     console.log("client.balance after",client.balance)
-                    addedPaidPrice += i.realTotalPrice
-                    remainingTotalPrice = deltaTotalPriceAndInOrderPrice
                     i.state = "منتهي"
-                    i.totalPaid = i.realTotalPrice
                     i.statement.push(
                         {
-                            "paidAmount":i.realTotalPrice,
+                            "paidAmount":i.realTotalPrice-i.totalPaid,
                             "clientId": i.clientId,
                             "bankName" : "تم سحبه تلقائي من رصيد العميل",
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
                             "walletTransactionId" : "لا يوجد"
                         }
                     )
+                    i.totalPaid = i.realTotalPrice
+                    remainingTotalPrice = deltaTotalPriceAndInOrderPrice
                     await i.save()
                 }
                 else{
-                    i.totalPaid = remainingTotalPrice
-                    addedPaidPrice += i.realTotalPrice
+                    i.totalPaid += remainingTotalPrice + updatedOrder.deliveryFees
                     i.statement.push(
                         {
                             "paidAmount":remainingTotalPrice,
@@ -463,11 +465,11 @@ const OrderFinishState = async (req, res) => {
             }
             // remaining total current order price = 241,000
             //                      client balance = -150,000
-            if(client.balance + (remainingTotalPrice + updatedOrder.deliveryFees) <=0){
-                newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "منتهي" , totalPaid : addedPaidPrice + remainingTotalPrice + updatedOrder.deliveryFees, $push: {
+            if(isOutOrders){
+                newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "منتهي" , totalPaid :  totalPrice + updatedOrder.deliveryFees, $push: {
                     'statement': 
                         {
-                            "paidAmount":remainingTotalPrice + updatedOrder.deliveryFees + addedPaidPrice,
+                            "paidAmount": totalPrice + updatedOrder.deliveryFees ,
                             "clientId": updatedOrder.clientId,
                             "bankName" : "تم سحبه تلقائي من رصيد العميل",
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
@@ -475,20 +477,34 @@ const OrderFinishState = async (req, res) => {
                         }
                 }}, { returnDocument: 'after' })
             }
-            else if (client.balance + (remainingTotalPrice + updatedOrder.deliveryFees) > 0){
-                console.log("client balance",client.balance)
-                console.log("remainingTotalPrice",remainingTotalPrice)
-                console.log("addedPaidPrice",addedPaidPrice)
-                newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "جاري انتظار الدفع" , totalPaid: Math.abs(client.balance) + addedPaidPrice,
-                'statement': 
-                {
-                    "paidAmount":Math.abs(client.balance) + addedPaidPrice,
-                    "clientId": updatedOrder.clientId,
-                    "bankName" : "تم سحبه تلقائي من رصيد العميل",
-                    "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
-                    "walletTransactionId" : "لا يوجد"
-                }}, { returnDocument: 'after' })
-                
+            else{
+                if(client.balance + (totalPrice + updatedOrder.deliveryFees) <=0){
+                    newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "منتهي" , totalPaid :  totalPrice + updatedOrder.deliveryFees, $push: {
+                        'statement': 
+                            {
+                                "paidAmount": totalPrice + updatedOrder.deliveryFees ,
+                                "clientId": updatedOrder.clientId,
+                                "bankName" : "تم سحبه تلقائي من رصيد العميل",
+                                "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                                "walletTransactionId" : "لا يوجد"
+                            }
+                    }}, { returnDocument: 'after' })
+                }
+                else if (client.balance + (totalPrice + updatedOrder.deliveryFees) > 0){
+                    console.log("client balance",client.balance)
+                    console.log("remainingTotalPrice",remainingTotalPrice)
+                    console.log("addedPaidPrice",addedPaidPrice)
+                    newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, totalProfit: totalProfitForOrder, realTotalPrice : totalPrice + updatedOrder.deliveryFees , state : "جاري انتظار الدفع" , totalPaid: Math.abs(client.balance),
+                    'statement': 
+                    {
+                        "paidAmount":Math.abs(client.balance) + addedPaidPrice,
+                        "clientId": updatedOrder.clientId,
+                        "bankName" : "تم سحبه تلقائي من رصيد العميل",
+                        "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+                        "walletTransactionId" : "لا يوجد"
+                    }}, { returnDocument: 'after' })
+                    
+                }
             }
         }
         else if(client.balance>=0){

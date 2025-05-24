@@ -8,6 +8,7 @@ import { useUnfinishedTicketsContext } from "../../hooks/useUnfinishedTicketsCon
 const OrderModal = ({ onClose, type, closeFun }) => {
   const [price, setPrice] = useState(0);
   const [date, setDate] = useState();
+  const [selectedClientName, setSelectedClientName] = useState('');
   const [clients, setClients] = useState("اختر عميل");
   const { client } = useClientContext();
   const [adding, setAdding] = useState(false);
@@ -32,6 +33,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
       ticket: tickets,
       type: type,
       deliveryFees: deliveryFees,
+      clientName: selectedClientName
     };
     try {
       const response = await fetch("/order/addOrder", {
@@ -88,6 +90,9 @@ const OrderModal = ({ onClose, type, closeFun }) => {
                 value={clients}
                 onChange={(e) => {
                   setClients(e.target.value);
+                  const selectedIndex = e.target.selectedIndex;
+                  const selectedText = e.target.options[selectedIndex].text;
+                  setSelectedClientName(selectedText)
                 }}
                 className="w-full md:w-[300px]"
               >

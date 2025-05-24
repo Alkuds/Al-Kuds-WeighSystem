@@ -66,6 +66,12 @@ io.on("connection", (socket) => {
       console.log(data.room, "here creation")
       socket.to(data.room).emit("receive_order_creation", data);
     });
+
+    socket.on("send_transaction", (data) => {
+      console.log(data.room, "here transactions")
+      socket.to(data.room).emit("receive_transaction", data);
+    });
+
   });
 
 mongoose

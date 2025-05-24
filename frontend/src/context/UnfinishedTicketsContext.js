@@ -23,32 +23,24 @@ export const UnfinishedTicketsReducer = (state, action) => {
         };
       };
     case "UPDATE_TICKET":
+    {  
       let typeObj = {
         "in":"inOrders",
         "out":"outOrders"
       }
       let newArr = []
-      for(let i = 0 ;i<state.unfinishedTickets[`${typeObj[action.payload.type]}`].length;i++){
-        if(state.unfinishedTickets[`${typeObj[action.payload.type]}`][i]._id === action.payload._id){
-          newArr.push(action.payload)
+      let usedArrObj = state.unfinishedTickets
+      for(let j of action.payload){
+        for(let i = 0 ;i<usedArrObj[`${typeObj[j.type]}`].length;i++){
+          if(usedArrObj[`${typeObj[j.type]}`][i]._id === j._id){
+            usedArrObj[`${typeObj[j.type]}`][i] = j
+          }
         }
-        else{
-          newArr.push(state.unfinishedTickets[`${typeObj[action.payload.type]}`][i])
-        }
       }
-      if(typeObj[action.payload.type] === "in")
-      {
-        return {
-          unfinishedTickets: {"inOrders": newArr, "outOrders":state.unfinishedTickets["outOrders"] },
-        };
-      }
-      else
-      {
-        return {
-          unfinishedTickets: {"outOrders": newArr, "inOrders":state.unfinishedTickets["inOrders"] },
-        };
-      }
-      
+      return {
+        unfinishedTickets: usedArrObj
+      };
+    }
     case "DELETE_TICKET":
       {
         let typeObj = {
@@ -56,23 +48,18 @@ export const UnfinishedTicketsReducer = (state, action) => {
           "out":"outOrders"
         }
         let newArr = []
-        for(let i = 0 ;i<state.unfinishedTickets[`${typeObj[action.payload.type]}`].length;i++){
-          if(state.unfinishedTickets[`${typeObj[action.payload.type]}`][i]._id !== action.payload._id){
-            newArr.push(state.unfinishedTickets[`${typeObj[action.payload.type]}`][i])
+        let usedArrObj = state.unfinishedTickets
+        console.log("action.payload",action.payload)
+        for(let j of action.payload){
+          for(let i = 0 ;i<usedArrObj[`${typeObj[j.type]}`].length;i++){
+            if(usedArrObj[`${typeObj[j.type]}`][i]._id === j._id){
+              usedArrObj[`${typeObj[j.type]}`].splice(i,1)
+            }
           }
         }
-        if(typeObj[action.payload.type] === "in")
-        {
-          return {
-            unfinishedTickets: {"inOrders": newArr, "outOrders":state.unfinishedTickets["outOrders"] },
-          };
-        }
-        else
-        {
-          return {
-            unfinishedTickets: {"outOrders": newArr, "inOrders":state.unfinishedTickets["inOrders"] },
-          };
-        }
+        return {
+          unfinishedTickets: usedArrObj
+        };
       }
     default:
       return state;

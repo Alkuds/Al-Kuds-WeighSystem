@@ -31,7 +31,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
       }
       if(!isFinishedTicket){
         console.log("here", info.order)
-        dispatch({ type: "DELETE_TICKET", payload: info.order });
+        dispatch({ type: "DELETE_TICKET", payload: [info.order] });
         awaitForPaymentTicketsContextUpdate({type: "ADD_TICKET", payload: [info.order] })
       }
     });

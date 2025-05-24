@@ -7,13 +7,9 @@ import {
 import "./App.css";
 import HomeLayout from "./layouts/HomeLayout";
 import PrintLayout from "./layouts/PrintLayout";
-import OutWeighs from "./SharedComponents/OutWeighs";
-import InWeights from "./SharedComponents/InWeights";
 import Impexp from "./SharedComponents/Impexp";
 import Day from "./SharedComponents/Day";
-import Storage from "./SharedComponents/Storage";
 import Settings from "./SharedComponents/Settings";
-import MainPage from "./SharedComponents/MainPage";
 import ModeratorLayout from "./layouts/ModeratorLayout";
 import { useUserContext } from "./hooks/useUserContext";
 import OrdersPage from "./components/OrdersPage/index"
@@ -29,6 +25,7 @@ import MoneyVault from "./ModeratorPages/MoneyVault";
 import AdminLayout from "./layouts/AdminLayout";
 import ProfitReport from "./ModeratorPages/ProfitReport";
 import PersonalAccountStatement from "./ModeratorPages/PersonalAccountStatement";
+import OwnerLayout from "./layouts/OwnerLayout";
 const LoginRoute = () => {
   const { user } = useUserContext();
   if (user === null) {
@@ -37,8 +34,11 @@ const LoginRoute = () => {
     if(user.name === "Osama"){
       return <Navigate to="/up" /> 
     }
-    else if (user.name === "Sobhy"){
+    else if (user.name === "Ziad"){
       return <Navigate to="/admin" />
+    }
+    else if (user.name === "Sobhy"){
+      return <Navigate to="/owner" />
     }
     else{
       return <Navigate to="/down" />
@@ -71,7 +71,16 @@ const AdminRoute = () =>{
   if (user === null) {
     return <Navigate to="/" />;
   } else {
-    return user.name === "Sobhy" ? <AdminLayout /> : <Navigate to="/" />;
+    return user.name === "Ziad" ? <AdminLayout /> : <Navigate to="/" />;
+  }
+}
+
+const OwnerRoute = () =>{
+  const { user } = useUserContext();
+  if (user === null) {
+    return <Navigate to="/" />;
+  } else {
+    return user.name === "Sobhy" ? <OwnerLayout /> : <Navigate to="/" />;
   }
 }
 
@@ -198,6 +207,36 @@ const router = createBrowserRouter([
       {
         path: "personal-account-statement",
         element: < PersonalAccountStatement/>,
+      },
+      {
+        path: "impexp",
+        element: <Impexp />,
+      },
+      {
+        path: "day",
+        element: <Day />,
+      },
+      {
+        path: "profitreports",
+        element: <ProfitReport />,
+      }
+    ],
+  },
+  {
+    path: "/owner",
+    element: <OwnerRoute />,
+    children: [
+      {
+        index: true,
+        element: <ModeratorMainPage />,
+      },
+      {
+        path: "orders/:category",
+        element: < OrdersPage/>,
+      },
+      {
+        path: "moneyvault",
+        element: < MoneyVault/>,
       },
       {
         path: "impexp",

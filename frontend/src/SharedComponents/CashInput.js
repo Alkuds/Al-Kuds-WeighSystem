@@ -4,16 +4,22 @@ import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import swal from 'sweetalert';
 import { useAwaitForPaymentTicketsContext } from "../hooks/useAwaitForPaymentTicketsContext";
+import { useSocketContext } from "../hooks/useSocket";
+import { useUnfinishedTicketsContext } from "../hooks/useUnfinishedTicketsContext";
+import { useFinishedTicketsContext } from "../hooks/useFinishedTicketsContext";
 const CashInput = (props) => {
   const { isKudsPersonnel } = props
   const [selectedClient, setSelectedClient] = useState("اختر عميل");
   const [selectedType, setSelectedType] = useState("نوع العمليه");
   const [notes, setNotes] = useState();
   const [amount, setAmount] = useState("");
+  const { socket } = useSocketContext()
   const [selectedBank, setSelectedBank] = useState("اختر البنك");
   const { client, dispatch: clientUpdate } = useClientContext();
   const { wallet, dispatch: walletUpdate } = useWalletContext();
   const { awaitForPaymentTickets, dispatch: awaitForPaymentTicketsUpdate} = useAwaitForPaymentTicketsContext();
+  const { unfinishedTickets, dispatch: unfinishedTicketsUpdate } = useUnfinishedTicketsContext()
+  const { finishedTickets , dispatch: finishedTicketsUpdate } = useFinishedTicketsContext()
   console.log(awaitForPaymentTickets,wallet,client)
   const [isLoading,setIsLoading] = useState(false)
   
@@ -21,6 +27,14 @@ const CashInput = (props) => {
   
   if(client == null || wallet == null){
     return <div> Loading....</div>
+  }
+
+  const socketTransactionNotification = async(transaction) =>{
+    await socket.emit("send_transaction", {
+      message: "Transaction Proccessed successfully",
+      room: "123",
+      transaction_details: transaction,
+    });
   }
 
   const handleKudsPersonnel = async(e) =>{
@@ -84,10 +98,41 @@ const CashInput = (props) => {
           setSelectedType("نوع العمليه")
           setAmount("")
           setNotes("")
-          awaitForPaymentTicketsUpdate({ type: "UPDATE_TICKET", payload: addTransaction.orders })
+          let awaitingOrders = [], unfinishedOrders = [], finishedOrders = []
+          for(let i of addTransaction.orders){
+            if(i.state === 'جاري انتظار التحميل'){
+              unfinishedOrders.push(i)
+            }
+            else if(i.state === 'جاري انتظار الدفع'){
+              awaitingOrders.push(i)
+            }
+            else if (i.state === 'منتهي'){
+              finishedOrders.push(i)
+            }
+          }
+
+          if(unfinishedOrders.length>0){
+            console.log("unfinishedOrders")
+            unfinishedTicketsUpdate({ type: "UPDATE_TICKET", payload: addTransaction.orders })
+          }
+          if(awaitForPaymentTickets.length> 0){
+            console.log("awaitForPaymentTickets")
+
+            unfinishedTicketsUpdate({ type: "DELETE_TICKET", payload: addTransaction.orders })
+            awaitForPaymentTicketsUpdate({ type: "UPDATE_TICKET", payload: addTransaction.orders })
+          }
+          if(finishedOrders.length>0){
+            console.log("finishedOrders")
+
+            unfinishedTicketsUpdate({ type: "DELETE_TICKET", payload: addTransaction.orders })
+            awaitForPaymentTicketsUpdate({ type: "DELETE_TICKET", payload: addTransaction.orders })
+            finishedTicketsUpdate({type:"UPDATE_TICKET", payload: addTransaction.orders})
+          }
           if (addTransaction.client !==null)
             clientUpdate({ type: "UPDATE_CLIENT", payload: addTransaction.client })
           walletUpdate({ type: "UPDATE_WALLET", payload: addTransaction.bank })
+
+          socketTransactionNotification(addTransaction.bank)
       }
       else{
           swal ( "حدث عطل، الرجاء التآكد من الاتصال بالنت." , "حااول مجددا بعد قليل." ,  "error" )
