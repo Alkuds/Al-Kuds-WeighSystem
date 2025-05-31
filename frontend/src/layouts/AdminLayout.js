@@ -9,16 +9,16 @@ import { ToastContainer, toast, cssTransition } from 'react-toastify';
 import { useClientContext } from "../hooks/useClientContext";
 import { useFinishedTicketsContext } from "../hooks/useFinishedTicketsContext";
 export default function AdminLayout() {
-
+ 
   const { socket } = useSocketContext();
   const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
   const { awaitForPaymentTickets, dispatch: awaitForPaymentTicketsUpdate } = useAwaitForPaymentTicketsContext()
   const { finishedTickets , dispatch: finishedTicketsUpdate} = useFinishedTicketsContext()
   const { client , dispatch: updateClient } = useClientContext()
   useEffect(()=>{
-    socket.on("receive_order_finish_state", (info) => {
-      console.log("i am heree")
-      if(info.order === null){
+    const handleReceiveOrderFinishState = (info) => {
+      console.log(info);
+      if (info.order === null) {
         toast.warn('حدث عطل في تعديل الاوردر', {
           position: "top-right",
           autoClose: false,
@@ -28,9 +28,8 @@ export default function AdminLayout() {
           draggable: true,
           progress: undefined,
           theme: "light",
-          });
-      }
-      else{
+        });
+      } else {
         toast.success('تم تعديل حاله اوردر عميل بأسم ' + info.order.clientName, {
           position: "top-right",
           autoClose: false,
@@ -40,25 +39,27 @@ export default function AdminLayout() {
           draggable: true,
           progress: undefined,
           theme: "light",
-          });
-          if(info.order.type === "جاري انتظار التحميل"){
-            dispatch({type:"UPDATE_TICKET",payload:[info.order]})
-          }
-          else if(info.order.type === "جاري انتظار الدفع"){
-            dispatch({type:"DELETE_TICKET",payload: info.order})
-            awaitForPaymentTicketsUpdate({type:"ADD_TICKET",payload: [info.order]})
-
-          }
-          else if(info.order.type === "منتهي"){
-            dispatch({type:"DELETE_TICKET",payload: info.order})
-            awaitForPaymentTicketsUpdate({type:"DELETE_TICKET",payload: info.order})
-            finishedTicketsUpdate({type:"ADD_TICKET",payload: [info.order]})
-          }
-          updateClient({type:"UPDATE_CLIENT", payload : info.client})
+        });
+  
+        if (info.order.state === "جاري انتظار التحميل") {
+          console.log("tahmeel");
+          dispatch({ type: "UPDATE_TICKET", payload: [info.order] });
+        } else if (info.order.state === "جاري انتظار الدفع") {
+          console.log("daf3");
+          dispatch({ type: "DELETE_TICKET", payload: [info.order] });
+          awaitForPaymentTicketsUpdate({ type: "ADD_TICKET", payload: [info.order] });
+        } else if (info.order.state === "منتهي") {
+          console.log("montahy");
+          dispatch({ type: "DELETE_TICKET", payload: [info.order] });
+          awaitForPaymentTicketsUpdate({ type: "DELETE_TICKET", payload: [info.order] });
+          finishedTicketsUpdate({ type: "ADD_TICKET", payload: [info.order] });
+        }
+  
+        updateClient({ type: "UPDATE_CLIENT", payload: info.client });
       }
-    });
-
-    socket.on("receive_transaction", (info) => {
+    };
+    
+    const handleReceiveTransaction = (info)=>{
       console.log(info.transaction_details.bankName)
       if(info.transaction === null){
         toast.warn('حدث عطل في المعامله البنكيه ', {
@@ -85,9 +86,22 @@ export default function AdminLayout() {
           theme: "light",
           });
       }
-    });
+    }
+    
+    socket.on("receive_order_finish_state", handleReceiveOrderFinishState);
+    socket.on("receive_transaction", handleReceiveTransaction);
+    
 
-  },[dispatch, awaitForPaymentTicketsUpdate, socket, updateClient])
+
+
+    return () => {
+      socket.off("receive_order_finish_state", handleReceiveOrderFinishState); // Cleanup
+      socket.off("receive_transaction", handleReceiveTransaction); // Cleanup
+
+    };
+
+
+  },[dispatch, awaitForPaymentTicketsUpdate, socket, updateClient, awaitForPaymentTickets])
 
   const checkNav = (e) => {
     const user = window.confirm("هل تريد الذهاب من هذه الصفحه؟");
@@ -125,6 +139,10 @@ export default function AdminLayout() {
               </NavLink>
               <NavLink className="text-center" to={"day"}>
                 يوميه
+              </NavLink>
+
+              <NavLink className="text-center" to={"settings"}>
+                اعدادات
               </NavLink>
 
               <NavLink className="text-center" to={"clientbill"}>

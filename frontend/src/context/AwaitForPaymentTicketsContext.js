@@ -1,5 +1,6 @@
 import { createContext, useReducer } from "react";
 import { useEffect } from "react";
+import useLogout from "../hooks/useLogout";
 export const AwaitForPaymentTicketsContext = createContext();
 
 export const AwaitForPaymentTicketsReducer = (state, action) => {
@@ -67,21 +68,29 @@ export const AwaitForPaymentTicketsContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AwaitForPaymentTicketsReducer, {
     awaitForPaymentTickets: {},
   });
-
+  const {logout} = useLogout();
+  const user = JSON.parse(localStorage.getItem('user'))
+  if(user)
+  console.log(user.token)
   useEffect(() => {
     const getAwaitForPaymentTickets = async () => {
       const response = await fetch("/order/getAwaitForPaymentOrdersGroupedByType", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       });
       let jsonAns = await response.json();
       if (response.ok) {
         console.log(jsonAns)
         dispatch({ type: "SET_TICKETS", payload: jsonAns });
+      }else{
+        localStorage.removeItem('user');
+        logout()
       }
     };
+    if(user)
     getAwaitForPaymentTickets();
   }, [dispatch]);
 

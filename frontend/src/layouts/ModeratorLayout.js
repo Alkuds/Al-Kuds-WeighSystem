@@ -112,7 +112,9 @@ export default function ModeratorLayout() {
               <NavLink className="text-center" to={"clientbill"}>
                 كشفات الحسابات
               </NavLink>
-
+              <NavLink className="text-center" to={"settings"}>
+                اعدادات
+              </NavLink>
               <NavLink className="text-center" to={"moneyvault"}>
                 الخزنه
               </NavLink>

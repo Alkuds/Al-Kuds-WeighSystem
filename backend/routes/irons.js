@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const requireAuth = require('../config/auth')
+
 const {getIronStorageAdmin, addIron, changeIronWeight, getScaleWeight, handleChangePassword} = require('../controllers/irons')
-router.post('/getIronStorage', getIronStorageAdmin)
-router.post('/addIron', addIron)
-router.post('/changeIronWeight', changeIronWeight)
-router.get('/getScaleWeight',getScaleWeight)
-router.post('/checkChangePassword',handleChangePassword)
+router.post('/getIronStorage',requireAuth, getIronStorageAdmin)
+router.post('/addIron',requireAuth, addIron)
+router.post('/changeIronWeight',requireAuth, changeIronWeight)
+router.get('/getScaleWeight',requireAuth,getScaleWeight)
+router.post('/checkChangePassword',requireAuth,handleChangePassword)
 
 
 

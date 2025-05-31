@@ -28,16 +28,17 @@ import PersonalAccountStatement from "./ModeratorPages/PersonalAccountStatement"
 import OwnerLayout from "./layouts/OwnerLayout";
 const LoginRoute = () => {
   const { user } = useUserContext();
+  console.log(user)
   if (user === null) {
     return <Login />;
   } else {
-    if(user.name === "Osama"){
+    if(user.user.msg.name === "Osama"){
       return <Navigate to="/up" /> 
     }
-    else if (user.name === "Ziad"){
+    else if (user.user.msg.name === "Ziad"){
       return <Navigate to="/admin" />
     }
-    else if (user.name === "Sobhy"){
+    else if (user.user.msg.name === "Sobhy"){
       return <Navigate to="/owner" />
     }
     else{
@@ -52,7 +53,7 @@ const ModeratorRoute = () => {
   if (user === null) {
     return <Navigate to="/" />;
   } else {
-    return user.name === "Osama" ? <ModeratorLayout /> : <Navigate to="/" />;
+    return user.user.msg.name === "Osama" ? <ModeratorLayout /> : <Navigate to="/" />;
   }
 };
 
@@ -62,7 +63,7 @@ const WorkerRoute = () => {
   if (user === null) {
     return <Navigate to="/" />;
   } else {
-    return user.name === "Hassan" ? <HomeLayout /> : <Navigate to="/" />;
+    return user.user.msg.name === "Hassan" ? <HomeLayout /> : <Navigate to="/" />;
   }
 };
 
@@ -71,7 +72,7 @@ const AdminRoute = () =>{
   if (user === null) {
     return <Navigate to="/" />;
   } else {
-    return user.name === "Ziad" ? <AdminLayout /> : <Navigate to="/" />;
+    return user.user.msg.name === "Ziad" ? <AdminLayout /> : <Navigate to="/" />;
   }
 }
 
@@ -80,7 +81,7 @@ const OwnerRoute = () =>{
   if (user === null) {
     return <Navigate to="/" />;
   } else {
-    return user.name === "Sobhy" ? <OwnerLayout /> : <Navigate to="/" />;
+    return user.user.msg.name === "Sobhy" ? <OwnerLayout /> : <Navigate to="/" />;
   }
 }
 
@@ -169,7 +170,11 @@ const router = createBrowserRouter([
       {
         path: "day",
         element: <Day />,
-      }
+      },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
       // {
       //   path: "day",
       //   element: <Day />,
@@ -179,9 +184,6 @@ const router = createBrowserRouter([
       //   element: <Storage />,
       // },
       // {
-      //   path: "settings",
-      //   element: <Settings />,
-      // },
     ],
   },
   {
@@ -203,6 +205,10 @@ const router = createBrowserRouter([
       {
         path: "moneyvault",
         element: < MoneyVault/>,
+      },
+      {
+        path: "settings",
+        element: < Settings/>,
       },
       {
         path: "personal-account-statement",

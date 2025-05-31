@@ -8,6 +8,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useSocketContext } from "../hooks/useSocket";
 import swal from 'sweetalert';
 import { useAwaitForPaymentTicketsContext } from "../hooks/useAwaitForPaymentTicketsContext";
+import { useUserContext } from "../hooks/useUserContext";
 const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
   const [firstWeight, setFirstWeight] = useState(0)
   const [firstTime, setFirstTime] = useState(0);
@@ -20,6 +21,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
   const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
   const { awaitForPaymentTicketsContext, dispatch: awaitForPaymentTicketsContextUpdate } = useAwaitForPaymentTicketsContext();
   const { socket } = useSocketContext();
+  const {user} = useUserContext()
   useEffect(() => {
     socket.on("receive_order_new_state", async(info) => {
       console.log(info)
@@ -49,6 +51,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
       method:"POST",
       headers: {
         "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
       },
       body:JSON.stringify({orderId: order._id,firstWeight:weight})
     })
@@ -87,6 +90,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
       method:"POST",
       headers: {
         "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
       },
       body:JSON.stringify({orderId: order._id,ticket:newOrder.ticket})
     })
@@ -106,6 +110,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
       },
     });
 
@@ -128,6 +133,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
       },
     });
     

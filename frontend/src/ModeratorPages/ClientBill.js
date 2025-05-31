@@ -199,6 +199,7 @@ const ClientBill = () => {
           body:JSON.stringify({"date":transactionMonth,"id":selectedClient}),
           headers: {
             "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
           },
         }
       );
@@ -212,6 +213,7 @@ const ClientBill = () => {
           body:JSON.stringify({"date":transactionMonth,"clientId":selectedClient}),
           headers: {
             "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
           },
         }
       );
@@ -223,6 +225,7 @@ const ClientBill = () => {
         'body':JSON.stringify({"date":transactionMonth,"clientId":selectedClient}),
         'headers': {
             "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       })
 

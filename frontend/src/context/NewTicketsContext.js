@@ -81,11 +81,13 @@ function isSameDay(date1Str, date2Str) {
 }
 
 const updateState = async(_id) => {
+  const user = JSON.parse(localStorage.getItem('user'))
     const statusUpdate = await fetch("/order/orderChangeState", {
         method: "POST",
         body: JSON.stringify({_id}),
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         }
     })
 
@@ -99,11 +101,13 @@ export const NewTicketsContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
     const getNewTickets = async () => {
       const response = await fetch("/order/getNewOrdersInfoGroupedByType", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       });
 
@@ -130,6 +134,7 @@ export const NewTicketsContextProvider = ({ children }) => {
         dispatch({ type: "SET_TICKETS", payload: jsonAns });
       }
     };
+    if(user)
     getNewTickets();
   }, [dispatch]);
 

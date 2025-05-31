@@ -72,11 +72,13 @@ export const UnfinishedTicketsContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
     const getUnfinishedTickets = async () => {
       const response = await fetch("/order/getUnfinishedOrdersInfoGroupedByType", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       });
       let jsonAns = await response.json();
@@ -85,6 +87,7 @@ export const UnfinishedTicketsContextProvider = ({ children }) => {
         dispatch({ type: "SET_TICKETS", payload: jsonAns });
       }
     };
+    if(user)
     getUnfinishedTickets();
   }, [dispatch]);
 

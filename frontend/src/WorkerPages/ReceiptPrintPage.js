@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPrint } from "@fortawesome/fontawesome-free-solid";
 import { useSocketContext } from "../hooks/useSocket";
+import { useUserContext } from "../hooks/useUserContext";
 const Receipt = ({ order }) => {
   let arr = [],
     totalWeight =
@@ -44,18 +45,24 @@ const Receipt = ({ order }) => {
     );
   }
 
-  return arr.map((i, idx) => (
-    <>
-      {i}
-      <div className="horizontal-line"></div>
-      {
+  return(
+    <div style={{"width":"60%"}}>
+        {
+          arr.map((i, idx) => (
+            <>
+              {i}
+              <div className="horizontal-line"></div>
+              
+            </>
+          ))
+        }    
         <p style={{ width: "66%", textAlign: "left", fontSize: "15px" }}>
           <span>الوزن الصافي:</span>
-          <span> {totalWeight} </span>
+          <span> {Math.abs(totalWeight)} </span>
         </p>
-      }
-    </>
-  ));
+    </div>
+  ) 
+  
 };
 
 const ReceiptPrintPage = () => {
@@ -63,6 +70,7 @@ const ReceiptPrintPage = () => {
   const order = useLoaderData();
   const { client } = useClientContext();
   const { isFinishedTicket } = useParams();
+  const {user} = useUserContext()
   useEffect(() => {
     const closeAfterPrint = () => {
       window.close();
@@ -88,6 +96,7 @@ const ReceiptPrintPage = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({ orderId: order._id }),
           });

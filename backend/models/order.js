@@ -32,7 +32,7 @@ const OrderSchema = new mongoose.Schema({
         netWeightForProcessing: { type: Number, default: 0 },
         isProcessed: { type: Boolean, default: false },
         profit: { type: Number, default: 0 },
-        date: { type: String, default: "" }
+        date: { type: String, default: new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }
     }],
     statement: [{
         walletTransactionId:  { type: String, default:"" },

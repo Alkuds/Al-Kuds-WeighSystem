@@ -65,6 +65,7 @@ const Impexp = () => {
       body: JSON.stringify({ startDate }),
       headers: {
         "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
       },
     });
     const { ironStorage, total } = await response.json();
@@ -73,6 +74,7 @@ const Impexp = () => {
       body: JSON.stringify({ startDate }),
       headers: {
         "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
       },
     });
 

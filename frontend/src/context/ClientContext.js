@@ -37,11 +37,13 @@ export const ClientContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
     const getClients = async () => {
       const response = await fetch("/client/getClientsInfo", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       });
       let jsonAns = await response.json();
@@ -50,6 +52,7 @@ export const ClientContextProvider = ({ children }) => {
         dispatch({ type: "SET_CLIENTS", payload: jsonAns });
       }
     };
+    if(user)
     getClients();
   }, [dispatch]);
 

@@ -5,6 +5,7 @@ import swal from "sweetalert";
 import LoadingButton from "../../SharedComponents/LoadingButton";
 import { useSocketContext } from "../../hooks/useSocket";
 import { useUnfinishedTicketsContext } from "../../hooks/useUnfinishedTicketsContext";
+import { useUserContext } from "../../hooks/useUserContext";
 const OrderModal = ({ onClose, type, closeFun }) => {
   const [price, setPrice] = useState(0);
   const [date, setDate] = useState();
@@ -14,6 +15,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
   const [adding, setAdding] = useState(false);
   const [deliveryFees, setDeliveryFees] = useState(0);
   const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
+  const {user} = useUserContext()
   const [tickets, setTickets] = useState([
     { ironName: "", radius: "", neededWeight: "", unitPrice: "" },
   ]);
@@ -41,6 +43,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
         body: JSON.stringify(data),
       });

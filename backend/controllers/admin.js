@@ -2,6 +2,8 @@ const Wallet = require('../models/wallet')
 const Order = require('../models/order')
 const Client = require('../models/client')
 const Iron = require('../models/iron')
+const requireAuth = require('../config/auth')
+
 const { isDateBetween } = require('../controllers/irons')
 const subtractOneMonth = (dateStr) => {
     let date = new Date(dateStr);

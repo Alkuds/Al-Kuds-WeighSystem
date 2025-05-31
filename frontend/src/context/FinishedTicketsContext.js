@@ -71,11 +71,13 @@ export const FinishedTicketsContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
     const getFinishedTickets = async () => {
       const response = await fetch("/order/getFinishedOrdersInfoGroupedByType", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       });
       let jsonAns = await response.json();
@@ -84,6 +86,7 @@ export const FinishedTicketsContextProvider = ({ children }) => {
         dispatch({ type: "SET_TICKETS", payload: jsonAns });
       }
     };
+    if(user)
     getFinishedTickets();
   }, [dispatch]);
 

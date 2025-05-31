@@ -38,11 +38,13 @@ export const WalletContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
     const getWallets = async () => {
       const response = await fetch("/wallet/getTransactionsGroupedByBank", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
       });
       let jsonAns = await response.json();
@@ -51,6 +53,7 @@ export const WalletContextProvider = ({ children }) => {
         dispatch({ type: "SET_WALLET", payload: jsonAns });
       }
     };
+    if(user)
     getWallets();
   }, [dispatch]);
 

@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import swal from "sweetalert";
 import { useAwaitForPaymentTicketsContext } from "../../hooks/useAwaitForPaymentTicketsContext";
+import { useUserContext } from "../../hooks/useUserContext";
 
 function AddingPriceForm({ alignment, order }) {
   const [orderPaidAmount, setOrderPaidAmount] = useState();
@@ -15,7 +16,7 @@ function AddingPriceForm({ alignment, order }) {
   const { finishedTickets, dispatch } = useFinishedTicketsContext();
   const { awaitForPaymentTickets, dispatch: awaitForPaymentTicketsUpdate } = useAwaitForPaymentTicketsContext()
   const [adding, setAdding] = useState(false);
-
+  const {user} = useUserContext()
   useEffect(()=>{},[
     dispatch,awaitForPaymentTicketsUpdate
   ])
@@ -34,6 +35,7 @@ function AddingPriceForm({ alignment, order }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${user.token}`
         },
         body: JSON.stringify(data),
       });
