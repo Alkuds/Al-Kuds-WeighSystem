@@ -1,5 +1,7 @@
 import { createContext, useReducer } from "react";
 import { useEffect } from "react";
+import useLogout from "../hooks/useLogout";
+
 export const NewTicketsContext = createContext();
 
 export const NewTicketsReducer = (state, action) => {
@@ -100,6 +102,9 @@ export const NewTicketsContextProvider = ({ children }) => {
     newTickets: {},
   });
 
+  const {logout} = useLogout();
+
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'))
     const getNewTickets = async () => {
@@ -132,6 +137,10 @@ export const NewTicketsContextProvider = ({ children }) => {
             }
         }
         dispatch({ type: "SET_TICKETS", payload: jsonAns });
+      }
+      else{
+        localStorage.removeItem('user');
+        logout()
       }
     };
     if(user)

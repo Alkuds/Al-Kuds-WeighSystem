@@ -324,7 +324,7 @@ const ClientBill = () => {
               <TableCell colSpan={2}>الرصيد </TableCell>
               <TableCell style={{ direction: "ltr" }} component="th" scope="row" align="right">{balance.toLocaleString()}</TableCell>
             </TableRow>
-            { user.name === "Sobhy" && <TableRow>
+            { user.user.msg.name === "Sobhy" && <TableRow>
               <TableCell colSpan={2}>صافي الربح</TableCell>
               <TableCell component="th" scope="row" align="right">{totalProfit.toLocaleString()}</TableCell>
             </TableRow>}

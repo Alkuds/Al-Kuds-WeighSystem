@@ -8,6 +8,7 @@ const app = express();
 const mongoose = require("mongoose");
 const { Server } = require("socket.io");
 const http = require("http")
+const session = require("express-session");
 const server = http.createServer(app);
 app.use(bodyParser.json()); // for JSON data
 
@@ -21,6 +22,14 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 // if (process.env.NODE_ENV === 'local') {
 //   app.use(express.static(path.join(__dirname, '../frontend/build')))

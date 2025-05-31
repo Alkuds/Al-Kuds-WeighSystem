@@ -11,7 +11,10 @@ const Login = async (req, res) => {
     console.log(username, password)
     try {
         const user = await User.login(username, password)
-        const token = createToken(user.id)
+        console.log(user.msg.id)
+        const token = createToken(user.msg.id)
+        console.log(token)
+        req.session.userId = user.msg.id;
         res.status(200).json({user, token})
     }
     catch (error) {

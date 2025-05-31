@@ -34,10 +34,10 @@ const Impexp = () => {
   const [showTable, setShowTable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    console.log(user.name);
-    if (user.name === "Osama") {
+    console.log(user.user.msg.name);
+    if (user.user.msg.name === "Osama") {
       setShowPricePerTon(true);
-    } else if (user.name === "Sobhy") {
+    } else if (user.user.msg.name === "Sobhy" || user.user.msg.name === "Ziad") {
       setShowPricePerTon(true);
       setShowTotalPrice(true);
     }

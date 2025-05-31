@@ -1,5 +1,7 @@
 import { createContext, useReducer } from "react";
 import { useEffect } from "react";
+import useLogout from "../hooks/useLogout";
+
 export const WalletContext = createContext();
 
 export const WalletReducer = (state, action) => {
@@ -37,6 +39,9 @@ export const WalletContextProvider = ({ children }) => {
     wallet: null,
   });
 
+  const {logout} = useLogout();
+
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'))
     const getWallets = async () => {
@@ -51,6 +56,10 @@ export const WalletContextProvider = ({ children }) => {
       if (response.ok) {
         console.log(jsonAns)
         dispatch({ type: "SET_WALLET", payload: jsonAns });
+      }
+      else{
+        localStorage.removeItem('user');
+        logout()
       }
     };
     if(user)

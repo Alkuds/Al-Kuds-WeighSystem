@@ -12,9 +12,16 @@ const requireAuth = async (req, res, next) => {
   const token = authorization.split(' ')[1]
 
   try {
+    console.log(token,"heeree")
     const { _id } = jwt.verify(token, process.env.SECRET)
+    console.log(_id)
     req.user = await UserV2.findOne({ _id })
-    next()
+    if(req.user && req.session.userId === _id){
+      next()
+    }
+    else{
+      throw new Error("Malformed data / user id");
+    }
 
   } catch (error) {
     console.log(error)
