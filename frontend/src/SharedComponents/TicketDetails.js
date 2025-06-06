@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Seperator from "../components/Seperator";
+import { confirmAlert } from "react-confirm-alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUnfinishedTicketsContext } from "../hooks/useUnfinishedTicketsContext";
-import { Button } from "@mui/material";
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useSocketContext } from "../hooks/useSocket";
 import swal from 'sweetalert';
 import { useAwaitForPaymentTicketsContext } from "../hooks/useAwaitForPaymentTicketsContext";
 import { useUserContext } from "../hooks/useUserContext";
+import "react-confirm-alert/src/react-confirm-alert.css";
 const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
   const [firstWeight, setFirstWeight] = useState(0)
   const [firstTime, setFirstTime] = useState(0);
@@ -22,6 +22,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
   const { awaitForPaymentTicketsContext, dispatch: awaitForPaymentTicketsContextUpdate } = useAwaitForPaymentTicketsContext();
   const { socket } = useSocketContext();
   const {user} = useUserContext()
+  const toast = useRef(null);
   useEffect(() => {
     socket.on("receive_order_new_state", async(info) => {
       console.log(info)
@@ -39,7 +40,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
     });
   }, [unfinishedTickets,awaitForPaymentTicketsContext,awaitForPaymentTicketsContextUpdate,dispatch,weight, time, date, netWeight, isLoading,firstWeight,firstDate,firstTime,socket]);
 
-
+  
   const handleSubmit = (e) =>{
     e.preventDefault()
     window.open("http://localhost:3000/print/"+ isFinishedTicket.toString() + "/" + order._id,"_blank")
@@ -103,8 +104,38 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
 
   }
 
-  const handleGetFirstWeight = async (e,idx) => {
+  function confirmAsync() {
+    return new Promise((resolve) => {
+      confirmAlert({
+        title: "هل تريد اعاده الوزنه مره اخري؟",
+        message: "",
+        buttons: [
+          {
+            label: "نعم",
+            onClick: () => resolve(true)
+          },
+          {
+            label: "لا",
+            onClick: () => resolve(false)
+          }
+        ]
+      });
+    });
+  }
+
+
+  const handleGetFirstWeight = async (e,weight) => {
+    let isYes = false
     e.preventDefault()
+    console.log("hehe",weight)
+    if(weight>0){
+      const isYes = await confirmAsync();
+      if (!isYes) {
+        console.log("User cancelled");
+        return;
+      }
+    }
+   
     setIsLoading(true);
     const weightFetch = await fetch("/irons/getScaleWeight", {
       method: "GET",
@@ -126,8 +157,16 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
     setIsLoading(false);
   }
 
-  const handleGetWeight = async (e,idx) => {
+  const handleGetWeight = async (e,idx, weight) => {
     e.preventDefault()
+    if(weight>0){
+      const isYes = await confirmAsync();
+      if (!isYes) {
+        console.log("User cancelled");
+        return;
+      }
+    }
+    
     setIsLoading(true);
     const weightFetch = await fetch("/irons/getScaleWeight", {
       method: "GET",
@@ -175,7 +214,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
           <div className="md:w-[50%] w-full flex justify-center">
             <div className="flex flex-col gap-2 justify-end">
               <button
-                onClick={(e) => !isLoading && handleGetFirstWeight(e)}
+                onClick={(e) => !isLoading && handleGetFirstWeight(e,order.firstWeight.weight)}
                 className="iron-btn"
               >
                 {isLoading ? <CircularProgress /> : " تحميل الوزن"}{" "}
@@ -236,7 +275,7 @@ const TicketDetails = ({ order, orderContextIdx, isFinishedTicket }) => {
               <div className="md:w-[50%] w-full flex justify-center">
                 <div className="flex flex-col gap-2 justify-end">
                   <button
-                    onClick={(e) => !isLoading && handleGetWeight(e,idx)}
+                    onClick={(e) => !isLoading && handleGetWeight(e,idx,order.ticket[idx].weightAfter)}
                     className="iron-btn"
                   >
                     {isLoading ? <CircularProgress /> : " تحميل الوزن"}{" "}

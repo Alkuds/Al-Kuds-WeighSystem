@@ -40,3 +40,9 @@
   justify-content: center;
   gap: 10px;
 }
+
+
+#react-confirm-alert{
+  position: relative;
+  z-index: 999999;
+}
