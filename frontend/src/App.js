@@ -41,9 +41,13 @@ const LoginRoute = () => {
     else if (user.user.msg.name === "Sobhy"){
       return <Navigate to="/owner" />
     }
-    else{
+    else if(user.user.msg.name === "Hassan"){
       return <Navigate to="/down" />
     }
+    else{
+      return <Login />;
+    }
+    
   }
 };
 

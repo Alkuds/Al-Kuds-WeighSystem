@@ -4,7 +4,7 @@ const Client = require('../models/client')
 
 const addTransaction = async (req, res) => {
     let {amount, bankName, clientId, orderId, type, notes} = req.body
-    let newTransaction, transactionObj = {
+    let newTransaction = null, transactionObj = {
         amount,bankName,clientId, orderId, type, notes
     } , orders, isDivided = [],amountProcessing = amount, statement, clientUpdate = null, updatedOrders=[];
     try{

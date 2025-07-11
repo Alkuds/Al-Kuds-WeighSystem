@@ -354,6 +354,7 @@ const OrderFinishState = async (req, res) => {
     catch (err) {
         console.log(err)
     }
+    try{
     let totalProfitForOrder = 0, totalPrice = 0, addedPaidPrice = 0;
     const orderTickets = updatedOrder.ticket
     if(updatedOrder.type === "out"){
@@ -556,7 +557,7 @@ const OrderFinishState = async (req, res) => {
             realTotalPrice += orderTickets[i].realTotalPrice
         }
 
-        if(client.balance<0){
+        if(client.balance<=0){
             newUpdatedOrder = await Order.findOneAndUpdate({ _id: orderId }, { ticket: orderTickets, realTotalPrice, state : "جاري انتظار الدفع"}, { returnDocument: 'after' })
         }
         else if (client.balance>0 && client.balance + (-realTotalPrice) <0 ){
@@ -596,7 +597,11 @@ const OrderFinishState = async (req, res) => {
         console.log(balanceUpdate)
         
     }
-
+    }
+    catch(err){
+        console.log(err)
+    }
+    console.log("here new order updated: ",newUpdatedOrder)
     res.json({newUpdatedOrder, balanceUpdate});
 
 }

@@ -128,7 +128,7 @@ const OrderView = ({ order, isFinishedTicket, name, handleClose }) => {
         isFinishedTicket.toString() +
         "/" +
         order._id,
-      "_blank" 
+      "_blank"  
     );
     // window.open("https://alkuds-cd6a685335ea.herokuapp.com/print/"+ order._id,"_blank")
   };
