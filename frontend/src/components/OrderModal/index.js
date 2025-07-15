@@ -16,6 +16,7 @@ const OrderModal = ({ onClose, type, closeFun }) => {
   const [deliveryFees, setDeliveryFees] = useState(0);
   const { unfinishedTickets, dispatch } = useUnfinishedTicketsContext();
   const {user} = useUserContext()
+  const [password, setPassword] = useState("")
   const [tickets, setTickets] = useState([
     { ironName: "", radius: "", neededWeight: "", unitPrice: "" },
   ]);
@@ -35,7 +36,8 @@ const OrderModal = ({ onClose, type, closeFun }) => {
       ticket: tickets,
       type: type,
       deliveryFees: deliveryFees,
-      clientName: selectedClientName
+      clientName: selectedClientName,
+      password
     };
     try {
       const response = await fetch("/order/addOrder", {
@@ -121,6 +123,20 @@ const OrderModal = ({ onClose, type, closeFun }) => {
                   setDate(e.target.value);
                 }}
                 type="date"
+                className="w-full md:w-[300px]"
+              />
+            </div>
+          </div>
+          <div className="md:w-[33%] w-full flex justify-center">
+            <div className="flex flex-col gap-2 w-full max-w-[300px]">
+              <label className="text-center">كلمه السر لبضاعه اول الشهر </label>
+              <input
+                required
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                type="password"
                 className="w-full md:w-[300px]"
               />
             </div>

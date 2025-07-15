@@ -258,6 +258,7 @@ const addOrder = async (req, res) => {
     deliveryFees,
     date,
     clientName,
+    password
   } = req.body;
   let newOrder;
   try {
@@ -273,7 +274,30 @@ const addOrder = async (req, res) => {
       deliveryFees,
       date,
     });
-
+    if(password === "alkudsprod123"){
+      newOrder.state = 'منتهي'
+      for (let i = 0; i < newOrder.ticket.length; i++) {
+        newOrder.ticket[i].date = date
+        await Iron.findOneAndUpdate(
+          {
+            $and: [
+              { name: newOrder.ticket[i].ironName },
+              { radius: newOrder.ticket[i].radius },
+            ],
+          },
+          {
+            $push: {
+              costPerWeight: {
+                unitCostPerTon: newOrder.ticket[i].unitPrice,
+                weight: newOrder.ticket[i].neededWeight,
+              },
+            },
+          },
+          { upsert: true, returnDocument: "after" }
+        )
+      }
+    
+    }
     newOrder.save().then(async (data) => {
       await Client.updateOne(
         { clientId },
@@ -284,6 +308,7 @@ const addOrder = async (req, res) => {
         }
       );
     });
+    
   } catch (err) {
     console.log(err);
   }
