@@ -19,7 +19,7 @@ const requireAuth = async (req, res, next) => {
     req.user = await UserV2.findOne({ _id })
     console.log(req.session.userId)
     console.log(req.user,"user is here")
-    if(true|| req.user && req.session.userId === _id){
+    if(req.user && req.session.userId === _id){
       next()
     }
     else{

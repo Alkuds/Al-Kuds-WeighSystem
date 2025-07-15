@@ -262,34 +262,35 @@ const addOrder = async (req, res) => {
   } = req.body;
   let newOrder = null;
   try {
-    let exceededIronArr = []
-    for (let i = 0; i < ticket.length; i++) {
-      console.log(ticket[i])
-      let storage = await Iron.findOne(
-        {
-          $and: [
-            { name: ticket[i].ironName },
-            { radius: ticket[i].radius },
-          ],
+    if(type === "out"){
+      let exceededIronArr = []
+      for (let i = 0; i < ticket.length; i++) {
+        console.log(ticket[i])
+        let storage = await Iron.findOne(
+          {
+            $and: [
+              { name: ticket[i].ironName },
+              { radius: ticket[i].radius },
+            ],
+          }
+        )
+        let sum = 0
+        console.log(storage)
+        if(storage != null)
+          for(let j = 0 ; j<storage.costPerWeight.length;j++){
+            sum+= storage.costPerWeight[j].weight
+          }
+        if(sum<ticket[i].neededWeight){
+          let errStr = "لا يوجد حديد كافي من نوع " + ticket[i].ironName + "، قطر " + ticket[i].radius;
+          exceededIronArr.push(errStr)
         }
-      )
-      let sum = 0
-      console.log(storage)
-      if(storage != null)
-        for(let j = 0 ; j<storage.costPerWeight.length;j++){
-          sum+= storage.costPerWeight[j].weight
-        }
-      if(sum<ticket[i].neededWeight){
-        let errStr = "لا يوجد حديد كافي من نوع " + ticket[i].ironName + "، قطر " + ticket[i].radius;
-        exceededIronArr.push(errStr)
+      }
+
+      if(exceededIronArr.length>0){
+        res.json({newOrder,exceededIronArr});
+        return
       }
     }
-
-    if(exceededIronArr.length>0){
-      res.json({newOrder,exceededIronArr});
-      return
-    }
-
     newOrder = new Order({
       clientName,
       state: isSameDay(date, new Date()) ? "جاري انتظار التحميل" : "جديد",
