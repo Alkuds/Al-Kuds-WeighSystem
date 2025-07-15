@@ -210,7 +210,46 @@ const addTransaction = async (req, res) => {
                 } 
             )
         }
+        else if(type ==="صرف شيك"){
+            newTransaction = await Wallet.findOneAndUpdate(
+                {
+                    bankName,
+                    transactions: {
+                        $elemMatch: { amount , clientId}
+                      }
+                },
+                {
+                    $push: {
+                        'transactions': {
+                            "amount":-amount,
+                            "clientId": clientId,
+                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
+                        }
+                    },
+                    $inc: { totalAmount: -amount } 
+                },
+                {
+                    returnDocument: 'after'
+                }
+            )
+            if(newTransaction != null)
+                clientUpdate = await Client.findOneAndUpdate({clientId},
+                    {
+                        $inc: {
+                            balance: -amount
+                        },
+                        $push: {
+                            'transactionsHistory': { amount, type }
+                        },
+                    },
+                    { 
+                        returnDocument: 'after' 
+                    } 
+                )
+            else{
 
+            }
+        }
         updatedOrders = await Order.find({clientId})
 
     }

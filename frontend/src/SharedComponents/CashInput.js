@@ -134,9 +134,9 @@ const CashInput = (props) => {
           }
           if (addTransaction.client !==null)
             clientUpdate({ type: "UPDATE_CLIENT", payload: addTransaction.client })
-          
-            if (addTransaction.bank !==null)
-            walletUpdate({ type: "UPDATE_WALLET", payload: addTransaction.bank })
+
+          if (addTransaction.bank !==null)
+          walletUpdate({ type: "UPDATE_WALLET", payload: addTransaction.bank })
 
           socketTransactionNotification(addTransaction.bank)
       }
@@ -172,6 +172,7 @@ const CashInput = (props) => {
               <option value="">نوع العمليه</option>
               <option value="استلام من">استلام من</option>
               <option value="تحويل الي">تحويل الي</option>
+              <option value="صرف شيك">صرف شيك</option>
               { !isKudsPersonnel &&<option value="اكراميه">اكراميه</option>}
               {!isKudsPersonnel && <option value="خصم">خصم</option>}
             </select>

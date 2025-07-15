@@ -54,22 +54,35 @@ const OrderModal = ({ onClose, type, closeFun }) => {
 
       const result = await response.json();
       if(response.ok){
-        console.log("hereeee")
-        await socket.emit("send_order_creation", {
-          message: "Order Printed Successfully",
-          room: "123",
-          order: result,
-        });
-        dispatch({type:"ADD_TICKET",payload: [result]})
+        if(!("exceededIronArr" in result)){
+          await socket.emit("send_order_creation", {
+            message: "Order Printed Successfully",
+            room: "123",
+            order: result,
+          });
+          dispatch({type:"ADD_TICKET",payload: [result]})
+          swal({
+            text: "تم انشاء طلب بنجاح",
+            icon: "success",
+          }).then(e=>{
+            setAdding(false)
+            closeFun()
+          });
+        }
+        else{
+          let errStr = ""
+          for(let i of result.exceededIronArr){
+            errStr += i
+          }
+          swal({
+            text: "لم يتم انشاء الاوردر لعدم وجود حديد كافي: " + errStr,
+            icon: "error",
+          }).then(e=>{
+            setAdding(false)
+            closeFun()
+          });
+        }
       }
-
-      swal({
-        text: "تم انشاء طلب بنجاح",
-        icon: "success",
-      }).then(e=>{
-        setAdding(false)
-        closeFun()
-      });
     } catch (error) {
       swal({
         text: "حدث خطأ ما برجاء المحاولة مرة اخرى",

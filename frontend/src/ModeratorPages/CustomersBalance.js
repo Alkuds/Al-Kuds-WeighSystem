@@ -100,8 +100,9 @@ const CustomersBalance = () => {
                       <TableCell
                         align="center"
                         sx={{ width: "50%", border: "1px solid black" }}
+                        style={{'direction':"ltr"}}
                       >
-                        {client.balance}
+                        {client.balance.toLocaleString()}
                       </TableCell>
                     </TableRow>
                   );
