@@ -439,7 +439,7 @@ const addChequeTransaction = async(req,res) =>{
                     ] 
                 }   
             ).sort({ date: 1 });
-            let chequeUsed = await Wallet.findOneAndUpdate(
+            newTransaction = await Wallet.findOneAndUpdate(
                 {
                     "transactions._id":chequeId
                 },
@@ -454,26 +454,26 @@ const addChequeTransaction = async(req,res) =>{
                     returnDocument: 'after'
                 }
             )
-            newTransaction = await Wallet.findOneAndUpdate(
-                {
-                    bankName
-                },
-                {
-                    $push: {
-                        'transactions': {
-                            "notes":   bankName + " - " + notes,
-                            "amount":amount,
-                            "clientId": clientId,
-                            "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
-                            "sign":"-"
-                        }
-                    },
-                    $inc: { totalAmount: -amount } 
-                },
-                {
-                    returnDocument: 'after'
-                }
-            )
+            // newTransaction = await Wallet.findOneAndUpdate(
+            //     {
+            //         bankName
+            //     },
+            //     {
+            //         $push: {
+            //             'transactions': {
+            //                 "notes":   bankName + " - " + notes,
+            //                 "amount":amount,
+            //                 "clientId": clientId,
+            //                 "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
+            //                 "sign":"-"
+            //             }
+            //         },
+            //         $inc: { totalAmount: -amount } 
+            //     },
+            //     {
+            //         returnDocument: 'after'
+            //     }
+            // )
             for(let i of orders){
                 let RemainingPrice = i.realTotalPrice - i.totalPaid
                 console.log("RemainingPrice",RemainingPrice)
@@ -817,6 +817,17 @@ const getWalletInventoryByDate = async(req,res)=>{
     res.json(transactions)
 }
 
+const resetAllBanks = async(req,res) =>{
+    let result 
+    try{
+        result = await Wallet.updateMany({}, { totalAmount:0, "$set":{transactions : []} })
+    }
+    catch(err){
+        console.log(err)
+    }
+    return result
+}
+
 module.exports = {
     addTransaction,
     getSpecificClientTransactions,
@@ -825,5 +836,6 @@ module.exports = {
     addCompanyExpenses,
     getWalletInventoryByDate,
     getOldClientBalance,
-    addChequeTransaction
+    addChequeTransaction,
+    resetAllBanks
 }
