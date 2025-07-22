@@ -17,7 +17,6 @@ const getClientsInfo = async(req , res) => {
 
 }
 const addClients = async (req , res) => {
-    console.log("dddd")
     const { name,address, clientId, isFactory} = req.body
     let newClient, id;
     try{
