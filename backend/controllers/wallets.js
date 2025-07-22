@@ -828,6 +828,19 @@ const resetAllBanks = async(req,res) =>{
     return result
 }
 
+const getCurrentCheques = async(req,res) =>{
+    let result, transactions
+    try{
+        result = await Wallet.findOne({"bankName":"شيكات"})
+        transactions = result.transactions.filter(tx=> tx.isDisbursed == false)
+        result.transactions = transactions
+    }
+    catch(err){
+        console.log(err)
+    }
+    res.json([result])
+}
+
 module.exports = {
     addTransaction,
     getSpecificClientTransactions,
@@ -837,5 +850,6 @@ module.exports = {
     getWalletInventoryByDate,
     getOldClientBalance,
     addChequeTransaction,
-    resetAllBanks
+    resetAllBanks,
+    getCurrentCheques
 }
