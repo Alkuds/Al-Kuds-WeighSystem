@@ -274,7 +274,7 @@ const MoneyVault = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <CashInput isKudsPersonnel={false} isCheque={false} />
+          <CashInput isKudsPersonnel={true} isCheque={false} />
         </Box>
       </Modal>
 

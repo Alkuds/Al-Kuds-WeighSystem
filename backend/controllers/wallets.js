@@ -26,7 +26,8 @@ const addTransaction = async (req, res) => {
                 {
                     $push: {
                         'transactions': {
-                            "notes":   bankName + " - " + notes,
+                            "notes":   notes,
+                            bankName,
                             "amount":amount,
                             "clientId": clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
@@ -116,7 +117,8 @@ const addTransaction = async (req, res) => {
                 {
                     $push: {
                         'transactions': {
-                            "notes":   bankName + " - " + notes,
+                            "notes":   notes,
+                            bankName,
                             "amount":amount,
                             "clientId": clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
@@ -226,7 +228,8 @@ const addTransaction = async (req, res) => {
                 {
                     $push: {
                         'transactions': {
-                            "notes":     bankName + " - " + notes,
+                            "notes": notes,
+                            bankName,
                             "amount":amount,
                             "clientId": clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
@@ -262,7 +265,8 @@ const addTransaction = async (req, res) => {
                 {
                     $push: {
                         'transactions': {
-                            'notes':"خصم - "+notes,
+                            'notes': notes,
+                            "bankName":"خصم",
                             "amount":amount,
                             "clientId": clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
@@ -287,6 +291,7 @@ const addTransaction = async (req, res) => {
                     $push: {
                         'transactions': {
                             notes,
+                            bankName,
                             "amount":-amount,
                             "clientId": clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
@@ -357,7 +362,8 @@ const addChequeTransaction = async(req,res) =>{
                 {
                     $push: {
                         'transactions': {
-                            "notes":   "شيكات" + " - " + notes,
+                            "notes":   notes,
+                            "bankName": "شيكات",
                             "amount":amount,
                             "clientId": clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }),
@@ -557,6 +563,7 @@ const addChequeTransaction = async(req,res) =>{
                     $push: {
                         'transactions': {
                             notes,
+                            bankName,
                             "amount":amount,
                             "clientId": cId[0].clientId,
                             "date": new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' })
@@ -647,7 +654,8 @@ const addCompanyExpenses = async(req,res)=>{
                         $push: {
                             'transactions': { 
                                 amount, 
-                                "notes" :    bankName + " - " + notes,
+                                "notes" :  notes,
+                                bankName,
                                 clientId,
                                 type,
                                 "sign":"+"
@@ -688,7 +696,8 @@ const addCompanyExpenses = async(req,res)=>{
                         $push: {
                             'transactions': { 
                                 amount, 
-                                'notes' :    bankName + " - " + notes,
+                                'notes' : notes,
+                                bankName,
                                 clientId,
                                 type,
                                 "sign":"-"
